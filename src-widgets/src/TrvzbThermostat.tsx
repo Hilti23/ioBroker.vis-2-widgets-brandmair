@@ -16,6 +16,7 @@ import { tr } from './tr';
 // ---------------------------------------------------------------------------
 interface TrvzbRxData {
     widgetTitle: string;
+    'oid-base': string;
     'oid-temp-actual': string;
     'oid-temp-set': string;
     'oid-mode': string;
@@ -32,6 +33,25 @@ interface TrvzbRxData {
     'oid-sched-saturday': string;
     'oid-sched-sunday': string;
 }
+
+// Auto-fill mapping: field name → Zigbee property suffix
+const OID_MAP: Array<[string, string]> = [
+    ['oid-temp-actual', 'local_temperature'],
+    ['oid-temp-set', 'occupied_heating_setpoint'],
+    ['oid-mode', 'mode'],
+    ['oid-run', 'running_state'],
+    ['oid-batt', 'battery'],
+    ['oid-avail', 'available'],
+    ['oid-child', 'child_lock'],
+    ['oid-window', 'open_window'],
+    ['oid-sched-monday', 'weekly_schedule_monday'],
+    ['oid-sched-tuesday', 'weekly_schedule_tuesday'],
+    ['oid-sched-wednesday', 'weekly_schedule_wednesday'],
+    ['oid-sched-thursday', 'weekly_schedule_thursday'],
+    ['oid-sched-friday', 'weekly_schedule_friday'],
+    ['oid-sched-saturday', 'weekly_schedule_saturday'],
+    ['oid-sched-sunday', 'weekly_schedule_sunday'],
+];
 
 const SCHED_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
 
@@ -114,6 +134,20 @@ export default class TrvzbThermostat extends Generic<TrvzbRxData, TrvzbState> {
                     label: 'group_display',
                     fields: [
                         { name: 'widgetTitle', label: 'widget_title', type: 'text', default: 'Thermostat' },
+                        {
+                            name: 'oid-base',
+                            type: 'text',
+                            label: 'base_oid',
+                            tooltip: 'base_oid_tooltip',
+                            onChange: async (_field: any, data: any, changeData: any) => {
+                                const base = data['oid-base'];
+                                if (!base) return;
+                                for (const [field, prop] of OID_MAP) {
+                                    data[field] = `${base}.${prop}`;
+                                }
+                                changeData(data);
+                            },
+                        },
                     ],
                 },
                 {

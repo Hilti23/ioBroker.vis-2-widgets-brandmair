@@ -18,6 +18,8 @@
     "mode_auto": "Zeitplan",
     "group_oids": "Datenpunkte",
     "group_display": "Anzeige",
+    "base_oid": "Zigbee Gerät (Basispfad)",
+    "base_oid_tooltip": "z.B. zigbee.0.449fdafffe7d9fc6 – befüllt alle Felder automatisch",
     "schedule_monday": "Montag",
     "schedule_tuesday": "Dienstag",
     "schedule_wednesday": "Mittwoch",

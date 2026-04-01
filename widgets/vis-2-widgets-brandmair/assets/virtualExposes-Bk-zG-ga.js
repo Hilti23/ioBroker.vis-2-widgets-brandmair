@@ -16,7 +16,7 @@ let __tla = (async () => {
   _ = {
     "./TrvzbThermostat": async () => {
       await i("./TrvzbThermostat");
-      const s = await n(() => import("./TrvzbThermostat-DJBet3ZD.js").then(async (m) => {
+      const s = await n(() => import("./TrvzbThermostat-BKhvmo1F.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -27,7 +27,7 @@ let __tla = (async () => {
     },
     "./translations": async () => {
       await i("./translations");
-      const s = await n(() => import("./translations-BnUQsAkV.js").then((o) => o.a), [], import.meta.url), e = {};
+      const s = await n(() => import("./translations-VUdWfrOD.js").then((o) => o.a), [], import.meta.url), e = {};
       return Object.assign(e, s), Object.defineProperty(e, "__esModule", {
         value: true,
         enumerable: false
