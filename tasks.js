@@ -5,6 +5,11 @@ function copyAllFiles() {
         ['src-widgets/build/**/*', '!src-widgets/build/index.html', '!src-widgets/build/mf-manifest.json'],
         'widgets/vis-2-widgets-brandmair/',
     );
+    // www/ is needed for iobroker upload (uploads from www/ to file storage)
+    copyFiles(
+        ['src-widgets/build/**/*', '!src-widgets/build/index.html', '!src-widgets/build/mf-manifest.json'],
+        'www/',
+    );
 }
 
 if (process.argv.includes('--copy-files')) {
@@ -16,6 +21,7 @@ if (process.argv.includes('--copy-files')) {
 } else {
     deleteFoldersRecursive('src-widgets/build');
     deleteFoldersRecursive('widgets');
+    deleteFoldersRecursive('www');
     npmInstall('src-widgets')
         .then(() => buildReact(`${__dirname}/src-widgets`, { rootDir: __dirname, vite: true }))
         .then(() => copyAllFiles());

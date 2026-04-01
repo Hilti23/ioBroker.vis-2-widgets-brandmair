@@ -1,6 +1,6 @@
 {
   "name": "iobroker.vis-2-widgets-brandmair",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "ioBroker vis2 widget for Sonoff TRVZB thermostats",
   "author": "nurco",
   "license": "MIT",
@@ -12,7 +12,8 @@
     "admin/",
     "io-package.json",
     "LICENSE",
-    "widgets/"
+    "widgets/",
+    "www/"
   ],
   "scripts": {
     "build": "node tasks",
