@@ -1,0 +1,44 @@
+{
+  "common": {
+    "name": "vis-2-widgets-brandmair",
+    "version": "0.3.1",
+    "titleLang": {
+      "en": "Brandmair Widgets for Vis2",
+      "de": "Brandmair Widgets für die Vis2"
+    },
+    "desc": {
+      "en": "Brandmair Widgets for ioBroker VIS2",
+      "de": "Brandmair Widgets für ioBroker VIS2"
+    },
+    "authors": ["nurco"],
+    "keywords": ["vis-2-widgets-brandmair"],
+    "platform": "Javascript/Node.js",
+    "icon": "vis-2-widgets-brandmair.png",
+    "enabled": true,
+    "loglevel": "info",
+    "mode": "none",
+    "singleton": true,
+    "adminUI": { "config": "none" },
+    "nogit": true,
+    "onlyWWW": true,
+    "type": "visualization-widgets",
+    "connectionType": "cloud",
+    "dataSource": "poll",
+    "licenseInformation": { "license": "MIT", "type": "free" },
+    "visWidgets": {
+      "vis2brandmairWidgets": {
+        "i18n": "component",
+        "name": "vis2brandmairWidgets",
+        "url": "vis-2-widgets-brandmair/customWidgets.js",
+        "bundlerType": "module",
+        "components": ["TrvzbThermostat"]
+      }
+    },
+    "dependencies": [{ "vis-2": ">=2.12.8" }],
+    "restartAdapters": ["vis-2"],
+    "tier": 3
+  },
+  "native": {},
+  "objects": [],
+  "instanceObjects": []
+}

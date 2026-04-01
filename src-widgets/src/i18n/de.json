@@ -1,0 +1,21 @@
+{
+    "thermostat_trvzb": "Thermostat Sonoff TRVZB",
+    "widget_title": "Name",
+    "temperature_actual": "Ist-Temperatur",
+    "temperature_set": "Soll-Temperatur",
+    "mode": "Modus",
+    "running_state": "Zustand",
+    "battery": "Batterie",
+    "available": "Verfügbarkeit",
+    "child_lock": "Kindersicherung",
+    "open_window": "Fenstererkennung",
+    "weekly_schedule": "Wochenplan",
+    "heating": "heizt",
+    "ready": "bereit",
+    "offline": "Offline",
+    "mode_off": "Aus",
+    "mode_heat": "Manuell",
+    "mode_auto": "Zeitplan",
+    "group_oids": "Datenpunkte",
+    "group_display": "Anzeige"
+}

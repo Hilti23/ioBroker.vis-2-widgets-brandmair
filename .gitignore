@@ -1,0 +1,7 @@
+node_modules/
+src-widgets/node_modules/
+src-widgets/build/
+src-widgets/dist/
+widgets/
+*.tgz
+create_icons.py
