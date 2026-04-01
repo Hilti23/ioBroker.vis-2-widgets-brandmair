@@ -24,8 +24,16 @@ interface TrvzbRxData {
     'oid-avail': string;
     'oid-child': string;
     'oid-window': string;
-    'oid-sched': string;
+    'oid-sched-monday': string;
+    'oid-sched-tuesday': string;
+    'oid-sched-wednesday': string;
+    'oid-sched-thursday': string;
+    'oid-sched-friday': string;
+    'oid-sched-saturday': string;
+    'oid-sched-sunday': string;
 }
+
+const SCHED_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
 
 interface TrvzbState extends VisRxWidgetState {
     showSchedule: boolean;
@@ -120,7 +128,19 @@ export default class TrvzbThermostat extends Generic<TrvzbRxData, TrvzbState> {
                         { name: 'oid-avail', type: 'id', label: 'available' },
                         { name: 'oid-child', type: 'id', label: 'child_lock' },
                         { name: 'oid-window', type: 'id', label: 'open_window' },
-                        { name: 'oid-sched', type: 'id', label: 'weekly_schedule' },
+                    ],
+                },
+                {
+                    name: 'schedule',
+                    label: 'weekly_schedule',
+                    fields: [
+                        { name: 'oid-sched-monday', type: 'id', label: 'schedule_monday' },
+                        { name: 'oid-sched-tuesday', type: 'id', label: 'schedule_tuesday' },
+                        { name: 'oid-sched-wednesday', type: 'id', label: 'schedule_wednesday' },
+                        { name: 'oid-sched-thursday', type: 'id', label: 'schedule_thursday' },
+                        { name: 'oid-sched-friday', type: 'id', label: 'schedule_friday' },
+                        { name: 'oid-sched-saturday', type: 'id', label: 'schedule_saturday' },
+                        { name: 'oid-sched-sunday', type: 'id', label: 'schedule_sunday' },
                     ],
                 },
             ],
@@ -326,17 +346,31 @@ export default class TrvzbThermostat extends Generic<TrvzbRxData, TrvzbState> {
                 )}
 
                 {/* Schedule modal */}
-                {this.state.showSchedule && (
-                    <ScheduleModal
-                        title={title}
-                        scheduleRaw={this.val('oid-sched')}
-                        onSave={(json: string) => {
-                            this.setVal('oid-sched', json);
-                            this.setState({ showSchedule: false } as any);
-                        }}
-                        onClose={() => this.setState({ showSchedule: false } as any)}
-                    />
-                )}
+                {this.state.showSchedule && (() => {
+                    const schedObj: Record<string, string> = {};
+                    SCHED_DAYS.forEach(d => {
+                        const v = this.val(`oid-sched-${d}` as keyof TrvzbRxData);
+                        if (v) schedObj[d] = String(v);
+                    });
+                    return (
+                        <ScheduleModal
+                            title={title}
+                            scheduleRaw={schedObj}
+                            onSave={(json: string) => {
+                                try {
+                                    const obj = JSON.parse(json);
+                                    SCHED_DAYS.forEach(d => {
+                                        if (obj[d] !== undefined) {
+                                            this.setVal(`oid-sched-${d}` as keyof TrvzbRxData, obj[d]);
+                                        }
+                                    });
+                                } catch { /* ignore */ }
+                                this.setState({ showSchedule: false } as any);
+                            }}
+                            onClose={() => this.setState({ showSchedule: false } as any)}
+                        />
+                    );
+                })()}
             </div>
         );
     }

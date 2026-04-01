@@ -17,5 +17,12 @@
     "mode_heat": "Manuell",
     "mode_auto": "Zeitplan",
     "group_oids": "Datenpunkte",
-    "group_display": "Anzeige"
+    "group_display": "Anzeige",
+    "schedule_monday": "Montag",
+    "schedule_tuesday": "Dienstag",
+    "schedule_wednesday": "Mittwoch",
+    "schedule_thursday": "Donnerstag",
+    "schedule_friday": "Freitag",
+    "schedule_saturday": "Samstag",
+    "schedule_sunday": "Sonntag"
 }

@@ -1,8 +1,8 @@
 import { j as e, __tla as __tla_0 } from "./createSvgIcon-DUKm_13q.js";
-import { _ as D, a as O, b as z, c as I, d as V, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
-import { C as E, D as L, A as J, a as P, b as K, c as H, __tla as __tla_2 } from "./Close-C0TSKQGp.js";
-import { t as X, e as Y, d as G } from "./translations-nN7bT7_E.js";
-import { _ as T, a as U, __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
+import { _ as D, a as M, b as z, c as I, d as V, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
+import { C as J, D as L, A as P, a as H, b as K, c as Y, __tla as __tla_2 } from "./Close-C0TSKQGp.js";
+import { t as X, e as G, d as U } from "./translations-BnUQsAkV.js";
+import { _ as T, a as Z, __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
 import { __tla as __tla_4 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_5 } from "./identifier-D6g9f8_1.js";
 let R;
@@ -52,11 +52,11 @@ let __tla = Promise.all([
     for (const c of Object.keys(s[o[0]])) {
       const l = i + c;
       r[l] = {};
-      for (const f of o) r[l][f] = s[f][c];
+      for (const u of o) r[l][u] = s[u][c];
     }
     window.addWords(r);
   })();
-  class Z extends window.visRxWidget {
+  class q extends window.visRxWidget {
     getPropertyValue = (i) => this.state.values[`${this.state.rxData[i]}.val`];
     static getI18nPrefix() {
       return "vis_2_widgets_brandmair_";
@@ -70,7 +70,7 @@ let __tla = Promise.all([
     "friday",
     "saturday",
     "sunday"
-  ], k = {
+  ], C = {
     monday: "Mo",
     tuesday: "Di",
     wednesday: "Mi",
@@ -79,7 +79,7 @@ let __tla = Promise.all([
     saturday: "Sa",
     sunday: "So"
   };
-  function q(n) {
+  function Q(n) {
     const i = {};
     if (b.forEach((s) => {
       i[s] = [];
@@ -99,14 +99,14 @@ let __tla = Promise.all([
     }
     return i;
   }
-  function Q(n) {
+  function ee(n) {
     const i = {};
     return b.forEach((s) => {
       const o = (n[s] || []).filter((r) => r.time && !isNaN(r.temp));
       o.length && (i[s] = o.map((r) => `${r.time}/${r.temp}`).join(" "));
     }), JSON.stringify(i);
   }
-  function _(n) {
+  function k(n) {
     const i = n.split(":");
     return (parseInt(i[0]) || 0) * 60 + (parseInt(i[1]) || 0);
   }
@@ -117,10 +117,10 @@ let __tla = Promise.all([
   function A(n, i, s) {
     return Math.max(i, Math.min(s, n));
   }
-  function ee(n) {
+  function te(n) {
     return n <= 16 ? "#5DCAA5" : n <= 19 ? "#2ec27e" : n <= 22 ? "#EF9F27" : "#D85A30";
   }
-  function te({ slots: n }) {
+  function ie({ slots: n }) {
     const i = [
       ...n
     ].sort((o, r) => o.time.localeCompare(r.time));
@@ -156,7 +156,7 @@ let __tla = Promise.all([
         overflow: "hidden"
       },
       children: i.map((o, r) => {
-        const c = s(o.time), f = (r + 1 < i.length ? s(i[r + 1].time) : 100) - c;
+        const c = s(o.time), u = (r + 1 < i.length ? s(i[r + 1].time) : 100) - c;
         return e.jsx("div", {
           style: {
             position: "absolute",
@@ -164,15 +164,15 @@ let __tla = Promise.all([
             bottom: 2,
             borderRadius: 3,
             left: `${c.toFixed(1)}%`,
-            width: `${f.toFixed(1)}%`,
-            background: ee(o.temp),
+            width: `${u.toFixed(1)}%`,
+            background: te(o.temp),
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden"
           },
           title: `${o.time} \u2013 ${o.temp}\xB0C`,
-          children: f > 10 && e.jsxs("span", {
+          children: u > 10 && e.jsxs("span", {
             style: {
               fontSize: 8,
               fontWeight: 700,
@@ -187,7 +187,7 @@ let __tla = Promise.all([
       })
     });
   }
-  function m({ icon: n, onClick: i }) {
+  function x({ icon: n, onClick: i }) {
     return e.jsx(D, {
       size: "small",
       onClick: i,
@@ -195,52 +195,52 @@ let __tla = Promise.all([
         padding: "2px",
         color: "rgba(255,255,255,0.5)"
       },
-      children: n === "up" ? e.jsx(P, {
+      children: n === "up" ? e.jsx(H, {
         fontSize: "small"
       }) : e.jsx(K, {
         fontSize: "small"
       })
     });
   }
-  function ie({ title: n, scheduleRaw: i, onSave: s, onClose: o }) {
-    const [r, c] = T(() => q(i)), [l, f] = T("monday"), p = r[l] || [], u = U((t) => {
-      c((a) => {
-        const d = JSON.parse(JSON.stringify(a));
-        return t(d), d;
+  function ne({ title: n, scheduleRaw: i, onSave: s, onClose: o }) {
+    const [r, c] = T(() => Q(i)), [l, u] = T("monday"), g = r[l] || [], m = Z((t) => {
+      c((d) => {
+        const a = JSON.parse(JSON.stringify(d));
+        return t(a), a;
       });
-    }, []), h = (t, a, d) => {
-      u((C) => {
-        const g = C[l];
-        if (g[t]) if (a === "t") g[t].temp = A(Math.round((g[t].temp + d) * 2) / 2, 4, 35);
+    }, []), h = (t, d, a) => {
+      m((p) => {
+        const f = p[l];
+        if (f[t]) if (d === "t") f[t].temp = A(Math.round((f[t].temp + a) * 2) / 2, 4, 35);
         else {
-          const $ = _(g[t].time) + (a === "h" ? d * 60 : d), F = t > 0 ? _(g[t - 1].time) + 5 : 0, B = t + 1 < g.length ? _(g[t + 1].time) - 5 : 1435;
-          g[t].time = W(A($, F, B));
+          const F = k(f[t].time) + (d === "h" ? a * 60 : a), B = t > 0 ? k(f[t - 1].time) + 5 : 0, E = t + 1 < f.length ? k(f[t + 1].time) - 5 : 1435;
+          f[t].time = W(A(F, B, E));
         }
       });
-    }, v = () => {
-      u((t) => {
+    }, j = () => {
+      m((t) => {
         if (t[l] || (t[l] = []), t[l].length >= 6) return;
         t[l].length === 0 && t[l].push({
           time: "00:00",
           temp: 20
         });
-        const a = _(t[l][t[l].length - 1].time);
+        const d = k(t[l][t[l].length - 1].time);
         t[l].push({
-          time: W(Math.min(a + 60, 1435)),
+          time: W(Math.min(d + 60, 1435)),
           temp: 20
         });
       });
-    }, j = (t) => {
-      u((a) => {
-        a[l].splice(t, 1), a[l].length === 1 && (a[l].length = 0);
-      });
     }, w = (t) => {
-      !t || t === l || u((a) => {
-        a[l] = (a[t] || []).map((d) => ({
-          ...d
+      m((d) => {
+        d[l].splice(t, 1), d[l].length === 1 && (d[l].length = 0);
+      });
+    }, S = (t) => {
+      !t || t === l || m((d) => {
+        d[l] = (d[t] || []).map((a) => ({
+          ...a
         }));
       });
-    }, S = {
+    }, _ = {
       position: "fixed",
       inset: 0,
       background: "rgba(0,0,0,0.7)",
@@ -248,7 +248,7 @@ let __tla = Promise.all([
       alignItems: "center",
       justifyContent: "center",
       zIndex: 9999
-    }, y = {
+    }, v = {
       background: "#1e1e1e",
       borderRadius: 16,
       width: 820,
@@ -259,10 +259,10 @@ let __tla = Promise.all([
       border: "1px solid rgba(255,255,255,0.15)"
     };
     return e.jsx("div", {
-      style: S,
+      style: _,
       onClick: o,
       children: e.jsxs("div", {
-        style: y,
+        style: v,
         onClick: (t) => t.stopPropagation(),
         children: [
           e.jsxs("div", {
@@ -297,7 +297,7 @@ let __tla = Promise.all([
                 sx: {
                   color: "rgba(255,255,255,0.5)"
                 },
-                children: e.jsx(E, {})
+                children: e.jsx(J, {})
               })
             ]
           }),
@@ -322,13 +322,13 @@ let __tla = Promise.all([
                     color: "rgba(255,255,255,0.4)",
                     textAlign: "right"
                   },
-                  children: k[t]
+                  children: C[t]
                 }),
                 e.jsx("div", {
                   style: {
                     flex: 1
                   },
-                  children: e.jsx(te, {
+                  children: e.jsx(ie, {
                     slots: r[t] || []
                   })
                 })
@@ -345,7 +345,7 @@ let __tla = Promise.all([
             },
             children: [
               b.map((t) => e.jsx("button", {
-                onClick: () => f(t),
+                onClick: () => u(t),
                 style: {
                   padding: "4px 10px",
                   borderRadius: 6,
@@ -355,13 +355,13 @@ let __tla = Promise.all([
                   background: t === l ? "#e8622a" : "rgba(0,0,0,0.25)",
                   color: t === l ? "#fff" : "rgba(255,255,255,0.5)"
                 },
-                children: k[t]
+                children: C[t]
               }, t)),
-              e.jsx(O, {
+              e.jsx(M, {
                 size: "small",
                 value: "",
                 displayEmpty: true,
-                onChange: (t) => w(t.target.value),
+                onChange: (t) => S(t.target.value),
                 sx: {
                   fontSize: 11,
                   height: 28,
@@ -379,15 +379,15 @@ let __tla = Promise.all([
                     zIndex: 10001
                   }
                 },
-                renderValue: (t) => t ? k[t] : "Kopieren von...",
+                renderValue: (t) => t ? C[t] : "Kopieren von...",
                 children: b.filter((t) => t !== l).map((t) => e.jsx(z, {
                   value: t,
-                  children: k[t]
+                  children: C[t]
                 }, t))
               })
             ]
           }),
-          p.length === 0 && e.jsx("div", {
+          g.length === 0 && e.jsx("div", {
             style: {
               textAlign: "center",
               padding: 20,
@@ -396,7 +396,7 @@ let __tla = Promise.all([
             },
             children: "Keine Zeitslots \u2013 dr\xFCcke +"
           }),
-          p.length > 0 && e.jsxs("div", {
+          g.length > 0 && e.jsxs("div", {
             style: {
               display: "flex",
               flexDirection: "column",
@@ -430,22 +430,22 @@ let __tla = Promise.all([
                       textAlign: "center"
                     },
                     children: [
-                      p[0].temp.toFixed(1),
+                      g[0].temp.toFixed(1),
                       "\xB0"
                     ]
                   }),
-                  e.jsx(m, {
+                  e.jsx(x, {
                     icon: "up",
                     onClick: () => h(0, "t", 0.5)
                   }),
-                  e.jsx(m, {
+                  e.jsx(x, {
                     icon: "down",
                     onClick: () => h(0, "t", -0.5)
                   })
                 ]
               }),
-              p.slice(1).map((t, a) => {
-                const d = a + 1, C = t.time.split(":");
+              g.slice(1).map((t, d) => {
+                const a = d + 1, p = t.time.split(":");
                 return e.jsxs("div", {
                   style: {
                     display: "flex",
@@ -456,9 +456,9 @@ let __tla = Promise.all([
                     borderRadius: 8
                   },
                   children: [
-                    e.jsx(m, {
+                    e.jsx(x, {
                       icon: "up",
-                      onClick: () => h(d, "h", 1)
+                      onClick: () => h(a, "h", 1)
                     }),
                     e.jsx("span", {
                       style: {
@@ -468,11 +468,11 @@ let __tla = Promise.all([
                         width: 22,
                         textAlign: "center"
                       },
-                      children: C[0]
+                      children: p[0]
                     }),
-                    e.jsx(m, {
+                    e.jsx(x, {
                       icon: "down",
-                      onClick: () => h(d, "h", -1)
+                      onClick: () => h(a, "h", -1)
                     }),
                     e.jsx("span", {
                       style: {
@@ -481,9 +481,9 @@ let __tla = Promise.all([
                       },
                       children: ":"
                     }),
-                    e.jsx(m, {
+                    e.jsx(x, {
                       icon: "up",
-                      onClick: () => h(d, "m", 5)
+                      onClick: () => h(a, "m", 5)
                     }),
                     e.jsx("span", {
                       style: {
@@ -493,11 +493,11 @@ let __tla = Promise.all([
                         width: 22,
                         textAlign: "center"
                       },
-                      children: C[1]
+                      children: p[1]
                     }),
-                    e.jsx(m, {
+                    e.jsx(x, {
                       icon: "down",
-                      onClick: () => h(d, "m", -5)
+                      onClick: () => h(a, "m", -5)
                     }),
                     e.jsx("span", {
                       style: {
@@ -506,9 +506,9 @@ let __tla = Promise.all([
                       },
                       children: "|"
                     }),
-                    e.jsx(m, {
+                    e.jsx(x, {
                       icon: "up",
-                      onClick: () => h(d, "t", 0.5)
+                      onClick: () => h(a, "t", 0.5)
                     }),
                     e.jsxs("span", {
                       style: {
@@ -523,13 +523,13 @@ let __tla = Promise.all([
                         "\xB0"
                       ]
                     }),
-                    e.jsx(m, {
+                    e.jsx(x, {
                       icon: "down",
-                      onClick: () => h(d, "t", -0.5)
+                      onClick: () => h(a, "t", -0.5)
                     }),
                     e.jsx(D, {
                       size: "small",
-                      onClick: () => j(d),
+                      onClick: () => w(a),
                       sx: {
                         marginLeft: "auto",
                         color: "rgba(255,100,100,0.5)"
@@ -539,7 +539,7 @@ let __tla = Promise.all([
                       })
                     })
                   ]
-                }, d);
+                }, a);
               })
             ]
           }),
@@ -552,9 +552,9 @@ let __tla = Promise.all([
             children: [
               e.jsx(I, {
                 size: "small",
-                startIcon: e.jsx(J, {}),
-                onClick: v,
-                disabled: p.length >= 6,
+                startIcon: e.jsx(P, {}),
+                onClick: j,
+                disabled: g.length >= 6,
                 sx: {
                   color: "rgba(255,255,255,0.5)",
                   textTransform: "none"
@@ -579,7 +579,7 @@ let __tla = Promise.all([
                   e.jsx(I, {
                     size: "small",
                     variant: "contained",
-                    onClick: () => s(Q(r)),
+                    onClick: () => s(ee(r)),
                     sx: {
                       background: "#e8622a",
                       textTransform: "none",
@@ -598,20 +598,29 @@ let __tla = Promise.all([
     });
   }
   const N = {
-    de: G,
-    en: Y
+    de: U,
+    en: G
   };
-  function x(n) {
+  function y(n) {
     const i = typeof window < "u" && window.systemLang || "de";
     return (N[i] || N.de)[n] ?? n;
   }
-  function ne(n) {
+  const O = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+  ];
+  function se(n) {
     return isNaN(n) ? "rgba(255,255,255,0.4)" : n <= 16 ? "#4a9edd" : n <= 19 ? "#2ec27e" : n <= 22 ? "#f5a623" : "#e8622a";
   }
-  function se(n) {
+  function oe(n) {
     return n === "heat" ? "#e8622a" : n === "auto" ? "#4a9edd" : "rgba(255,255,255,0.15)";
   }
-  function M(n) {
+  function $(n) {
     const { on: i, label: s, onClick: o } = n;
     return e.jsxs("div", {
       onClick: o,
@@ -655,7 +664,7 @@ let __tla = Promise.all([
       ]
     });
   }
-  R = class extends Z {
+  R = class extends q {
     constructor(i) {
       super(i), this.state = {
         ...this.state,
@@ -725,11 +734,47 @@ let __tla = Promise.all([
                 name: "oid-window",
                 type: "id",
                 label: "open_window"
+              }
+            ]
+          },
+          {
+            name: "schedule",
+            label: "weekly_schedule",
+            fields: [
+              {
+                name: "oid-sched-monday",
+                type: "id",
+                label: "schedule_monday"
               },
               {
-                name: "oid-sched",
+                name: "oid-sched-tuesday",
                 type: "id",
-                label: "weekly_schedule"
+                label: "schedule_tuesday"
+              },
+              {
+                name: "oid-sched-wednesday",
+                type: "id",
+                label: "schedule_wednesday"
+              },
+              {
+                name: "oid-sched-thursday",
+                type: "id",
+                label: "schedule_thursday"
+              },
+              {
+                name: "oid-sched-friday",
+                type: "id",
+                label: "schedule_friday"
+              },
+              {
+                name: "oid-sched-saturday",
+                type: "id",
+                label: "schedule_saturday"
+              },
+              {
+                name: "oid-sched-sunday",
+                type: "id",
+                label: "schedule_sunday"
               }
             ]
           }
@@ -760,7 +805,7 @@ let __tla = Promise.all([
     }
     renderWidgetBody(i) {
       super.renderWidgetBody(i);
-      const s = parseFloat(this.val("oid-temp-actual")), o = parseFloat(this.val("oid-temp-set")), r = this.state.sliderTemp ?? o, c = this.val("oid-mode") ?? "", l = this.val("oid-run") ?? "", f = this.val("oid-batt"), p = this.val("oid-avail"), u = this.val("oid-child"), h = this.val("oid-window"), v = this.state.rxData.widgetTitle || "", j = p === false || p === "false" || p === "0", w = u === true || u === "true" || u === "1" || u === "LOCK", S = h === true || h === "true" || h === "1", y = l === "heat", t = ne(s);
+      const s = parseFloat(this.val("oid-temp-actual")), o = parseFloat(this.val("oid-temp-set")), r = this.state.sliderTemp ?? o, c = this.val("oid-mode") ?? "", l = this.val("oid-run") ?? "", u = this.val("oid-batt"), g = this.val("oid-avail"), m = this.val("oid-child"), h = this.val("oid-window"), j = this.state.rxData.widgetTitle || "", w = g === false || g === "false" || g === "0", S = m === true || m === "true" || m === "1" || m === "LOCK", _ = h === true || h === "true" || h === "1", v = l === "heat", t = se(s);
       return e.jsxs("div", {
         style: {
           width: "100%",
@@ -771,7 +816,7 @@ let __tla = Promise.all([
           overflow: "hidden",
           position: "relative",
           fontFamily: "sans-serif",
-          opacity: j ? 0.5 : 1,
+          opacity: w ? 0.5 : 1,
           display: "flex",
           flexDirection: "column"
         },
@@ -779,11 +824,11 @@ let __tla = Promise.all([
           e.jsx("div", {
             style: {
               height: 4,
-              background: se(c),
+              background: oe(c),
               flexShrink: 0
             }
           }),
-          f != null && e.jsxs("div", {
+          u != null && e.jsxs("div", {
             style: {
               position: "absolute",
               top: 8,
@@ -794,7 +839,7 @@ let __tla = Promise.all([
               zIndex: 1
             },
             children: [
-              f,
+              u,
               "%"
             ]
           }),
@@ -817,7 +862,7 @@ let __tla = Promise.all([
               justifyContent: "center",
               zIndex: 1
             },
-            children: e.jsx(H, {
+            children: e.jsx(Y, {
               sx: {
                 fontSize: 16,
                 color: "rgba(255,255,255,0.5)"
@@ -875,13 +920,13 @@ let __tla = Promise.all([
                     max: 35,
                     step: 0.5,
                     value: isNaN(r) ? 20 : r,
-                    onChange: (a, d) => this.setState({
-                      sliderTemp: d
+                    onChange: (d, a) => this.setState({
+                      sliderTemp: a
                     }),
-                    onChangeCommitted: (a, d) => {
+                    onChangeCommitted: (d, a) => {
                       this.setState({
                         sliderTemp: null
-                      }), this.setVal("oid-temp-set", d);
+                      }), this.setVal("oid-temp-set", a);
                     },
                     sx: {
                       color: "#e8622a",
@@ -920,24 +965,24 @@ let __tla = Promise.all([
                       fontWeight: 600,
                       color: "#fff"
                     },
-                    children: v
+                    children: j
                   }),
                   e.jsx("span", {
                     style: {
                       fontSize: 10,
                       padding: "2px 8px",
                       borderRadius: 6,
-                      background: y ? "rgba(232,98,42,0.25)" : "rgba(255,255,255,0.08)",
-                      color: y ? "#ffb89a" : "rgba(255,255,255,0.4)"
+                      background: v ? "rgba(232,98,42,0.25)" : "rgba(255,255,255,0.08)",
+                      color: v ? "#ffb89a" : "rgba(255,255,255,0.4)"
                     },
-                    children: x(y ? "heating" : "ready")
+                    children: y(v ? "heating" : "ready")
                   })
                 ]
               }),
-              e.jsxs(O, {
+              e.jsxs(M, {
                 size: "small",
                 value: c || "off",
-                onChange: (a) => this.setVal("oid-mode", a.target.value),
+                onChange: (d) => this.setVal("oid-mode", d.target.value),
                 sx: {
                   fontSize: 12,
                   color: "#fff",
@@ -955,15 +1000,15 @@ let __tla = Promise.all([
                 children: [
                   e.jsx(z, {
                     value: "off",
-                    children: x("mode_off")
+                    children: y("mode_off")
                   }),
                   e.jsx(z, {
                     value: "heat",
-                    children: x("mode_heat")
+                    children: y("mode_heat")
                   }),
                   e.jsx(z, {
                     value: "auto",
-                    children: x("mode_auto")
+                    children: y("mode_auto")
                   })
                 ]
               }),
@@ -973,21 +1018,21 @@ let __tla = Promise.all([
                   justifyContent: "space-between"
                 },
                 children: [
-                  e.jsx(M, {
-                    on: w,
-                    label: x("child_lock"),
-                    onClick: () => this.setVal("oid-child", !w)
-                  }),
-                  e.jsx(M, {
+                  e.jsx($, {
                     on: S,
-                    label: x("open_window"),
-                    onClick: () => this.setVal("oid-window", !S)
+                    label: y("child_lock"),
+                    onClick: () => this.setVal("oid-child", !S)
+                  }),
+                  e.jsx($, {
+                    on: _,
+                    label: y("open_window"),
+                    onClick: () => this.setVal("oid-window", !_)
                   })
                 ]
               })
             ]
           }),
-          j && e.jsx("div", {
+          w && e.jsx("div", {
             style: {
               position: "absolute",
               inset: 0,
@@ -1001,20 +1046,33 @@ let __tla = Promise.all([
               fontSize: 18,
               fontWeight: 700
             },
-            children: x("offline")
+            children: y("offline")
           }),
-          this.state.showSchedule && e.jsx(ie, {
-            title: v,
-            scheduleRaw: this.val("oid-sched"),
-            onSave: (a) => {
-              this.setVal("oid-sched", a), this.setState({
+          this.state.showSchedule && (() => {
+            const d = {};
+            return O.forEach((a) => {
+              const p = this.val(`oid-sched-${a}`);
+              p && (d[a] = String(p));
+            }), e.jsx(ne, {
+              title: j,
+              scheduleRaw: d,
+              onSave: (a) => {
+                try {
+                  const p = JSON.parse(a);
+                  O.forEach((f) => {
+                    p[f] !== void 0 && this.setVal(`oid-sched-${f}`, p[f]);
+                  });
+                } catch {
+                }
+                this.setState({
+                  showSchedule: false
+                });
+              },
+              onClose: () => this.setState({
                 showSchedule: false
-              });
-            },
-            onClose: () => this.setState({
-              showSchedule: false
-            })
-          })
+              })
+            });
+          })()
         ]
       });
     }

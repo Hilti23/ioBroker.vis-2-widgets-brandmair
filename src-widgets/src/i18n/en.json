@@ -17,5 +17,12 @@
     "mode_heat": "Manual",
     "mode_auto": "Schedule",
     "group_oids": "Data points",
-    "group_display": "Display"
+    "group_display": "Display",
+    "schedule_monday": "Monday",
+    "schedule_tuesday": "Tuesday",
+    "schedule_wednesday": "Wednesday",
+    "schedule_thursday": "Thursday",
+    "schedule_friday": "Friday",
+    "schedule_saturday": "Saturday",
+    "schedule_sunday": "Sunday"
 }
