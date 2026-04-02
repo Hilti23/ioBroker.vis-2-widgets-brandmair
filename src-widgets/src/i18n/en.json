@@ -30,5 +30,13 @@
     "heizstab_widget": "ATON Heating Element",
     "heizstab_leistung": "Power",
     "heizstab_zwang": "Force mode",
-    "heizstab_zwangsbetrieb": "Force mode"
+    "heizstab_zwangsbetrieb": "Force mode",
+    "pvspeicher_widget": "RCT Battery",
+    "pvspeicher_soc": "State of charge",
+    "pvspeicher_power": "Power",
+    "pvspeicher_status": "Battery status",
+    "pvspeicher_charging": "Charging",
+    "pvspeicher_discharging": "Discharging",
+    "pvspeicher_ready": "Ready",
+    "pvspeicher_calibrating": "Calibration"
 }

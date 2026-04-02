@@ -18,6 +18,7 @@ const config = {
             exposes: {
                 './TrvzbThermostat': './src/TrvzbThermostat',
                 './HeizstabWidget': './src/HeizstabWidget',
+                './PvSpeicherWidget': './src/PvSpeicherWidget',
                 './translations': './src/translations',
             },
             remotes: {},

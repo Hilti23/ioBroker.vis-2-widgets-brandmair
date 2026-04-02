@@ -30,5 +30,13 @@
     "heizstab_widget": "ATON Heizstab",
     "heizstab_leistung": "Leistung",
     "heizstab_zwang": "Freigabe/Zwang",
-    "heizstab_zwangsbetrieb": "Zwangsbetrieb"
+    "heizstab_zwangsbetrieb": "Zwangsbetrieb",
+    "pvspeicher_widget": "RCT Batterie",
+    "pvspeicher_soc": "Ladezustand",
+    "pvspeicher_power": "Leistung",
+    "pvspeicher_status": "Batteriestatus",
+    "pvspeicher_charging": "Laden",
+    "pvspeicher_discharging": "Entladen",
+    "pvspeicher_ready": "Bereit",
+    "pvspeicher_calibrating": "Kalibrierung"
 }

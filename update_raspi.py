@@ -8,6 +8,10 @@ commands = [
     ["rm", "-rf", "node_modules/iobroker.vis-2-widgets-brandmair"],
     ["npm", "i", "iobroker.vis-2-widgets-brandmair"],
     ["iobroker", "add", "vis-2-widgets-brandmair"],
+    # Alte Widget-Dateien aus VIS2 www entfernen und frische kopieren (verhindert 404 bei Hash-Änderungen)
+    ["rm", "-rf", "node_modules/iobroker.vis-2/www/widgets/vis-2-widgets-brandmair"],
+    ["cp", "-r", "node_modules/iobroker.vis-2-widgets-brandmair/widgets/vis-2-widgets-brandmair",
+     "node_modules/iobroker.vis-2/www/widgets/vis-2-widgets-brandmair"],
     ["iobroker", "upload", "vis-2"],
     ["iobroker", "restart", "vis-2"],
 ]
