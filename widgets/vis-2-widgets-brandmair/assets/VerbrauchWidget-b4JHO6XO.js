@@ -1,8 +1,8 @@
-import { j as t, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
+import { j as i, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
 import { G as g } from "./Generic-CM5BSTAz.js";
 import { __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
-let o;
+let d;
 let __tla = Promise.all([
   (() => {
     try {
@@ -23,15 +23,15 @@ let __tla = Promise.all([
     }
   })()
 ]).then(async () => {
-  const v = [
+  const u = [
     [
       "oid-json",
       "json_summary"
     ]
   ];
-  function p({ label: d, value: r, max: e, unit: l }) {
-    const a = e > 0 ? r / e * 100 : 0;
-    return t.jsxs("div", {
+  function p({ label: h, value: r, max: e, unit: l }) {
+    const s = e > 0 ? r / e * 100 : 0;
+    return i.jsxs("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -39,7 +39,7 @@ let __tla = Promise.all([
         padding: "3px 0"
       },
       children: [
-        t.jsx("div", {
+        i.jsx("div", {
           style: {
             width: 70,
             fontSize: 13,
@@ -48,9 +48,9 @@ let __tla = Promise.all([
             flexShrink: 0,
             whiteSpace: "nowrap"
           },
-          children: d
+          children: h
         }),
-        t.jsx("div", {
+        i.jsx("div", {
           style: {
             flex: 1,
             height: 22,
@@ -59,9 +59,9 @@ let __tla = Promise.all([
             overflow: "hidden",
             position: "relative"
           },
-          children: t.jsx("div", {
+          children: i.jsx("div", {
             style: {
-              width: `${a}%`,
+              width: `${s}%`,
               height: "100%",
               background: "linear-gradient(90deg, #4a9edd, #2ec27e)",
               borderRadius: 4,
@@ -69,7 +69,7 @@ let __tla = Promise.all([
             }
           })
         }),
-        t.jsxs("div", {
+        i.jsxs("div", {
           style: {
             minWidth: 80,
             fontSize: 13,
@@ -88,7 +88,7 @@ let __tla = Promise.all([
       ]
     });
   }
-  o = class extends g {
+  d = class extends g {
     static getWidgetInfo() {
       return {
         id: "tplVerbrauchWidget",
@@ -112,12 +112,19 @@ let __tla = Promise.all([
                 label: "verbrauch_base",
                 tooltip: "verbrauch_base_tooltip",
                 onChange: async (r, e, l) => {
-                  const a = e["oid-base"];
-                  if (a) {
-                    for (const [s, n] of v) e[s] = `${a}.${n}`;
+                  const s = e["oid-base"];
+                  if (s) {
+                    for (const [n, t] of u) e[n] = `${s}.${t}`;
                     l(e);
                   }
                 }
+              },
+              {
+                name: "limit",
+                label: "verbrauch_limit",
+                type: "number",
+                default: 0,
+                tooltip: "verbrauch_limit_tooltip"
               },
               {
                 name: "view",
@@ -167,7 +174,7 @@ let __tla = Promise.all([
       };
     }
     getWidgetInfo() {
-      return o.getWidgetInfo();
+      return d.getWidgetInfo();
     }
     val(r) {
       const e = this.state.rxData[r];
@@ -175,15 +182,16 @@ let __tla = Promise.all([
     }
     renderWidgetBody(r) {
       super.renderWidgetBody(r);
-      const e = this.val("oid-json") || "", l = this.state.rxData.view || "months", a = this.state.rxData.widgetTitle || "";
-      let s = [], n = "";
+      const e = this.val("oid-json") || "", l = this.state.rxData.view || "months", s = this.state.rxData.widgetTitle || "", n = Number(this.state.rxData.limit) || 0;
+      let t = [], o = "";
       try {
-        const i = JSON.parse(e);
-        n = i.unit || "", s = i[l] || [];
+        const a = JSON.parse(e);
+        o = a.unit || "", t = a[l] || [];
       } catch {
       }
-      const h = s.reduce((i, c) => Math.max(i, c.value), 0);
-      return t.jsxs("div", {
+      n > 0 && t.length > n && (t = t.slice(-n));
+      const c = t.reduce((a, v) => Math.max(a, v.value), 0);
+      return i.jsxs("div", {
         style: {
           width: "100%",
           height: "100%",
@@ -193,7 +201,7 @@ let __tla = Promise.all([
           overflow: "hidden"
         },
         children: [
-          a && t.jsx("div", {
+          s && i.jsx("div", {
             style: {
               padding: "6px 10px 2px",
               fontSize: 14,
@@ -201,19 +209,19 @@ let __tla = Promise.all([
               color: "#fff",
               flexShrink: 0
             },
-            children: a
+            children: s
           }),
-          t.jsxs("div", {
+          i.jsxs("div", {
             style: {
               flex: 1,
               padding: "4px 10px 8px",
               overflow: "auto",
               display: "flex",
               flexDirection: "column",
-              justifyContent: s.length <= 7 ? "space-evenly" : "flex-start"
+              justifyContent: t.length <= 7 ? "space-evenly" : "flex-start"
             },
             children: [
-              s.length === 0 && t.jsx("div", {
+              t.length === 0 && i.jsx("div", {
                 style: {
                   color: "rgba(255,255,255,0.3)",
                   fontSize: 13,
@@ -221,12 +229,12 @@ let __tla = Promise.all([
                 },
                 children: "\u2013"
               }),
-              s.map((i) => t.jsx(p, {
-                label: i.label,
-                value: i.value,
-                max: h,
-                unit: n
-              }, i.label))
+              t.map((a) => i.jsx(p, {
+                label: a.label,
+                value: a.value,
+                max: c,
+                unit: o
+              }, a.label))
             ]
           })
         ]
@@ -236,5 +244,5 @@ let __tla = Promise.all([
 });
 export {
   __tla,
-  o as default
+  d as default
 };

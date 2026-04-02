@@ -65,6 +65,8 @@ const translations: Record<string, any> = {
         verbrauch_months: 'Months',
         verbrauch_weeks: 'Weeks',
         verbrauch_days: 'Days',
+        verbrauch_limit: 'Max entries',
+        verbrauch_limit_tooltip: '0 = show all',
     },
     de: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -131,6 +133,8 @@ const translations: Record<string, any> = {
         verbrauch_months: 'Monate',
         verbrauch_weeks: 'Wochen',
         verbrauch_days: 'Tage',
+        verbrauch_limit: 'Max. Einträge',
+        verbrauch_limit_tooltip: '0 = alle anzeigen',
     },
     ru: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -197,6 +201,8 @@ const translations: Record<string, any> = {
         verbrauch_months: 'Months',
         verbrauch_weeks: 'Weeks',
         verbrauch_days: 'Days',
+        verbrauch_limit: 'Max entries',
+        verbrauch_limit_tooltip: '0 = show all',
     },
     prefix: 'vis_2_widgets_brandmair_',
 };

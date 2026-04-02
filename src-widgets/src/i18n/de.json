@@ -62,5 +62,7 @@
     "verbrauch_years": "Jahre",
     "verbrauch_months": "Monate",
     "verbrauch_weeks": "Wochen",
-    "verbrauch_days": "Tage"
+    "verbrauch_days": "Tage",
+    "verbrauch_limit": "Max. Einträge",
+    "verbrauch_limit_tooltip": "0 = alle anzeigen"
 }

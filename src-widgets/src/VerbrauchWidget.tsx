@@ -11,6 +11,7 @@ interface VerbrauchRxData {
     'oid-base': string;
     'oid-json': string;
     view: string;
+    limit: number;
 }
 
 interface DataEntry {
@@ -124,6 +125,13 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
                             },
                         },
                         {
+                            name: 'limit',
+                            label: 'verbrauch_limit',
+                            type: 'number',
+                            default: 0,
+                            tooltip: 'verbrauch_limit_tooltip',
+                        },
+                        {
                             name: 'view',
                             label: 'verbrauch_view',
                             type: 'select',
@@ -173,6 +181,7 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
         const jsonStr: string = this.val('oid-json') || '';
         const view = this.state.rxData.view || 'months';
         const title = this.state.rxData.widgetTitle || '';
+        const limit = Number(this.state.rxData.limit) || 0;
 
         let data: DataEntry[] = [];
         let unit = '';
@@ -183,6 +192,11 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
             data = parsed[view as keyof Pick<JsonSummary, 'years' | 'months' | 'weeks' | 'days'>] || [];
         } catch {
             // JSON nicht gültig
+        }
+
+        // Limit: nur die letzten N Einträge anzeigen
+        if (limit > 0 && data.length > limit) {
+            data = data.slice(-limit);
         }
 
         const max = data.reduce((m, d) => Math.max(m, d.value), 0);

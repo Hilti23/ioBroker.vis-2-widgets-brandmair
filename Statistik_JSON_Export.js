@@ -16,10 +16,10 @@ const CONFIG = {
     },
 
     limits: {
-        years: 3,
-        months: 12,
-        weeks: 4,
-        days: 7
+        years: 10,
+        months: 24,
+        weeks: 12,
+        days: 14
     }
 };
 
