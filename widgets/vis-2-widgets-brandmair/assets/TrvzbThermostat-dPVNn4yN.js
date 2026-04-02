@@ -608,7 +608,7 @@ let __tla = Promise.all([
     ],
     [
       "oid-mode",
-      "mode"
+      "system_mode"
     ],
     [
       "oid-run",

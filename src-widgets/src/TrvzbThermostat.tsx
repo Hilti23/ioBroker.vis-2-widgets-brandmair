@@ -38,7 +38,7 @@ interface TrvzbRxData {
 const OID_MAP: Array<[string, string]> = [
     ['oid-temp-actual', 'local_temperature'],
     ['oid-temp-set', 'occupied_heating_setpoint'],
-    ['oid-mode', 'mode'],
+    ['oid-mode', 'system_mode'],
     ['oid-run', 'running_state'],
     ['oid-batt', 'battery'],
     ['oid-avail', 'available'],

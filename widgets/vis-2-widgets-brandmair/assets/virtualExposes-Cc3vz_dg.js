@@ -16,7 +16,7 @@ let __tla = (async () => {
   _ = {
     "./TrvzbThermostat": async () => {
       await a("./TrvzbThermostat");
-      const t = await s(() => import("./TrvzbThermostat-JJvXimuM.js").then(async (m) => {
+      const t = await s(() => import("./TrvzbThermostat-dPVNn4yN.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
