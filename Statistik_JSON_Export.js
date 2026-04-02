@@ -18,8 +18,8 @@ const CONFIG = {
     limits: {
         years: 10,
         months: 24,
-        weeks: 12,
-        days: 14
+        weeks: 53,
+        days: 365
     }
 };
 
