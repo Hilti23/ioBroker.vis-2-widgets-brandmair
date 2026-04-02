@@ -28,6 +28,16 @@ const DAY_LABELS: Record<string, string> = {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+function dedup(slots: Slot[]): Slot[] {
+    const seen = new Set<string>();
+    return slots.filter(s => {
+        const key = `${s.time}/${s.temp}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+}
+
 function parseSchedule(raw: any): Schedule {
     const r: Schedule = {};
     DAYS.forEach(d => { r[d] = []; });
@@ -36,10 +46,11 @@ function parseSchedule(raw: any): Schedule {
         const o = typeof raw === 'string' ? JSON.parse(raw) : raw;
         DAYS.forEach(d => {
             if (o[d]) {
-                r[d] = o[d].trim().split(/\s+/).filter(Boolean).map((s: string) => {
+                const slots = o[d].trim().split(/\s+/).filter(Boolean).map((s: string) => {
                     const p = s.split('/');
                     return { time: p[0].trim(), temp: parseFloat(p[1]) };
                 });
+                r[d] = dedup(slots);
             }
         });
     } catch { /* ignore */ }
@@ -49,7 +60,7 @@ function parseSchedule(raw: any): Schedule {
 function buildScheduleStr(sched: Schedule): string {
     const o: Record<string, string> = {};
     DAYS.forEach(d => {
-        const sl = (sched[d] || []).filter(s => s.time && !isNaN(s.temp));
+        const sl = dedup((sched[d] || []).filter(s => s.time && !isNaN(s.temp)));
         if (sl.length) o[d] = sl.map(s => `${s.time}/${s.temp}`).join(' ');
     });
     return JSON.stringify(o);

@@ -71,6 +71,13 @@ function tempColor(t: number): string {
     return '#e8622a';
 }
 
+function battColor(b: number): string {
+    if (isNaN(b)) return 'rgba(255,255,255,0.35)';
+    if (b < 20) return '#e8622a';
+    if (b < 50) return '#f5a623';
+    return '#2ec27e';
+}
+
 function modeColor(m: string): string {
     if (m === 'heat') return '#e8622a';
     if (m === 'auto') return '#4a9edd';
@@ -247,7 +254,7 @@ export default class TrvzbThermostat extends Generic<TrvzbRxData, TrvzbState> {
                 {batt !== undefined && batt !== null && (
                     <div style={{
                         position: 'absolute', top: 8, left: 8, fontSize: 10,
-                        color: 'rgba(255,255,255,0.35)', fontFamily: 'monospace', zIndex: 1,
+                        color: battColor(parseFloat(batt)), fontFamily: 'monospace', zIndex: 1,
                     }}>
                         {batt}%
                     </div>
