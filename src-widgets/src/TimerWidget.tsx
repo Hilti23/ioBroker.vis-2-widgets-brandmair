@@ -31,12 +31,29 @@ function formatRest(ms: number): string {
     return `${pad(m)}:${pad(r)}`;
 }
 
+function tickContainer(container: HTMLElement): void {
+    const now = Date.now();
+    container.querySelectorAll('.timer-card').forEach((card) => {
+        const el = card as HTMLElement;
+        const trigger = parseInt(el.getAttribute('data-trigger') || '0');
+        const rest = trigger - now;
+        const warn = rest < 60000;
+
+        const display = el.querySelector('.timer-display') as HTMLElement | null;
+        if (display) {
+            display.textContent = formatRest(rest);
+            display.style.color = warn ? 'red' : (el.getAttribute('data-accent') || '#333');
+        }
+        el.style.background = warn ? '#ffdddd' : (el.getAttribute('data-bg') || '#f0f0f0');
+        el.style.borderLeftColor = warn ? 'red' : (el.getAttribute('data-accent') || '#333');
+    });
+}
+
 // ---------------------------------------------------------------------------
 // Widget
 // ---------------------------------------------------------------------------
 export default class TimerWidget extends Generic<TimerRxData> {
-    private containerRef = React.createRef<HTMLDivElement>();
-    private timerInterval: ReturnType<typeof setInterval> | null = null;
+    private _intervalId: number = 0;
 
     // ── Widget metadata ──────────────────────────────────────────────────
     static getWidgetInfo(): RxWidgetInfo {
@@ -76,46 +93,6 @@ export default class TimerWidget extends Generic<TimerRxData> {
         return this.state.values[`${oid}.val`];
     }
 
-    private tick = (): void => {
-        const container = this.containerRef.current;
-        if (!container) return;
-
-        const now = Date.now();
-        container.querySelectorAll('.timer-card').forEach((card) => {
-            const el = card as HTMLElement;
-            const trigger = parseInt(el.getAttribute('data-trigger') || '0');
-            const rest = trigger - now;
-            const warn = rest < 60000;
-
-            const display = el.querySelector('.timer-display') as HTMLElement | null;
-            if (display) {
-                display.textContent = formatRest(rest);
-                display.style.color = warn ? 'red' : (el.getAttribute('data-accent') || '#333');
-            }
-            el.style.background = warn ? '#ffdddd' : (el.getAttribute('data-bg') || '#f0f0f0');
-            el.style.borderLeftColor = warn ? 'red' : (el.getAttribute('data-accent') || '#333');
-        });
-    };
-
-    // ── Lifecycle ─────────────────────────────────────────────────────────
-    componentDidMount(): void {
-        super.componentDidMount?.();
-        this.timerInterval = setInterval(this.tick, 1000);
-    }
-
-    componentDidUpdate(): void {
-        // Run tick immediately after HTML content changes
-        this.tick();
-    }
-
-    componentWillUnmount(): void {
-        if (this.timerInterval) {
-            clearInterval(this.timerInterval);
-            this.timerInterval = null;
-        }
-        super.componentWillUnmount?.();
-    }
-
     // ── Render ────────────────────────────────────────────────────────────
     renderWidgetBody(props: RxRenderWidgetProps): React.JSX.Element | null {
         super.renderWidgetBody(props);
@@ -124,7 +101,20 @@ export default class TimerWidget extends Generic<TimerRxData> {
 
         return (
             <div
-                ref={this.containerRef}
+                ref={(el: HTMLDivElement | null) => {
+                    if (el) {
+                        // Start interval once
+                        if (!this._intervalId) {
+                            this._intervalId = window.setInterval(() => tickContainer(el), 1000);
+                        }
+                        // Tick immediately on render
+                        tickContainer(el);
+                    } else if (this._intervalId) {
+                        // Cleanup when unmounted
+                        window.clearInterval(this._intervalId);
+                        this._intervalId = 0;
+                    }
+                }}
                 style={{
                     width: '100%',
                     height: '100%',
