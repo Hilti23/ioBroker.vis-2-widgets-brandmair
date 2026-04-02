@@ -41,6 +41,10 @@ const translations: Record<string, any> = {
         pvspeicher_discharging: 'Discharging',
         pvspeicher_ready: 'Ready',
         pvspeicher_calibrating: 'Calibration',
+        warmwasser_widget: 'Hot water tank',
+        warmwasser_temp1: 'Temperature bottom',
+        warmwasser_temp2: 'Temperature top',
+        warmwasser_heater: 'Heater power',
     },
     de: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -83,6 +87,10 @@ const translations: Record<string, any> = {
         pvspeicher_discharging: 'Entladen',
         pvspeicher_ready: 'Bereit',
         pvspeicher_calibrating: 'Kalibrierung',
+        warmwasser_widget: 'Warmwasserspeicher',
+        warmwasser_temp1: 'Temperatur unten',
+        warmwasser_temp2: 'Temperatur oben',
+        warmwasser_heater: 'Heizstab-Leistung',
     },
     ru: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -125,6 +133,10 @@ const translations: Record<string, any> = {
         pvspeicher_discharging: 'Discharging',
         pvspeicher_ready: 'Ready',
         pvspeicher_calibrating: 'Calibration',
+        warmwasser_widget: 'Hot water tank',
+        warmwasser_temp1: 'Temperature bottom',
+        warmwasser_temp2: 'Temperature top',
+        warmwasser_heater: 'Heater power',
     },
     prefix: 'vis_2_widgets_brandmair_',
 };

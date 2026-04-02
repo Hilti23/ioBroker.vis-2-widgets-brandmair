@@ -19,6 +19,7 @@ const config = {
                 './TrvzbThermostat': './src/TrvzbThermostat',
                 './HeizstabWidget': './src/HeizstabWidget',
                 './PvSpeicherWidget': './src/PvSpeicherWidget',
+                './WarmwasserWidget': './src/WarmwasserWidget',
                 './translations': './src/translations',
             },
             remotes: {},

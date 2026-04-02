@@ -1,5 +1,6 @@
 import { j as e, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
-import { G as u, t } from "./tr-BcTkvMiO.js";
+import { G as u } from "./Generic-CM5BSTAz.js";
+import { t } from "./tr-Db9Y68VZ.js";
 import { __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
 let g;
@@ -77,7 +78,7 @@ let __tla = Promise.all([
     }
     renderWidgetBody(a) {
       super.renderWidgetBody(a);
-      const o = this.state.rxData.widgetTitle || "RCT Batterie", l = Math.max(0, Math.min(100, parseFloat(this.val("oid-soc")) || 0)), s = parseFloat(this.val("oid-power")) || 0, x = (parseInt(this.val("oid-status")) || 0) === 2048, n = Math.abs(s), f = l / 100 * 250, v = 305 - f, m = l < 20 ? "#ef4444" : l < 40 ? "#f59e0b" : "#22c55e";
+      const o = this.state.rxData.widgetTitle || "RCT Batterie", l = Math.max(0, Math.min(100, parseFloat(this.val("oid-soc")) || 0)), s = parseFloat(this.val("oid-power")) || 0, x = (parseInt(this.val("oid-status")) || 0) === 2048, n = Math.abs(s), f = l / 100 * 250, m = 305 - f, v = l < 20 ? "#ef4444" : l < 40 ? "#f59e0b" : "#22c55e";
       let d, h;
       n >= 1e3 ? (d = (n / 1e3).toFixed(1), h = "kW") : (d = String(Math.round(n)), h = "W");
       let i, r, c = false, p = false;
@@ -133,11 +134,11 @@ let __tla = Promise.all([
               }),
               e.jsx("rect", {
                 x: "45",
-                y: v,
+                y: m,
                 width: "110",
                 height: f,
                 rx: "3",
-                fill: m
+                fill: v
               }),
               e.jsx("g", {
                 opacity: c ? 1 : 0,

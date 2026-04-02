@@ -38,5 +38,9 @@
     "pvspeicher_charging": "Charging",
     "pvspeicher_discharging": "Discharging",
     "pvspeicher_ready": "Ready",
-    "pvspeicher_calibrating": "Calibration"
+    "pvspeicher_calibrating": "Calibration",
+    "warmwasser_widget": "Hot water tank",
+    "warmwasser_temp1": "Temperature bottom",
+    "warmwasser_temp2": "Temperature top",
+    "warmwasser_heater": "Heater power"
 }

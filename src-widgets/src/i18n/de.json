@@ -38,5 +38,9 @@
     "pvspeicher_charging": "Laden",
     "pvspeicher_discharging": "Entladen",
     "pvspeicher_ready": "Bereit",
-    "pvspeicher_calibrating": "Kalibrierung"
+    "pvspeicher_calibrating": "Kalibrierung",
+    "warmwasser_widget": "Warmwasserspeicher",
+    "warmwasser_temp1": "Temperatur unten",
+    "warmwasser_temp2": "Temperatur oben",
+    "warmwasser_heater": "Heizstab-Leistung"
 }
