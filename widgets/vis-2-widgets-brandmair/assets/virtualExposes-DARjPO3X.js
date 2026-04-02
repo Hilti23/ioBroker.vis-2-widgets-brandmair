@@ -38,7 +38,7 @@ let __tla = (async () => {
     },
     "./translations": async () => {
       await a("./translations");
-      const t = await o(() => import("./translations-BKETZnrG.js"), [], import.meta.url), e = {};
+      const t = await o(() => import("./translations-BXr09hvz.js"), [], import.meta.url), e = {};
       return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
         value: true,
         enumerable: false
