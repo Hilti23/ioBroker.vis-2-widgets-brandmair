@@ -22,6 +22,7 @@ const config = {
                 './WarmwasserWidget': './src/WarmwasserWidget',
                 './TimerWidget': './src/TimerWidget',
                 './MuelltonnenWidget': './src/MuelltonnenWidget',
+                './VerbrauchWidget': './src/VerbrauchWidget',
                 './translations': './src/translations',
             },
             remotes: {},

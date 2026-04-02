@@ -3,7 +3,7 @@ import { _ as D, a as O, b as z, c as I, d as V, __tla as __tla_1 } from "./vis2
 import { C as J, D as L, A as H, a as P, b as K, c as Y, __tla as __tla_2 } from "./Close-BAPWGNf-.js";
 import { G } from "./Generic-CM5BSTAz.js";
 import { _ as A, a as X, __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
-import { t as y } from "./tr-CNMzGwAV.js";
+import { t as y } from "./tr-DBkebKph.js";
 import { __tla as __tla_4 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_5 } from "./createSvgIcon-CoEp2DXc.js";
 import { __tla as __tla_6 } from "./identifier-D6g9f8_1.js";

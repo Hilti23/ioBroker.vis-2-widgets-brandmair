@@ -53,5 +53,14 @@
     "muell_restmuell": "Restmüll Tage",
     "muell_wertstoff": "Wertstofftonne Tage",
     "muell_heute": "Heute",
-    "muell_morgen": "Morgen"
+    "muell_morgen": "Morgen",
+    "verbrauch_widget": "Verbrauch",
+    "verbrauch_base": "Statistik Basispfad",
+    "verbrauch_base_tooltip": "z.B. 0_userdata.0.Statistik.Statistics.Strom_Eingang",
+    "verbrauch_json": "JSON Datenpunkt",
+    "verbrauch_view": "Ansicht",
+    "verbrauch_years": "Jahre",
+    "verbrauch_months": "Monate",
+    "verbrauch_weeks": "Wochen",
+    "verbrauch_days": "Tage"
 }

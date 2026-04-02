@@ -1,6 +1,6 @@
 import { j as t, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
 import { G as f } from "./Generic-CM5BSTAz.js";
-import { t as n } from "./tr-CNMzGwAV.js";
+import { t as n } from "./tr-DBkebKph.js";
 import { __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
 let a;

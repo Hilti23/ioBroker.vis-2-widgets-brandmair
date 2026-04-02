@@ -6,17 +6,17 @@ let __tla = (async () => {
     if (typeof document > "u") return;
     const e = d[t] || [];
     await Promise.all(e.map((n) => {
-      const s = new URL(n, import.meta.url).href;
-      return i.has(s) || (i.add(s), document.querySelector(`link[rel="stylesheet"][data-mf-href="${s}"]`)) ? Promise.resolve() : new Promise((u, l) => {
-        const a = document.createElement("link");
-        a.rel = "stylesheet", a.href = s, a.setAttribute("data-mf-href", s), a.onload = () => u(), a.onerror = () => l(new Error(`[Module Federation] Failed to load CSS asset: ${s}`)), document.head.appendChild(a);
+      const a = new URL(n, import.meta.url).href;
+      return i.has(a) || (i.add(a), document.querySelector(`link[rel="stylesheet"][data-mf-href="${a}"]`)) ? Promise.resolve() : new Promise((u, l) => {
+        const s = document.createElement("link");
+        s.rel = "stylesheet", s.href = a, s.setAttribute("data-mf-href", a), s.onload = () => u(), s.onerror = () => l(new Error(`[Module Federation] Failed to load CSS asset: ${a}`)), document.head.appendChild(s);
       });
     }));
   }
   _ = {
     "./TrvzbThermostat": async () => {
       await o("./TrvzbThermostat");
-      const t = await r(() => import("./TrvzbThermostat-CQ0wTQNy.js").then(async (m) => {
+      const t = await r(() => import("./TrvzbThermostat-bybt1-GH.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -27,7 +27,7 @@ let __tla = (async () => {
     },
     "./HeizstabWidget": async () => {
       await o("./HeizstabWidget");
-      const t = await r(() => import("./HeizstabWidget-Bf9v1WA2.js").then(async (m) => {
+      const t = await r(() => import("./HeizstabWidget-7ZBvUwhb.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -38,7 +38,7 @@ let __tla = (async () => {
     },
     "./PvSpeicherWidget": async () => {
       await o("./PvSpeicherWidget");
-      const t = await r(() => import("./PvSpeicherWidget-C2oZMM2t.js").then(async (m) => {
+      const t = await r(() => import("./PvSpeicherWidget-B6t53_PT.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -71,7 +71,18 @@ let __tla = (async () => {
     },
     "./MuelltonnenWidget": async () => {
       await o("./MuelltonnenWidget");
-      const t = await r(() => import("./MuelltonnenWidget-BboEwNGS.js").then(async (m) => {
+      const t = await r(() => import("./MuelltonnenWidget-B_yNWO2J.js").then(async (m) => {
+        await m.__tla;
+        return m;
+      }), [], import.meta.url), e = {};
+      return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
+        value: true,
+        enumerable: false
+      }), e;
+    },
+    "./VerbrauchWidget": async () => {
+      await o("./VerbrauchWidget");
+      const t = await r(() => import("./VerbrauchWidget-Cnwoo6lO.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -82,7 +93,7 @@ let __tla = (async () => {
     },
     "./translations": async () => {
       await o("./translations");
-      const t = await r(() => import("./translations-BOeK0AVD.js"), [], import.meta.url), e = {};
+      const t = await r(() => import("./translations-CgbTZYxG.js"), [], import.meta.url), e = {};
       return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
         value: true,
         enumerable: false
