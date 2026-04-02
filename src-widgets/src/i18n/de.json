@@ -26,5 +26,9 @@
     "schedule_thursday": "Donnerstag",
     "schedule_friday": "Freitag",
     "schedule_saturday": "Samstag",
-    "schedule_sunday": "Sonntag"
+    "schedule_sunday": "Sonntag",
+    "heizstab_widget": "Heizstab",
+    "heizstab_leistung": "Leistung",
+    "heizstab_zwang": "Freigabe/Zwang",
+    "heizstab_zwangsbetrieb": "Zwangsbetrieb"
 }
