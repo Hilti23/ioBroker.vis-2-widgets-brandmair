@@ -42,5 +42,7 @@
     "warmwasser_widget": "Hot water tank",
     "warmwasser_temp1": "Temperature bottom",
     "warmwasser_temp2": "Temperature top",
-    "warmwasser_heater": "Heater power"
+    "warmwasser_heater": "Heater power",
+    "timer_widget": "Timer",
+    "timer_html": "Timer HTML data point"
 }

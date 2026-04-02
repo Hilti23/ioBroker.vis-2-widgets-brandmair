@@ -20,6 +20,7 @@ const config = {
                 './HeizstabWidget': './src/HeizstabWidget',
                 './PvSpeicherWidget': './src/PvSpeicherWidget',
                 './WarmwasserWidget': './src/WarmwasserWidget',
+                './TimerWidget': './src/TimerWidget',
                 './translations': './src/translations',
             },
             remotes: {},

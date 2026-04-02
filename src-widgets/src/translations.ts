@@ -45,6 +45,8 @@ const translations: Record<string, any> = {
         warmwasser_temp1: 'Temperature bottom',
         warmwasser_temp2: 'Temperature top',
         warmwasser_heater: 'Heater power',
+        timer_widget: 'Timer',
+        timer_html: 'Timer HTML data point',
     },
     de: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -91,6 +93,8 @@ const translations: Record<string, any> = {
         warmwasser_temp1: 'Temperatur unten',
         warmwasser_temp2: 'Temperatur oben',
         warmwasser_heater: 'Heizstab-Leistung',
+        timer_widget: 'Timer',
+        timer_html: 'Timer HTML-Datenpunkt',
     },
     ru: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -137,6 +141,8 @@ const translations: Record<string, any> = {
         warmwasser_temp1: 'Temperature bottom',
         warmwasser_temp2: 'Temperature top',
         warmwasser_heater: 'Heater power',
+        timer_widget: 'Timer',
+        timer_html: 'Timer HTML data point',
     },
     prefix: 'vis_2_widgets_brandmair_',
 };

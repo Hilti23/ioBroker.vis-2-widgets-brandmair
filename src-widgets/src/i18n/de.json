@@ -42,5 +42,7 @@
     "warmwasser_widget": "Warmwasserspeicher",
     "warmwasser_temp1": "Temperatur unten",
     "warmwasser_temp2": "Temperatur oben",
-    "warmwasser_heater": "Heizstab-Leistung"
+    "warmwasser_heater": "Heizstab-Leistung",
+    "timer_widget": "Timer",
+    "timer_html": "Timer HTML-Datenpunkt"
 }
