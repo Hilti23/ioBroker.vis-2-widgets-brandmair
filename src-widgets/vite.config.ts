@@ -17,6 +17,7 @@ const config = {
             filename: 'customWidgets.js',
             exposes: {
                 './TrvzbThermostat': './src/TrvzbThermostat',
+                './HeizstabWidget': './src/HeizstabWidget',
                 './translations': './src/translations',
             },
             remotes: {},
