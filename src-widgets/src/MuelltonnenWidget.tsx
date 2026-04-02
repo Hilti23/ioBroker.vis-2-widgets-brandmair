@@ -9,40 +9,36 @@ import { tr } from './tr';
 interface MuelltonnenRxData {
     widgetTitle: string;
     'oid-base': string;
-    'oid-next-type': string;
-    'oid-next-days': string;
-    'oid-nextafter-type': string;
-    'oid-nextafter-days': string;
+    'oid-bio-days': string;
+    'oid-papier-days': string;
+    'oid-restmuell-days': string;
+    'oid-wertstoff-days': string;
 }
 
 // ---------------------------------------------------------------------------
 // Auto-fill mapping
 // ---------------------------------------------------------------------------
 const OID_MAP: Array<[string, string]> = [
-    ['oid-next-type', 'next.typesText'],
-    ['oid-next-days', 'next.daysLeft'],
-    ['oid-nextafter-type', 'nextAfter.typesText'],
-    ['oid-nextafter-days', 'nextAfter.daysLeft'],
+    ['oid-bio-days', 'type.biotonne.daysLeft'],
+    ['oid-papier-days', 'type.papiertonne.daysLeft'],
+    ['oid-restmuell-days', 'type.restmüll.daysLeft'],
+    ['oid-wertstoff-days', 'type.wertstofftonne.daysLeft'],
 ];
 
 // ---------------------------------------------------------------------------
-// Trash type → color mapping
+// Fixed trash types
 // ---------------------------------------------------------------------------
-const TYPE_COLORS: Record<string, string> = {
-    Biotonne: '#8B4513',
-    Wertstofftonne: '#FFD700',
-    'Restmüll': '#808080',
-    Papiertonne: '#4169E1',
-};
-
-function typeColor(type: string): string {
-    return TYPE_COLORS[type] || '#999';
-}
+const TRASH_TYPES: Array<{ key: keyof MuelltonnenRxData; name: string; color: string }> = [
+    { key: 'oid-bio-days', name: 'Biotonne', color: '#c78300' },
+    { key: 'oid-papier-days', name: 'Papiertonne', color: '#4169E1' },
+    { key: 'oid-restmuell-days', name: 'Restmüll', color: '#808080' },
+    { key: 'oid-wertstoff-days', name: 'Wertstofftonne', color: '#FFD700' },
+];
 
 // ---------------------------------------------------------------------------
 // Inline SVG trash can
 // ---------------------------------------------------------------------------
-function TrashCan({ color, size = 120 }: { color: string; size?: number }) {
+function TrashCan({ color, size = 80 }: { color: string; size?: number }) {
     const w = size;
     const h = size * 1.2;
     return (
@@ -85,8 +81,7 @@ function ensurePulseStyle(): void {
 // ---------------------------------------------------------------------------
 // Single column component
 // ---------------------------------------------------------------------------
-function TrashColumn({ type, days }: { type: string; days: number }) {
-    const color = typeColor(type);
+function TrashColumn({ name, color, days }: { name: string; color: string; days: number }) {
     const isToday = days === 0;
     const isTomorrow = days === 1;
 
@@ -96,24 +91,25 @@ function TrashColumn({ type, days }: { type: string; days: number }) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 4,
+            gap: 2,
             position: 'relative',
+            minWidth: 0,
         }}>
             {/* Trash can */}
-            <TrashCan color={color} size={110} />
+            <div style={{ position: 'relative' }}>
+                <TrashCan color={color} size={80} />
 
-            {/* Pulsing number overlay */}
-            {days >= 0 && (
+                {/* Pulsing number overlay */}
                 <div style={{
                     position: 'absolute',
-                    top: 30,
+                    top: 0,
                     left: 0,
                     right: 0,
-                    height: 110,
+                    bottom: 0,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '4rem',
+                    fontSize: '3rem',
                     fontWeight: 'bold',
                     animation: 'muellPulseColor 10s infinite alternate',
                     pointerEvents: 'none',
@@ -121,37 +117,28 @@ function TrashColumn({ type, days }: { type: string; days: number }) {
                 }}>
                     {days}
                 </div>
-            )}
+            </div>
 
             {/* Type name */}
             <div style={{
-                fontSize: 16,
+                fontSize: 13,
                 fontWeight: 600,
                 color: '#fff',
                 textAlign: 'center',
+                lineHeight: 1.2,
             }}>
-                {type || '–'}
+                {name}
             </div>
 
             {/* Heute / Morgen label */}
-            {isToday && (
+            {(isToday || isTomorrow) && (
                 <div style={{
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: 700,
                     color: 'red',
                     textAlign: 'center',
                 }}>
-                    {tr('muell_heute')}
-                </div>
-            )}
-            {isTomorrow && (
-                <div style={{
-                    fontSize: 22,
-                    fontWeight: 700,
-                    color: 'red',
-                    textAlign: 'center',
-                }}>
-                    {tr('muell_morgen')}
+                    {isToday ? tr('muell_heute') : tr('muell_morgen')}
                 </div>
             )}
         </div>
@@ -195,16 +182,16 @@ export default class MuelltonnenWidget extends Generic<MuelltonnenRxData> {
                     name: 'oids',
                     label: 'group_oids',
                     fields: [
-                        { name: 'oid-next-type', type: 'id', label: 'muell_next_type' },
-                        { name: 'oid-next-days', type: 'id', label: 'muell_next_days' },
-                        { name: 'oid-nextafter-type', type: 'id', label: 'muell_nextafter_type' },
-                        { name: 'oid-nextafter-days', type: 'id', label: 'muell_nextafter_days' },
+                        { name: 'oid-bio-days', type: 'id', label: 'muell_bio' },
+                        { name: 'oid-papier-days', type: 'id', label: 'muell_papier' },
+                        { name: 'oid-restmuell-days', type: 'id', label: 'muell_restmuell' },
+                        { name: 'oid-wertstoff-days', type: 'id', label: 'muell_wertstoff' },
                     ],
                 },
             ],
             visDefaultStyle: {
                 width: '100%',
-                height: 340,
+                height: 300,
                 position: 'relative',
             },
             visSetIcon: 'widgets/vis-2-widgets-brandmair/img/vis-2-widgets-brandmair.png',
@@ -228,44 +215,37 @@ export default class MuelltonnenWidget extends Generic<MuelltonnenRxData> {
         super.renderWidgetBody(props);
         ensurePulseStyle();
 
-        const nextType: string = this.val('oid-next-type') ?? '';
-        const nextDays = parseInt(this.val('oid-next-days')) || 0;
-        const afterType: string = this.val('oid-nextafter-type') ?? '';
-        const afterDays = parseInt(this.val('oid-nextafter-days')) || 0;
+        // Build array of all 4 types with their days, then sort by daysLeft
+        const items = TRASH_TYPES.map(t => ({
+            name: t.name,
+            color: t.color,
+            days: parseInt(this.val(t.key)) || 0,
+        })).sort((a, b) => a.days - b.days);
 
         return (
             <div style={{
                 width: '100%',
                 height: '100%',
-                background: 'rgba(0,0,0,0.25)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: 14,
-                overflow: 'hidden',
                 fontFamily: 'sans-serif',
                 display: 'flex',
                 flexDirection: 'column',
             }}>
-                {/* Title */}
-                <div style={{
-                    padding: '8px 14px',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: '#fff',
-                    textAlign: 'center',
-                    flexShrink: 0,
-                }}>
-                    {this.state.rxData.widgetTitle || ''}
-                </div>
-
-                {/* Two columns */}
+                {/* Four columns sorted by pickup date */}
                 <div style={{
                     flex: 1,
                     display: 'flex',
-                    padding: '0 10px 10px',
-                    gap: 10,
+                    padding: '5px 5px',
+                    gap: 4,
+                    alignItems: 'flex-start',
                 }}>
-                    <TrashColumn type={nextType} days={nextDays} />
-                    <TrashColumn type={afterType} days={afterDays} />
+                    {items.map(item => (
+                        <TrashColumn
+                            key={item.name}
+                            name={item.name}
+                            color={item.color}
+                            days={item.days}
+                        />
+                    ))}
                 </div>
             </div>
         );
