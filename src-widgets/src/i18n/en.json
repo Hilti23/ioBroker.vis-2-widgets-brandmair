@@ -44,5 +44,14 @@
     "warmwasser_temp2": "Temperature top",
     "warmwasser_heater": "Heater power",
     "timer_widget": "Timer",
-    "timer_html": "Timer HTML data point"
+    "timer_html": "Timer HTML data point",
+    "muell_widget": "Trash Schedule",
+    "muell_base": "Trashschedule base path",
+    "muell_base_tooltip": "e.g. trashschedule.0 – auto-fills all fields",
+    "muell_next_type": "Next pickup type",
+    "muell_next_days": "Next pickup days",
+    "muell_nextafter_type": "Next-after pickup type",
+    "muell_nextafter_days": "Next-after pickup days",
+    "muell_heute": "Today",
+    "muell_morgen": "Tomorrow"
 }

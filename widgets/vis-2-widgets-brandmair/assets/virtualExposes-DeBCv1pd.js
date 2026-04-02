@@ -1,22 +1,22 @@
-import { _ as s } from "./preload-helper-PPVm8Dsz.js";
+import { _ as r } from "./preload-helper-PPVm8Dsz.js";
 let _;
 let __tla = (async () => {
   const d = {}, i = /* @__PURE__ */ new Set();
-  async function a(t) {
+  async function o(t) {
     if (typeof document > "u") return;
     const e = d[t] || [];
     await Promise.all(e.map((n) => {
-      const r = new URL(n, import.meta.url).href;
-      return i.has(r) || (i.add(r), document.querySelector(`link[rel="stylesheet"][data-mf-href="${r}"]`)) ? Promise.resolve() : new Promise((u, l) => {
-        const o = document.createElement("link");
-        o.rel = "stylesheet", o.href = r, o.setAttribute("data-mf-href", r), o.onload = () => u(), o.onerror = () => l(new Error(`[Module Federation] Failed to load CSS asset: ${r}`)), document.head.appendChild(o);
+      const s = new URL(n, import.meta.url).href;
+      return i.has(s) || (i.add(s), document.querySelector(`link[rel="stylesheet"][data-mf-href="${s}"]`)) ? Promise.resolve() : new Promise((u, l) => {
+        const a = document.createElement("link");
+        a.rel = "stylesheet", a.href = s, a.setAttribute("data-mf-href", s), a.onload = () => u(), a.onerror = () => l(new Error(`[Module Federation] Failed to load CSS asset: ${s}`)), document.head.appendChild(a);
       });
     }));
   }
   _ = {
     "./TrvzbThermostat": async () => {
-      await a("./TrvzbThermostat");
-      const t = await s(() => import("./TrvzbThermostat-dPVNn4yN.js").then(async (m) => {
+      await o("./TrvzbThermostat");
+      const t = await r(() => import("./TrvzbThermostat-CT4TflNq.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -26,8 +26,8 @@ let __tla = (async () => {
       }), e;
     },
     "./HeizstabWidget": async () => {
-      await a("./HeizstabWidget");
-      const t = await s(() => import("./HeizstabWidget-BGWNYHTd.js").then(async (m) => {
+      await o("./HeizstabWidget");
+      const t = await r(() => import("./HeizstabWidget-BNVrImQi.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -37,8 +37,8 @@ let __tla = (async () => {
       }), e;
     },
     "./PvSpeicherWidget": async () => {
-      await a("./PvSpeicherWidget");
-      const t = await s(() => import("./PvSpeicherWidget-WWe1Mn87.js").then(async (m) => {
+      await o("./PvSpeicherWidget");
+      const t = await r(() => import("./PvSpeicherWidget-BpEoflBD.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -48,8 +48,8 @@ let __tla = (async () => {
       }), e;
     },
     "./WarmwasserWidget": async () => {
-      await a("./WarmwasserWidget");
-      const t = await s(() => import("./WarmwasserWidget-ZBwia_3q.js").then(async (m) => {
+      await o("./WarmwasserWidget");
+      const t = await r(() => import("./WarmwasserWidget-ZBwia_3q.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -59,8 +59,19 @@ let __tla = (async () => {
       }), e;
     },
     "./TimerWidget": async () => {
-      await a("./TimerWidget");
-      const t = await s(() => import("./TimerWidget-aJj49I_T.js").then(async (m) => {
+      await o("./TimerWidget");
+      const t = await r(() => import("./TimerWidget-aJj49I_T.js").then(async (m) => {
+        await m.__tla;
+        return m;
+      }), [], import.meta.url), e = {};
+      return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
+        value: true,
+        enumerable: false
+      }), e;
+    },
+    "./MuelltonnenWidget": async () => {
+      await o("./MuelltonnenWidget");
+      const t = await r(() => import("./MuelltonnenWidget-BbAjHwZt.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -70,8 +81,8 @@ let __tla = (async () => {
       }), e;
     },
     "./translations": async () => {
-      await a("./translations");
-      const t = await s(() => import("./translations-DX89Ab5c.js"), [], import.meta.url), e = {};
+      await o("./translations");
+      const t = await r(() => import("./translations-BoJFait_.js"), [], import.meta.url), e = {};
       return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
         value: true,
         enumerable: false

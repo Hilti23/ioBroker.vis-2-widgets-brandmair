@@ -21,6 +21,7 @@ const config = {
                 './PvSpeicherWidget': './src/PvSpeicherWidget',
                 './WarmwasserWidget': './src/WarmwasserWidget',
                 './TimerWidget': './src/TimerWidget',
+                './MuelltonnenWidget': './src/MuelltonnenWidget',
                 './translations': './src/translations',
             },
             remotes: {},

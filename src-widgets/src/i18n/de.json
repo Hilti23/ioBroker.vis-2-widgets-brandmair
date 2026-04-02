@@ -44,5 +44,14 @@
     "warmwasser_temp2": "Temperatur oben",
     "warmwasser_heater": "Heizstab-Leistung",
     "timer_widget": "Timer",
-    "timer_html": "Timer HTML-Datenpunkt"
+    "timer_html": "Timer HTML-Datenpunkt",
+    "muell_widget": "Müllabfuhr",
+    "muell_base": "Trashschedule Basispfad",
+    "muell_base_tooltip": "z.B. trashschedule.0 – befüllt alle Felder automatisch",
+    "muell_next_type": "Nächste Abholung Typ",
+    "muell_next_days": "Nächste Abholung Tage",
+    "muell_nextafter_type": "Übernächste Abholung Typ",
+    "muell_nextafter_days": "Übernächste Abholung Tage",
+    "muell_heute": "Heute",
+    "muell_morgen": "Morgen"
 }
