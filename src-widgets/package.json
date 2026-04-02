@@ -1,7 +1,7 @@
 {
     "name": "iobroker.vis-2-widgets-trvzb",
     "private": true,
-    "version": "0.7.4",
+    "version": "0.7.5",
     "type": "module",
     "dependencies": {
         "@iobroker/adapter-react-v5": "^7.7.2",

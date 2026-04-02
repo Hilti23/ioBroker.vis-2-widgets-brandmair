@@ -1,9 +1,9 @@
 import { j as t, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
 import { d as p, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
-import { G as u, t as x } from "./tr-F0HfUA94.js";
+import { G as u, t as x } from "./tr-Dbd3ZA0D.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
-import "./en-B9sIZq9s.js";
+import "./translations-fwaKGiDk.js";
 let d;
 let __tla = Promise.all([
   (() => {

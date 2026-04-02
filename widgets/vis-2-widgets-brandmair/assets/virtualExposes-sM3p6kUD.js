@@ -1,13 +1,13 @@
-import { _ as o } from "./preload-helper-PPVm8Dsz.js";
+import { _ as a } from "./preload-helper-PPVm8Dsz.js";
 let _;
 let __tla = (async () => {
-  const d = {}, n = /* @__PURE__ */ new Set();
-  async function a(t) {
+  const d = {}, i = /* @__PURE__ */ new Set();
+  async function n(t) {
     if (typeof document > "u") return;
     const e = d[t] || [];
-    await Promise.all(e.map((i) => {
-      const r = new URL(i, import.meta.url).href;
-      return n.has(r) || (n.add(r), document.querySelector(`link[rel="stylesheet"][data-mf-href="${r}"]`)) ? Promise.resolve() : new Promise((l, u) => {
+    await Promise.all(e.map((o) => {
+      const r = new URL(o, import.meta.url).href;
+      return i.has(r) || (i.add(r), document.querySelector(`link[rel="stylesheet"][data-mf-href="${r}"]`)) ? Promise.resolve() : new Promise((l, u) => {
         const s = document.createElement("link");
         s.rel = "stylesheet", s.href = r, s.setAttribute("data-mf-href", r), s.onload = () => l(), s.onerror = () => u(new Error(`[Module Federation] Failed to load CSS asset: ${r}`)), document.head.appendChild(s);
       });
@@ -15,8 +15,8 @@ let __tla = (async () => {
   }
   _ = {
     "./TrvzbThermostat": async () => {
-      await a("./TrvzbThermostat");
-      const t = await o(() => import("./TrvzbThermostat-B8NJR2iT.js").then(async (m) => {
+      await n("./TrvzbThermostat");
+      const t = await a(() => import("./TrvzbThermostat-Hu6c1Ghe.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -26,8 +26,8 @@ let __tla = (async () => {
       }), e;
     },
     "./HeizstabWidget": async () => {
-      await a("./HeizstabWidget");
-      const t = await o(() => import("./HeizstabWidget-C78CDW-k.js").then(async (m) => {
+      await n("./HeizstabWidget");
+      const t = await a(() => import("./HeizstabWidget-CkXNi_wF.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -37,8 +37,8 @@ let __tla = (async () => {
       }), e;
     },
     "./translations": async () => {
-      await a("./translations");
-      const t = await o(() => import("./translations-BuJ4JQ3k.js"), [], import.meta.url), e = {};
+      await n("./translations");
+      const t = await a(() => import("./translations-fwaKGiDk.js").then((o) => o.a), [], import.meta.url), e = {};
       return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
         value: true,
         enumerable: false
