@@ -64,7 +64,7 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
                 position: 'relative',
             },
             visSetIcon: 'widgets/vis-2-widgets-brandmair/img/vis-2-widgets-brandmair.png',
-            visPrev: '',
+            visPrev: 'widgets/vis-2-widgets-brandmair/img/prev_heizstab.png',
         };
     }
 
