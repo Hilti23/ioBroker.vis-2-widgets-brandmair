@@ -38,7 +38,7 @@ const TRASH_TYPES: Array<{ key: keyof MuelltonnenRxData; name: string; color: st
 // ---------------------------------------------------------------------------
 // Inline SVG trash can
 // ---------------------------------------------------------------------------
-function TrashCan({ color, size = 80 }: { color: string; size?: number }) {
+function TrashCan({ color, size = 160 }: { color: string; size?: number }) {
     const w = size;
     const h = size * 1.2;
     return (
@@ -97,7 +97,7 @@ function TrashColumn({ name, color, days }: { name: string; color: string; days:
         }}>
             {/* Trash can */}
             <div style={{ position: 'relative' }}>
-                <TrashCan color={color} size={80} />
+                <TrashCan color={color} size={160} />
 
                 {/* Pulsing number overlay */}
                 <div style={{
@@ -109,7 +109,7 @@ function TrashColumn({ name, color, days }: { name: string; color: string; days:
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '3rem',
+                    fontSize: '6rem',
                     fontWeight: 'bold',
                     animation: 'muellPulseColor 10s infinite alternate',
                     pointerEvents: 'none',
@@ -191,7 +191,7 @@ export default class MuelltonnenWidget extends Generic<MuelltonnenRxData> {
             ],
             visDefaultStyle: {
                 width: '100%',
-                height: 300,
+                height: 340,
                 position: 'relative',
             },
             visSetIcon: 'widgets/vis-2-widgets-brandmair/img/vis-2-widgets-brandmair.png',

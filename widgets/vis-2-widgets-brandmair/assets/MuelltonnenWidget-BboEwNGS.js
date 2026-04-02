@@ -63,7 +63,7 @@ let __tla = Promise.all([
       color: "#FFD700"
     }
   ];
-  function u({ color: o, size: s = 80 }) {
+  function u({ color: o, size: s = 160 }) {
     const i = s, e = s * 1.2;
     return t.jsxs("svg", {
       width: i,
@@ -157,7 +157,7 @@ let __tla = Promise.all([
           children: [
             t.jsx(u, {
               color: s,
-              size: 80
+              size: 160
             }),
             t.jsx("div", {
               style: {
@@ -169,7 +169,7 @@ let __tla = Promise.all([
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "3rem",
+                fontSize: "6rem",
                 fontWeight: "bold",
                 animation: "muellPulseColor 10s infinite alternate",
                 pointerEvents: "none",
@@ -263,7 +263,7 @@ let __tla = Promise.all([
         ],
         visDefaultStyle: {
           width: "100%",
-          height: 300,
+          height: 340,
           position: "relative"
         },
         visSetIcon: "widgets/vis-2-widgets-brandmair/img/vis-2-widgets-brandmair.png",

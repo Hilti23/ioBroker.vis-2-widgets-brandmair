@@ -71,7 +71,7 @@ let __tla = (async () => {
     },
     "./MuelltonnenWidget": async () => {
       await o("./MuelltonnenWidget");
-      const t = await r(() => import("./MuelltonnenWidget-Bc4MydKA.js").then(async (m) => {
+      const t = await r(() => import("./MuelltonnenWidget-BboEwNGS.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
