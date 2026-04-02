@@ -100,18 +100,17 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
         const displayWatt = this.state.sliderWatt !== null ? this.state.sliderWatt : watt;
         const ratio = displayWatt / 1500;
         const color = heizstabColor(displayWatt);
-        const bgColor = heizstabColor(displayWatt).replace('rgb(', 'rgba(').replace(')', ',0.12)');
 
         return (
             <div style={{
                 display: 'flex', flexDirection: 'column', gap: 12,
                 padding: '16px 20px', fontFamily: 'sans-serif',
-                background: 'transparent', border: '1px solid rgba(255,255,255,0.15)',
+                background: 'transparent', border: '1px solid #ddd',
                 borderRadius: 12, height: '100%', boxSizing: 'border-box',
             }}>
                 {/* Title */}
                 <div style={{
-                    fontSize: 13, fontWeight: 500, color: '#fff',
+                    fontSize: 13, fontWeight: 500, color: '#000',
                     textTransform: 'uppercase', letterSpacing: '0.05em',
                 }}>
                     {title}
@@ -119,7 +118,7 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
 
                 {/* Zwangsbetrieb toggle */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
+                    <span style={{ fontSize: 13, color: '#000' }}>
                         {tr('heizstab_zwangsbetrieb') || 'Zwangsbetrieb'}
                     </span>
                     <div
@@ -127,7 +126,7 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
                         style={{
                             position: 'relative', width: 44, height: 24,
                             borderRadius: 24, cursor: 'pointer',
-                            background: zwang ? '#cc0022' : 'rgba(255,255,255,0.2)',
+                            background: zwang ? '#cc0022' : '#ccc',
                             transition: 'background 0.2s',
                         }}
                     >
@@ -142,8 +141,8 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
                     <span style={{
                         fontSize: 12, fontWeight: 500, padding: '3px 10px',
                         borderRadius: 20, transition: 'all 0.2s',
-                        background: zwang ? 'rgba(255,0,0,0.15)' : 'rgba(255,255,255,0.08)',
-                        color: zwang ? '#ff4444' : 'rgba(255,255,255,0.4)',
+                        background: zwang ? '#ffe0e0' : '#f0f0f0',
+                        color: zwang ? '#c00' : '#888',
                     }}>
                         {zwang ? 'EIN' : 'AUS'}
                     </span>
@@ -171,7 +170,7 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
                             width: '100%', height: '100%',
                             borderRadius: '0 6px 6px 0',
                             position: 'relative', overflow: 'hidden',
-                            background: bgColor,
+                            background: '#e8f4ff',
                         }}>
                             <div style={{
                                 position: 'absolute', top: 0, left: 0, bottom: 0,
@@ -182,7 +181,7 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
                             <div style={{
                                 position: 'absolute', inset: 0,
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: 14, fontWeight: 500, color: '#fff',
+                                fontSize: 14, fontWeight: 500, color: '#000',
                                 zIndex: 1, pointerEvents: 'none',
                             }}>
                                 <span>{Math.round(displayWatt)}</span>
@@ -196,8 +195,8 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
                 {/* Sollleistung Slider */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>Sollleistung</span>
-                        <span style={{ fontSize: 13, fontWeight: 500, color: '#fff', minWidth: 60, textAlign: 'right' }}>
+                        <span style={{ fontSize: 13, color: '#000' }}>Sollleistung</span>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: '#000', minWidth: 60, textAlign: 'right' }}>
                             {Math.round(displayWatt)} W
                         </span>
                     </div>
@@ -212,14 +211,15 @@ export default class HeizstabWidget extends Generic<HeizstabRxData, HeizstabStat
                             this.setVal('oid-leistung', v as number);
                         }}
                         sx={{
-                            color,
+                            color: '#1a7fd4',
                             '& .MuiSlider-thumb': { width: 16, height: 16 },
-                            '& .MuiSlider-rail': { opacity: 0.2 },
+                            '& .MuiSlider-rail': { opacity: 0.3, color: '#ccc' },
+                            '& .MuiSlider-track': { color },
                         }}
                     />
                     <div style={{
                         display: 'flex', justifyContent: 'space-between',
-                        fontSize: 11, color: 'rgba(255,255,255,0.4)',
+                        fontSize: 11, color: '#000',
                     }}>
                         <span>0 W</span>
                         <span>750 W</span>

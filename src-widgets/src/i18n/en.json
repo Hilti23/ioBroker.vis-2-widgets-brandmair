@@ -27,7 +27,7 @@
     "schedule_friday": "Friday",
     "schedule_saturday": "Saturday",
     "schedule_sunday": "Sunday",
-    "heizstab_widget": "Heating element",
+    "heizstab_widget": "ATON Heating Element",
     "heizstab_leistung": "Power",
     "heizstab_zwang": "Force mode",
     "heizstab_zwangsbetrieb": "Force mode"
