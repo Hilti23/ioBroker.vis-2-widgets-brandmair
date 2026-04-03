@@ -12,6 +12,8 @@ interface VerbrauchRxData {
     'oid-json': string;
     view: string;
     limit: number;
+    colorFrom: string;
+    colorTo: string;
 }
 
 interface DataEntry {
@@ -37,7 +39,7 @@ const OID_MAP: Array<[string, string]> = [
 // ---------------------------------------------------------------------------
 // Bar row component
 // ---------------------------------------------------------------------------
-function BarRow({ label, value, max, unit }: { label: string; value: number; max: number; unit: string }) {
+function BarRow({ label, value, max, unit, colorFrom, colorTo }: { label: string; value: number; max: number; unit: string; colorFrom: string; colorTo: string }) {
     const pct = max > 0 ? (value / max) * 100 : 0;
 
     return (
@@ -71,7 +73,7 @@ function BarRow({ label, value, max, unit }: { label: string; value: number; max
                 <div style={{
                     width: `${pct}%`,
                     height: '100%',
-                    background: 'linear-gradient(90deg, #4a9edd, #2ec27e)',
+                    background: `linear-gradient(90deg, ${colorFrom}, ${colorTo})`,
                     borderRadius: 4,
                     transition: 'width 0.5s ease',
                 }} />
@@ -130,6 +132,7 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
                             type: 'number',
                             default: 0,
                             tooltip: 'verbrauch_limit_tooltip',
+                            noBinding: true,
                         },
                         {
                             name: 'view',
@@ -142,6 +145,18 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
                                 { value: 'days', label: 'verbrauch_days' },
                             ],
                             default: 'months',
+                        },
+                        {
+                            name: 'colorFrom',
+                            label: 'verbrauch_color_from',
+                            type: 'color',
+                            default: '#4a9edd',
+                        },
+                        {
+                            name: 'colorTo',
+                            label: 'verbrauch_color_to',
+                            type: 'color',
+                            default: '#2ec27e',
                         },
                     ],
                 },
@@ -182,6 +197,8 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
         const view = this.state.rxData.view || 'months';
         const title = this.state.rxData.widgetTitle || '';
         const limit = Number(this.state.rxData.limit) || 0;
+        const colorFrom = this.state.rxData.colorFrom || '#4a9edd';
+        const colorTo = this.state.rxData.colorTo || '#2ec27e';
 
         let data: DataEntry[] = [];
         let unit = '';
@@ -194,9 +211,12 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
             // JSON nicht gültig
         }
 
-        // Limit: nur die letzten N Einträge anzeigen
+        // Neueste Einträge zuerst
+        data = [...data].reverse();
+
+        // Limit: nur die ersten N Einträge anzeigen (nach Sortierung = neueste)
         if (limit > 0 && data.length > limit) {
-            data = data.slice(-limit);
+            data = data.slice(0, limit);
         }
 
         const max = data.reduce((m, d) => Math.max(m, d.value), 0);
@@ -244,6 +264,8 @@ export default class VerbrauchWidget extends Generic<VerbrauchRxData> {
                             value={entry.value}
                             max={max}
                             unit={unit}
+                            colorFrom={colorFrom}
+                            colorTo={colorTo}
                         />
                     ))}
                 </div>

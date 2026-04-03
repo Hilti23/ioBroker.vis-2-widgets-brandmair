@@ -64,5 +64,7 @@
     "verbrauch_weeks": "Weeks",
     "verbrauch_days": "Days",
     "verbrauch_limit": "Max entries",
-    "verbrauch_limit_tooltip": "0 = show all"
+    "verbrauch_limit_tooltip": "0 = show all",
+    "verbrauch_color_from": "Color from",
+    "verbrauch_color_to": "Color to"
 }

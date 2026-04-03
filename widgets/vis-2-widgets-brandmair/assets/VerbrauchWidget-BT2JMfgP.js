@@ -1,8 +1,8 @@
 import { j as i, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
-import { G as g } from "./Generic-CM5BSTAz.js";
+import { G as p } from "./Generic-CM5BSTAz.js";
 import { __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
-let d;
+let c;
 let __tla = Promise.all([
   (() => {
     try {
@@ -23,14 +23,14 @@ let __tla = Promise.all([
     }
   })()
 ]).then(async () => {
-  const u = [
+  const b = [
     [
       "oid-json",
       "json_summary"
     ]
   ];
-  function p({ label: h, value: r, max: e, unit: l }) {
-    const s = e > 0 ? r / e * 100 : 0;
+  function f({ label: h, value: a, max: e, unit: s, colorFrom: l, colorTo: o }) {
+    const n = e > 0 ? a / e * 100 : 0;
     return i.jsxs("div", {
       style: {
         display: "flex",
@@ -61,9 +61,9 @@ let __tla = Promise.all([
           },
           children: i.jsx("div", {
             style: {
-              width: `${s}%`,
+              width: `${n}%`,
               height: "100%",
-              background: "linear-gradient(90deg, #4a9edd, #2ec27e)",
+              background: `linear-gradient(90deg, ${l}, ${o})`,
               borderRadius: 4,
               transition: "width 0.5s ease"
             }
@@ -80,15 +80,15 @@ let __tla = Promise.all([
             whiteSpace: "nowrap"
           },
           children: [
-            r,
+            a,
             " ",
-            l
+            s
           ]
         })
       ]
     });
   }
-  d = class extends g {
+  c = class extends p {
     static getWidgetInfo() {
       return {
         id: "tplVerbrauchWidget",
@@ -111,11 +111,11 @@ let __tla = Promise.all([
                 type: "text",
                 label: "verbrauch_base",
                 tooltip: "verbrauch_base_tooltip",
-                onChange: async (r, e, l) => {
-                  const s = e["oid-base"];
-                  if (s) {
-                    for (const [n, t] of u) e[n] = `${s}.${t}`;
-                    l(e);
+                onChange: async (a, e, s) => {
+                  const l = e["oid-base"];
+                  if (l) {
+                    for (const [o, n] of b) e[o] = `${l}.${n}`;
+                    s(e);
                   }
                 }
               },
@@ -124,7 +124,8 @@ let __tla = Promise.all([
                 label: "verbrauch_limit",
                 type: "number",
                 default: 0,
-                tooltip: "verbrauch_limit_tooltip"
+                tooltip: "verbrauch_limit_tooltip",
+                noBinding: true
               },
               {
                 name: "view",
@@ -149,6 +150,18 @@ let __tla = Promise.all([
                   }
                 ],
                 default: "months"
+              },
+              {
+                name: "colorFrom",
+                label: "verbrauch_color_from",
+                type: "color",
+                default: "#4a9edd"
+              },
+              {
+                name: "colorTo",
+                label: "verbrauch_color_to",
+                type: "color",
+                default: "#2ec27e"
               }
             ]
           },
@@ -174,23 +187,25 @@ let __tla = Promise.all([
       };
     }
     getWidgetInfo() {
-      return d.getWidgetInfo();
+      return c.getWidgetInfo();
     }
-    val(r) {
-      const e = this.state.rxData[r];
+    val(a) {
+      const e = this.state.rxData[a];
       if (e) return this.state.values[`${e}.val`];
     }
-    renderWidgetBody(r) {
-      super.renderWidgetBody(r);
-      const e = this.val("oid-json") || "", l = this.state.rxData.view || "months", s = this.state.rxData.widgetTitle || "", n = Number(this.state.rxData.limit) || 0;
-      let t = [], o = "";
+    renderWidgetBody(a) {
+      super.renderWidgetBody(a);
+      const e = this.val("oid-json") || "", s = this.state.rxData.view || "months", l = this.state.rxData.widgetTitle || "", o = Number(this.state.rxData.limit) || 0, n = this.state.rxData.colorFrom || "#4a9edd", u = this.state.rxData.colorTo || "#2ec27e";
+      let t = [], d = "";
       try {
-        const a = JSON.parse(e);
-        o = a.unit || "", t = a[l] || [];
+        const r = JSON.parse(e);
+        d = r.unit || "", t = r[s] || [];
       } catch {
       }
-      n > 0 && t.length > n && (t = t.slice(-n));
-      const c = t.reduce((a, v) => Math.max(a, v.value), 0);
+      t = [
+        ...t
+      ].reverse(), o > 0 && t.length > o && (t = t.slice(0, o));
+      const v = t.reduce((r, g) => Math.max(r, g.value), 0);
       return i.jsxs("div", {
         style: {
           width: "100%",
@@ -201,7 +216,7 @@ let __tla = Promise.all([
           overflow: "hidden"
         },
         children: [
-          s && i.jsx("div", {
+          l && i.jsx("div", {
             style: {
               padding: "6px 10px 2px",
               fontSize: 14,
@@ -209,7 +224,7 @@ let __tla = Promise.all([
               color: "#fff",
               flexShrink: 0
             },
-            children: s
+            children: l
           }),
           i.jsxs("div", {
             style: {
@@ -229,12 +244,14 @@ let __tla = Promise.all([
                 },
                 children: "\u2013"
               }),
-              t.map((a) => i.jsx(p, {
-                label: a.label,
-                value: a.value,
-                max: c,
-                unit: o
-              }, a.label))
+              t.map((r) => i.jsx(f, {
+                label: r.label,
+                value: r.value,
+                max: v,
+                unit: d,
+                colorFrom: n,
+                colorTo: u
+              }, r.label))
             ]
           })
         ]
@@ -244,5 +261,5 @@ let __tla = Promise.all([
 });
 export {
   __tla,
-  d as default
+  c as default
 };
