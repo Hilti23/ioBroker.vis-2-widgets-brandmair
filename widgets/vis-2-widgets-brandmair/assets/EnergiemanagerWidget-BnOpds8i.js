@@ -318,7 +318,7 @@ let __tla = Promise.all([
     return e.join(",");
   }
   const J = "0 0 3px rgba(0,0,0,0.6), 0 0 6px rgba(0,0,0,0.3)";
-  function W({ label: s, value: i, unit: e, color: o, sub: a }) {
+  function T({ label: s, value: i, unit: e, color: o, sub: a }) {
     return t.jsxs("div", {
       style: {
         flex: "1 1 0",
@@ -1122,7 +1122,7 @@ let __tla = Promise.all([
     renderDevice(i) {
       const e = (_) => `oid-dev${i}-${_}`, o = this.val(e("name")) || `Ger\xE4t ${i}`, a = this.val(e("mode")) || "auto", l = Number(this.val(e("priority"))) || 1, m = Number(this.val(e("power-min"))) || 0, u = Number(this.val(e("power-max"))) || 0;
       this.toBool(this.val(e("is-dimmable")));
-      const y = this.toBool(this.val(e("is-on"))), x = Number(this.val(e("power"))) || 0, w = this.val(e("last-action")) || "\u2013", j = this.toBool(this.val(e("holiday-blocked"))), r = Number(this.val(e("notif-today"))) || 0, c = this.val(e("time-rules")) || "", d = this.val(e("time-start")) || "", f = this.val(e("time-end")) || "", b = this.val(e("days")) || "[]", S = this.toBool(this.val(e("silent-active"))), D = this.val(e("silent-rules")) || "[]", $ = `editDev${i}Priority`, g = `editDev${i}PowerMin`, v = `editDev${i}PowerMax`, h = `showTimeModal${i}`, p = this.state[$], z = this.state[g], M = this.state[v], A = this.state[h], I = p !== null ? p : l, N = z !== null ? z : m, U = M !== null ? M : u, G = u > 0 ? Math.min(100, x / u * 100) : 0, H = oe(a), T = {
+      const y = this.toBool(this.val(e("is-on"))), x = Number(this.val(e("power"))) || 0, w = this.val(e("last-action")) || "\u2013", j = this.toBool(this.val(e("holiday-blocked"))), r = Number(this.val(e("notif-today"))) || 0, c = this.val(e("time-rules")) || "", d = this.val(e("time-start")) || "", f = this.val(e("time-end")) || "", b = this.val(e("days")) || "[]", S = this.toBool(this.val(e("silent-active"))), D = this.val(e("silent-rules")) || "[]", $ = `editDev${i}Priority`, g = `editDev${i}PowerMin`, v = `editDev${i}PowerMax`, h = `showTimeModal${i}`, p = this.state[$], z = this.state[g], M = this.state[v], A = this.state[h], I = p !== null ? p : l, N = z !== null ? z : m, U = M !== null ? M : u, G = u > 0 ? Math.min(100, x / u * 100) : 0, H = oe(a), W = {
         width: 65,
         padding: "3px 6px",
         fontSize: 12,
@@ -1132,11 +1132,11 @@ let __tla = Promise.all([
         color: "#111",
         textAlign: "right"
       }, X = {
-        ...T,
+        ...W,
         width: 40,
         fontSize: 11
       }, Z = {
-        ...T,
+        ...W,
         width: 70,
         fontSize: 11,
         textAlign: "center"
@@ -1195,25 +1195,65 @@ let __tla = Promise.all([
                   })
                 ]
               }),
-              t.jsx("div", {
-                onClick: () => this.setState({
-                  [h]: true
-                }),
+              t.jsxs("div", {
                 style: {
-                  width: 28,
-                  height: 28,
-                  borderRadius: 6,
-                  background: "rgba(0,0,0,0.06)",
-                  border: "1px solid rgba(0,0,0,0.1)",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  fontSize: 14,
-                  flexShrink: 0
+                  gap: 6
                 },
-                title: n("em_time_rules") || "Zeitfenster",
-                children: "\u{1F4C5}"
+                children: [
+                  t.jsx("span", {
+                    style: {
+                      fontSize: 11,
+                      color: "#555"
+                    },
+                    children: "P"
+                  }),
+                  t.jsx("input", {
+                    type: "number",
+                    min: 1,
+                    max: 99,
+                    value: I,
+                    onChange: (_) => this.setState({
+                      [$]: Number(_.target.value)
+                    }),
+                    onBlur: () => {
+                      p !== null && (this.setVal(e("priority"), p), this.setState({
+                        [$]: null
+                      }));
+                    },
+                    style: {
+                      width: 32,
+                      padding: "2px 4px",
+                      fontSize: 12,
+                      border: "1px solid rgba(0,0,0,0.15)",
+                      borderRadius: 5,
+                      background: "transparent",
+                      color: "#111",
+                      textAlign: "center"
+                    }
+                  }),
+                  t.jsx("div", {
+                    onClick: () => this.setState({
+                      [h]: true
+                    }),
+                    style: {
+                      width: 28,
+                      height: 28,
+                      borderRadius: 6,
+                      background: "rgba(0,0,0,0.06)",
+                      border: "1px solid rgba(0,0,0,0.1)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      fontSize: 14,
+                      flexShrink: 0
+                    },
+                    title: n("em_time_rules") || "Zeitfenster",
+                    children: "\u{1F4C5}"
+                  })
+                ]
               })
             ]
           }),
@@ -1419,47 +1459,6 @@ let __tla = Promise.all([
                       fontSize: 11,
                       color: "#555"
                     },
-                    children: "Prio"
-                  }),
-                  t.jsx("input", {
-                    type: "number",
-                    min: 1,
-                    max: 99,
-                    value: I,
-                    onChange: (_) => this.setState({
-                      [$]: Number(_.target.value)
-                    }),
-                    onBlur: () => {
-                      p !== null && (this.setVal(e("priority"), p), this.setState({
-                        [$]: null
-                      }));
-                    },
-                    style: {
-                      ...T,
-                      width: 42
-                    }
-                  })
-                ]
-              }),
-              t.jsx("div", {
-                style: {
-                  width: 1,
-                  height: 20,
-                  background: "rgba(0,0,0,0.1)"
-                }
-              }),
-              t.jsxs("div", {
-                style: {
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4
-                },
-                children: [
-                  t.jsx("span", {
-                    style: {
-                      fontSize: 11,
-                      color: "#555"
-                    },
                     children: "Min"
                   }),
                   t.jsx("input", {
@@ -1475,7 +1474,7 @@ let __tla = Promise.all([
                         [g]: null
                       }));
                     },
-                    style: T
+                    style: W
                   })
                 ]
               }),
@@ -1506,7 +1505,7 @@ let __tla = Promise.all([
                         [v]: null
                       }));
                     },
-                    style: T
+                    style: W
                   })
                 ]
               }),
@@ -1637,7 +1636,7 @@ let __tla = Promise.all([
                 },
                 children: n("em_min_soc") || "Min SOC"
               }),
-              h(l, "min-soc", "%", 40),
+              h(l, "min-soc", "%", 35),
               t.jsx("span", {
                 style: {
                   fontSize: 11,
@@ -1645,7 +1644,15 @@ let __tla = Promise.all([
                 },
                 children: n("em_soc_off") || "SOC Aus"
               }),
-              h(m, "soc-off", "%", 40)
+              h(m, "soc-off", "%", 35),
+              t.jsx("span", {
+                style: {
+                  fontSize: 11,
+                  color: "#333"
+                },
+                children: n("em_avg_min") || "\xD8"
+              }),
+              h(x, "avg-min", "min", 30)
             ]
           }),
           t.jsxs("div", {
@@ -1670,15 +1677,7 @@ let __tla = Promise.all([
                 },
                 children: n("em_surplus_off") || "Aussch."
               }),
-              h(y, "surplus-off", "W", 45),
-              t.jsx("span", {
-                style: {
-                  fontSize: 11,
-                  color: "#333"
-                },
-                children: n("em_avg_min") || "\xD8"
-              }),
-              h(x, "avg-min", "min", 40)
+              h(y, "surplus-off", "W", 45)
             ]
           }),
           t.jsxs("div", {
@@ -1826,30 +1825,30 @@ let __tla = Promise.all([
               gap: 10
             },
             children: [
-              t.jsx(W, {
+              t.jsx(T, {
                 label: n("em_pv_power") || "PV-Leistung",
                 value: C(a),
                 color: "#f5a623"
               }),
-              t.jsx(W, {
+              t.jsx(T, {
                 label: e >= 0 ? n("em_grid_feed") || "Einspeisung" : n("em_grid_draw") || "Netzbezug",
                 value: C(Math.abs(e)),
                 color: ne(e),
                 sub: `\xD830min: ${C(o)}`
               }),
-              t.jsx(W, {
+              t.jsx(T, {
                 label: n("em_battery_soc") || "Batterie",
                 value: `${Math.round(l)}`,
                 unit: "%",
                 color: ae(l)
               }),
-              t.jsx(W, {
+              t.jsx(T, {
                 label: n("em_forecast_today") || "Prognose",
                 value: `${m.toFixed(1)}`,
                 unit: "kWh",
                 color: "#4a9edd"
               }),
-              t.jsx(W, {
+              t.jsx(T, {
                 label: n("em_managed_power") || "Gesteuert",
                 value: C(u),
                 color: "#8b5cf6",

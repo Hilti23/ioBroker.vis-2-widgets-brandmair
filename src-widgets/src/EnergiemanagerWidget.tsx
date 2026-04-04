@@ -903,18 +903,40 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         }} />
                         <div style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>{name}</div>
                     </div>
-                    {/* Calendar icon for time rules */}
-                    <div
-                        onClick={() => this.setState({ [timeModalKey]: true } as any)}
-                        style={{
-                            width: 28, height: 28, borderRadius: 6,
-                            background: 'rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.1)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            cursor: 'pointer', fontSize: 14, flexShrink: 0,
-                        }}
-                        title={tr('em_time_rules') || 'Zeitfenster'}
-                    >
-                        &#128197;
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {/* Priority input */}
+                        <span style={{ fontSize: 11, color: '#555' }}>P</span>
+                        <input
+                            type="number"
+                            min={1}
+                            max={99}
+                            value={displayPri}
+                            onChange={(e) => this.setState({ [priKey]: Number(e.target.value) } as any)}
+                            onBlur={() => {
+                                if (editPri !== null) {
+                                    this.setVal(k('priority'), editPri);
+                                    this.setState({ [priKey]: null } as any);
+                                }
+                            }}
+                            style={{
+                                width: 32, padding: '2px 4px', fontSize: 12,
+                                border: '1px solid rgba(0,0,0,0.15)', borderRadius: 5,
+                                background: 'transparent', color: '#111', textAlign: 'center',
+                            }}
+                        />
+                        {/* Calendar icon for time rules */}
+                        <div
+                            onClick={() => this.setState({ [timeModalKey]: true } as any)}
+                            style={{
+                                width: 28, height: 28, borderRadius: 6,
+                                background: 'rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.1)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                cursor: 'pointer', fontSize: 14, flexShrink: 0,
+                            }}
+                            title={tr('em_time_rules') || 'Zeitfenster'}
+                        >
+                            &#128197;
+                        </div>
                     </div>
                 </div>
 
@@ -1008,30 +1030,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </span>
                 </div>
 
-                {/* Settings row: Priority input + Min/Max W side by side */}
+                {/* Settings row: Min/Max W side by side */}
                 <div style={{
                     padding: '0 14px 8px', display: 'flex', alignItems: 'center', gap: 10,
                     borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 8,
                 }}>
-                    {/* Priority */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <span style={{ fontSize: 11, color: '#555' }}>Prio</span>
-                        <input
-                            type="number"
-                            min={1}
-                            max={99}
-                            value={displayPri}
-                            onChange={(e) => this.setState({ [priKey]: Number(e.target.value) } as any)}
-                            onBlur={() => {
-                                if (editPri !== null) {
-                                    this.setVal(k('priority'), editPri);
-                                    this.setState({ [priKey]: null } as any);
-                                }
-                            }}
-                            style={{ ...inputStyle, width: 42 }}
-                        />
-                    </div>
-                    <div style={{ width: 1, height: 20, background: 'rgba(0,0,0,0.1)' }} />
                     {/* Min + Max side by side */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                         <span style={{ fontSize: 11, color: '#555' }}>Min</span>
@@ -1168,22 +1171,22 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 background: 'rgba(0,0,0,0.02)',
                 borderTop: '1px solid rgba(0,0,0,0.08)',
             }}>
-                {/* SOC & Thresholds - Row 1: SOC */}
+                {/* SOC & Thresholds - Row 1: SOC + Avg */}
                 <div style={sectionStyle}>
                     <div style={sectionLabel}>{tr('em_soc_thresholds') || 'SOC & Schwellen'}</div>
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_min_soc') || 'Min SOC'}</span>
-                    {numInput(minSoc, 'min-soc', '%', 40)}
+                    {numInput(minSoc, 'min-soc', '%', 35)}
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_soc_off') || 'SOC Aus'}</span>
-                    {numInput(socOff, 'soc-off', '%', 40)}
+                    {numInput(socOff, 'soc-off', '%', 35)}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_avg_min') || '\u00d8'}</span>
+                    {numInput(avgMin, 'avg-min', 'min', 30)}
                 </div>
-                {/* SOC & Thresholds - Row 2: Surplus + Avg */}
+                {/* SOC & Thresholds - Row 2: Surplus on/off */}
                 <div style={{ ...sectionStyle, borderTop: 'none', paddingTop: 0 }}>
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_on') || 'Einsch.'}</span>
                     {numInput(surplusOn, 'surplus-on', 'W', 45)}
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_off') || 'Aussch.'}</span>
                     {numInput(surplusOff, 'surplus-off', 'W', 45)}
-                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_avg_min') || '\u00d8'}</span>
-                    {numInput(avgMin, 'avg-min', 'min', 40)}
                 </div>
 
                 {/* Runtimes */}
