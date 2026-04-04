@@ -1,10 +1,10 @@
 import { j as t, __tla as __tla_0 } from "./jsx-runtime-LXN0Dejw.js";
-import { b as V, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-Cq4bBQs0.js";
-import { a as Q, b as R, __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
-import { G as ee } from "./Generic-CM5BSTAz.js";
+import { b as F, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-Cq4bBQs0.js";
+import { a as ee, b as k, __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
+import { G as te } from "./Generic-CM5BSTAz.js";
 import { t as n } from "./tr-miy5TWOP.js";
 import { __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-Dkt6rraE.js";
-let K;
+let G;
 let __tla = Promise.all([
   (() => {
     try {
@@ -31,11 +31,11 @@ let __tla = Promise.all([
     }
   })()
 ]).then(async () => {
-  const te = {
+  const ie = {
     1: "heizstab_warmwasser",
     2: "luftentfeuchter_keller",
     3: "pool_wp"
-  }, ie = [
+  }, se = [
     [
       "min-soc",
       "min_soc"
@@ -128,7 +128,7 @@ let __tla = Promise.all([
       "time-rules",
       "time_rules"
     ]
-  ], F = [
+  ], O = [
     [
       "oid-surplus-current",
       "surplus_current_w"
@@ -183,8 +183,8 @@ let __tla = Promise.all([
     ]
   ];
   for (let s = 1; s <= 3; s++) {
-    const i = te[s], e = `oid-dev${s}`;
-    F.push([
+    const i = ie[s], e = `oid-dev${s}`;
+    O.push([
       `${e}-name`,
       `${i}.name`
     ], [
@@ -218,21 +218,21 @@ let __tla = Promise.all([
       `${e}-notif-today`,
       `${i}.notifications_today`
     ]);
-    for (const [o, a] of ie) F.push([
-      `${e}-${o}`,
-      `${i}.${a}`
+    for (const [a, l] of se) O.push([
+      `${e}-${a}`,
+      `${i}.${l}`
     ]);
   }
-  function se(s) {
+  function ne(s) {
     return isNaN(s) ? "#777" : s < 30 ? "#4a9edd" : s < 45 ? "#f5a623" : "#e8622a";
   }
-  function ne(s) {
+  function le(s) {
     return s >= 0 ? "#2ec27e" : "#e8622a";
   }
-  function ae(s) {
+  function oe(s) {
     return s < 20 ? "#e8622a" : s < 50 ? "#f5a623" : "#2ec27e";
   }
-  function oe(s) {
+  function ae(s) {
     switch (s) {
       case "auto":
         return "#4a9edd";
@@ -246,10 +246,10 @@ let __tla = Promise.all([
         return "#888";
     }
   }
-  function C(s) {
+  function D(s) {
     return Math.abs(s) >= 1e3 ? `${(s / 1e3).toFixed(1)} kW` : `${Math.round(s)} W`;
   }
-  const k = [
+  const W = [
     "",
     "Mo",
     "Di",
@@ -258,7 +258,7 @@ let __tla = Promise.all([
     "Fr",
     "Sa",
     "So"
-  ], le = [
+  ], re = [
     "",
     "Montag",
     "Dienstag",
@@ -268,11 +268,18 @@ let __tla = Promise.all([
     "Samstag",
     "Sonntag"
   ];
-  function re(s) {
+  function de(s) {
+    try {
+      return JSON.parse(s);
+    } catch {
+      return [];
+    }
+  }
+  function ce(s) {
     try {
       return JSON.parse(s).filter((e) => e.silent).map((e) => {
-        const o = e.days.map((a) => k[a] || a).join(",");
-        return e.before ? `${o} <${e.before}` : o;
+        const a = e.days.map((l) => W[l] || l).join(",");
+        return e.before ? `${a} <${e.before}` : a;
       }).join(" | ") || "\u2013";
     } catch {
       return "\u2013";
@@ -294,31 +301,31 @@ let __tla = Promise.all([
     }
     return [];
   }
-  function de(s, i, e, o) {
-    let a = L(s);
-    if (a.length === 0 && (i || e)) {
-      const l = P(o);
-      l.length > 0 && (i || e) && (a = [
+  function pe(s, i, e, a) {
+    let l = L(s);
+    if (l.length === 0 && (i || e)) {
+      const r = P(a);
+      r.length > 0 && (i || e) && (l = [
         {
-          days: l,
+          days: r,
           start: i || "00:00",
           end: e || "23:59"
         }
       ]);
     }
-    return a.length === 0 ? "\u2013" : a.map((l) => `${ce(l.days)} ${l.start}-${l.end}`).join(" | ");
+    return l.length === 0 ? "\u2013" : l.map((r) => `${me(r.days)} ${r.start}-${r.end}`).join(" | ");
   }
-  function ce(s) {
+  function me(s) {
     if (s.length === 0) return "";
     const i = [
       ...s
-    ].sort((l, m) => l - m), e = [];
-    let o = i[0], a = i[0];
-    for (let l = 1; l <= i.length; l++) l < i.length && i[l] === a + 1 ? a = i[l] : (o === a ? e.push(k[o]) : e.push(`${k[o]}-${k[a]}`), l < i.length && (o = i[l], a = i[l]));
+    ].sort((r, u) => r - u), e = [];
+    let a = i[0], l = i[0];
+    for (let r = 1; r <= i.length; r++) r < i.length && i[r] === l + 1 ? l = i[r] : (a === l ? e.push(W[a]) : e.push(`${W[a]}-${W[l]}`), r < i.length && (a = i[r], l = i[r]));
     return e.join(",");
   }
   const J = "0 0 3px rgba(0,0,0,0.6), 0 0 6px rgba(0,0,0,0.3)";
-  function T({ label: s, value: i, unit: e, color: o, sub: a }) {
+  function R({ label: s, value: i, unit: e, color: a, sub: l }) {
     return t.jsxs("div", {
       style: {
         flex: "1 1 0",
@@ -344,8 +351,8 @@ let __tla = Promise.all([
           style: {
             fontSize: 22,
             fontWeight: 700,
-            color: o || "#111",
-            textShadow: o ? J : "none"
+            color: a || "#111",
+            textShadow: a ? J : "none"
           },
           children: [
             i,
@@ -361,18 +368,18 @@ let __tla = Promise.all([
             })
           ]
         }),
-        a && t.jsx("div", {
+        l && t.jsx("div", {
           style: {
             fontSize: 11,
             color: "#555",
             marginTop: 2
           },
-          children: a
+          children: l
         })
       ]
     });
   }
-  function O({ label: s, temp: i }) {
+  function V({ label: s, temp: i }) {
     const e = isNaN(i) ? "\u2013" : `${i.toFixed(1)}`;
     return t.jsxs("div", {
       style: {
@@ -399,7 +406,7 @@ let __tla = Promise.all([
           style: {
             fontSize: 22,
             fontWeight: 700,
-            color: se(i),
+            color: ne(i),
             textShadow: J
           },
           children: [
@@ -419,7 +426,7 @@ let __tla = Promise.all([
       ]
     });
   }
-  function pe({ on: s, label: i, onClick: e }) {
+  function he({ on: s, label: i, onClick: e }) {
     return t.jsxs("div", {
       onClick: e,
       style: {
@@ -464,7 +471,7 @@ let __tla = Promise.all([
       ]
     });
   }
-  function E({ checked: s, label: i, onChange: e }) {
+  function B({ checked: s, label: i, onChange: e }) {
     return t.jsxs("label", {
       style: {
         display: "flex",
@@ -478,7 +485,7 @@ let __tla = Promise.all([
         t.jsx("input", {
           type: "checkbox",
           checked: s,
-          onChange: (o) => e(o.target.checked),
+          onChange: (a) => e(a.target.checked),
           style: {
             width: 14,
             height: 14,
@@ -489,46 +496,59 @@ let __tla = Promise.all([
       ]
     });
   }
-  function me({ rules: s, excludeHolidays: i, onSave: e, onCancel: o }) {
-    const a = () => {
-      const r = [];
-      for (let c = 1; c <= 7; c++) {
-        const d = s.find((f) => f.days.includes(c));
-        r.push({
-          day: c,
+  function ue({ rules: s, silentRules: i, excludeHolidays: e, onSave: a, onCancel: l }) {
+    const r = () => {
+      const o = [];
+      for (let p = 1; p <= 7; p++) {
+        const d = s.find((c) => c.days.includes(p)), _ = i.find((c) => c.days.includes(p));
+        o.push({
+          day: p,
           active: !!d,
           start: d ? d.start : "08:00",
-          end: d ? d.end : "20:00"
+          end: d ? d.end : "20:00",
+          silent: _ ? _.silent : false,
+          silentBefore: _ && _.before ? _.before : ""
         });
       }
-      return r;
-    }, [l, m] = V.useState(a), [u, y] = V.useState(i), x = (r, c, d) => {
-      m((f) => {
-        const b = [
-          ...f
+      return o;
+    }, [u, b] = F.useState(r), [g, j] = F.useState(e), v = (o, p, d) => {
+      b((_) => {
+        const c = [
+          ..._
         ];
-        return b[r] = {
-          ...b[r],
-          [c]: d
-        }, b;
+        return c[o] = {
+          ...c[o],
+          [p]: d
+        }, c;
       });
-    }, w = () => {
-      const r = {};
-      for (const d of l) {
-        if (!d.active) continue;
-        const f = `${d.start}|${d.end}`;
-        r[f] || (r[f] = []), r[f].push(d.day);
+    }, z = () => {
+      const o = {};
+      for (const c of u) {
+        if (!c.active) continue;
+        const y = `${c.start}|${c.end}`;
+        o[y] || (o[y] = []), o[y].push(c.day);
       }
-      const c = Object.entries(r).map(([d, f]) => {
-        const [b, S] = d.split("|");
+      const p = Object.entries(o).map(([c, y]) => {
+        const [S, f] = c.split("|");
         return {
-          days: f.sort((D, $) => D - $),
-          start: b,
-          end: S
+          days: y.sort((x, m) => x - m),
+          start: S,
+          end: f
         };
+      }), d = {};
+      for (const c of u) {
+        const y = `${c.silent}|${c.silentBefore}`;
+        d[y] || (d[y] = []), d[y].push(c.day);
+      }
+      const _ = Object.entries(d).map(([c, y]) => {
+        const [S, f] = c.split("|"), x = {
+          days: y.sort((m, h) => m - h),
+          silent: S === "true"
+        };
+        return f && (x.before = f), x;
       });
-      e(c, u);
-    }, j = {
+      a(p, _, g);
+    }, $ = {
       padding: "4px 6px",
       fontSize: 13,
       border: "1px solid rgba(0,0,0,0.2)",
@@ -539,8 +559,8 @@ let __tla = Promise.all([
       width: 80
     };
     return t.jsx("div", {
-      onClick: (r) => {
-        r.target === r.currentTarget && o();
+      onClick: (o) => {
+        o.target === o.currentTarget && l();
       },
       style: {
         position: "fixed",
@@ -559,20 +579,25 @@ let __tla = Promise.all([
           background: "#fff",
           borderRadius: 12,
           padding: 24,
-          minWidth: 340,
-          maxWidth: 480,
+          minWidth: 380,
+          maxWidth: 560,
           boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-          color: "#111"
+          color: "#111",
+          maxHeight: "90vh",
+          overflow: "auto"
         },
         children: [
-          t.jsx("div", {
+          t.jsxs("div", {
             style: {
               fontSize: 16,
               fontWeight: 700,
               marginBottom: 16,
               color: "#111"
             },
-            children: n("em_time_rules") || "Zeitfenster"
+            children: [
+              n("em_time_rules") || "Zeitfenster",
+              " & Silent"
+            ]
           }),
           t.jsxs("table", {
             style: {
@@ -586,67 +611,85 @@ let __tla = Promise.all([
                     t.jsx("th", {
                       style: {
                         textAlign: "left",
-                        fontSize: 12,
+                        fontSize: 11,
                         color: "#555",
-                        padding: "4px 6px"
+                        padding: "4px 4px"
                       },
                       children: "Tag"
                     }),
                     t.jsx("th", {
                       style: {
                         textAlign: "center",
-                        fontSize: 12,
+                        fontSize: 11,
                         color: "#555",
-                        padding: "4px 6px"
+                        padding: "4px 4px"
                       },
-                      children: n("em_time_active") || "Aktiv"
+                      children: "Aktiv"
                     }),
                     t.jsx("th", {
                       style: {
                         textAlign: "center",
-                        fontSize: 12,
+                        fontSize: 11,
                         color: "#555",
-                        padding: "4px 6px"
+                        padding: "4px 4px"
                       },
                       children: "Start"
                     }),
                     t.jsx("th", {
                       style: {
                         textAlign: "center",
-                        fontSize: 12,
+                        fontSize: 11,
                         color: "#555",
-                        padding: "4px 6px"
+                        padding: "4px 4px"
                       },
                       children: "Ende"
+                    }),
+                    t.jsx("th", {
+                      style: {
+                        textAlign: "center",
+                        fontSize: 11,
+                        color: "#8b5cf6",
+                        padding: "4px 4px"
+                      },
+                      children: "Silent"
+                    }),
+                    t.jsx("th", {
+                      style: {
+                        textAlign: "center",
+                        fontSize: 11,
+                        color: "#8b5cf6",
+                        padding: "4px 4px"
+                      },
+                      children: "bis"
                     })
                   ]
                 })
               }),
               t.jsx("tbody", {
-                children: l.map((r, c) => t.jsxs("tr", {
+                children: u.map((o, p) => t.jsxs("tr", {
                   style: {
                     borderTop: "1px solid rgba(0,0,0,0.08)",
-                    opacity: r.active ? 1 : 0.5
+                    opacity: o.active ? 1 : 0.4
                   },
                   children: [
                     t.jsx("td", {
                       style: {
-                        padding: "6px",
+                        padding: "4px",
                         fontSize: 13,
                         fontWeight: 600,
                         color: "#333"
                       },
-                      children: le[r.day]
+                      children: re[o.day]
                     }),
                     t.jsx("td", {
                       style: {
-                        padding: "6px",
+                        padding: "4px",
                         textAlign: "center"
                       },
                       children: t.jsx("input", {
                         type: "checkbox",
-                        checked: r.active,
-                        onChange: (d) => x(c, "active", d.target.checked),
+                        checked: o.active,
+                        onChange: (d) => v(p, "active", d.target.checked),
                         style: {
                           width: 16,
                           height: 16
@@ -655,38 +698,73 @@ let __tla = Promise.all([
                     }),
                     t.jsx("td", {
                       style: {
-                        padding: "6px",
+                        padding: "4px",
                         textAlign: "center"
                       },
                       children: t.jsx("input", {
                         type: "time",
-                        value: r.start,
-                        disabled: !r.active,
-                        onChange: (d) => x(c, "start", d.target.value),
+                        value: o.start,
+                        disabled: !o.active,
+                        onChange: (d) => v(p, "start", d.target.value),
                         style: {
-                          ...j,
-                          opacity: r.active ? 1 : 0.4
+                          ...$,
+                          width: 75,
+                          opacity: o.active ? 1 : 0.3
                         }
                       })
                     }),
                     t.jsx("td", {
                       style: {
-                        padding: "6px",
+                        padding: "4px",
                         textAlign: "center"
                       },
                       children: t.jsx("input", {
                         type: "time",
-                        value: r.end,
-                        disabled: !r.active,
-                        onChange: (d) => x(c, "end", d.target.value),
+                        value: o.end,
+                        disabled: !o.active,
+                        onChange: (d) => v(p, "end", d.target.value),
                         style: {
-                          ...j,
-                          opacity: r.active ? 1 : 0.4
+                          ...$,
+                          width: 75,
+                          opacity: o.active ? 1 : 0.3
+                        }
+                      })
+                    }),
+                    t.jsx("td", {
+                      style: {
+                        padding: "4px",
+                        textAlign: "center"
+                      },
+                      children: t.jsx("input", {
+                        type: "checkbox",
+                        checked: o.silent,
+                        onChange: (d) => v(p, "silent", d.target.checked),
+                        style: {
+                          width: 16,
+                          height: 16,
+                          accentColor: "#8b5cf6"
+                        }
+                      })
+                    }),
+                    t.jsx("td", {
+                      style: {
+                        padding: "4px",
+                        textAlign: "center"
+                      },
+                      children: t.jsx("input", {
+                        type: "time",
+                        value: o.silentBefore,
+                        disabled: !o.silent,
+                        onChange: (d) => v(p, "silentBefore", d.target.value),
+                        style: {
+                          ...$,
+                          width: 75,
+                          opacity: o.silent ? 1 : 0.3
                         }
                       })
                     })
                   ]
-                }, r.day))
+                }, o.day))
               })
             ]
           }),
@@ -702,8 +780,8 @@ let __tla = Promise.all([
             children: [
               t.jsx("input", {
                 type: "checkbox",
-                checked: u,
-                onChange: (r) => y(r.target.checked),
+                checked: g,
+                onChange: (o) => j(o.target.checked),
                 style: {
                   width: 16,
                   height: 16
@@ -727,7 +805,7 @@ let __tla = Promise.all([
             },
             children: [
               t.jsx("button", {
-                onClick: o,
+                onClick: l,
                 style: {
                   padding: "8px 20px",
                   fontSize: 13,
@@ -740,7 +818,7 @@ let __tla = Promise.all([
                 children: n("em_time_cancel") || "Abbrechen"
               }),
               t.jsx("button", {
-                onClick: w,
+                onClick: z,
                 style: {
                   padding: "8px 20px",
                   fontSize: 13,
@@ -759,7 +837,7 @@ let __tla = Promise.all([
       })
     });
   }
-  function B(s, i) {
+  function E(s, i) {
     const e = `oid-dev${s}`;
     return [
       {
@@ -934,7 +1012,7 @@ let __tla = Promise.all([
       }
     ];
   }
-  K = class extends ee {
+  G = class extends te {
     constructor(i) {
       super(i), this.state = {
         ...this.state,
@@ -977,11 +1055,11 @@ let __tla = Promise.all([
                 type: "text",
                 label: "em_base_oid",
                 tooltip: "em_base_oid_tooltip",
-                onChange: async (i, e, o) => {
-                  const a = e["oid-base"];
-                  if (a) {
-                    for (const [l, m] of F) e[l] = `${a}.${m}`;
-                    o(e);
+                onChange: async (i, e, a) => {
+                  const l = e["oid-base"];
+                  if (l) {
+                    for (const [r, u] of O) e[r] = `${l}.${u}`;
+                    a(e);
                   }
                 }
               }
@@ -1067,17 +1145,17 @@ let __tla = Promise.all([
           {
             name: "device1",
             label: "em_group_device1",
-            fields: B(1, "em_dev")
+            fields: E(1, "em_dev")
           },
           {
             name: "device2",
             label: "em_group_device2",
-            fields: B(2, "em_dev")
+            fields: E(2, "em_dev")
           },
           {
             name: "device3",
             label: "em_group_device3",
-            fields: B(3, "em_dev")
+            fields: E(3, "em_dev")
           }
         ],
         visDefaultStyle: {
@@ -1090,39 +1168,39 @@ let __tla = Promise.all([
       };
     }
     getWidgetInfo() {
-      return K.getWidgetInfo();
+      return G.getWidgetInfo();
     }
     val(i) {
       const e = this.state.rxData[i];
       if (e) return this.state.values[`${e}.val`];
     }
     setVal(i, e) {
-      const o = this.state.rxData[i];
-      if (!o) return;
-      const a = JSON.parse(JSON.stringify(this.state.values));
-      a[`${o}.val`] = e, this.setState({
-        values: a
-      }), this.props.context.setValue(o, e);
+      const a = this.state.rxData[i];
+      if (!a) return;
+      const l = JSON.parse(JSON.stringify(this.state.values));
+      l[`${a}.val`] = e, this.setState({
+        values: l
+      }), this.props.context.setValue(a, e);
     }
     toBool(i) {
       return i === true || i === "true";
     }
     getTimeRulesForDevice(i) {
-      const e = (x) => `oid-dev${i}-${x}`, o = this.val(e("time-rules")) || "", a = L(o);
-      if (a.length > 0) return a;
-      const l = this.val(e("time-start")) || "", m = this.val(e("time-end")) || "", u = this.val(e("days")) || "[]", y = P(u);
-      return y.length > 0 && (l || m) ? [
+      const e = (j) => `oid-dev${i}-${j}`, a = this.val(e("time-rules")) || "", l = L(a);
+      if (l.length > 0) return l;
+      const r = this.val(e("time-start")) || "", u = this.val(e("time-end")) || "", b = this.val(e("days")) || "[]", g = P(b);
+      return g.length > 0 && (r || u) ? [
         {
-          days: y,
-          start: l || "00:00",
-          end: m || "23:59"
+          days: g,
+          start: r || "00:00",
+          end: u || "23:59"
         }
       ] : [];
     }
     renderDevice(i) {
-      const e = (_) => `oid-dev${i}-${_}`, o = this.val(e("name")) || `Ger\xE4t ${i}`, a = this.val(e("mode")) || "auto", l = Number(this.val(e("priority"))) || 1, m = Number(this.val(e("power-min"))) || 0, u = Number(this.val(e("power-max"))) || 0;
+      const e = (w) => `oid-dev${i}-${w}`, a = this.val(e("name")) || `Ger\xE4t ${i}`, l = this.val(e("mode")) || "auto", r = Number(this.val(e("priority"))) || 1, u = Number(this.val(e("power-min"))) || 0, b = Number(this.val(e("power-max"))) || 0;
       this.toBool(this.val(e("is-dimmable")));
-      const y = this.toBool(this.val(e("is-on"))), x = Number(this.val(e("power"))) || 0, w = this.val(e("last-action")) || "\u2013", j = this.toBool(this.val(e("holiday-blocked"))), r = Number(this.val(e("notif-today"))) || 0, c = this.val(e("time-rules")) || "", d = this.val(e("time-start")) || "", f = this.val(e("time-end")) || "", b = this.val(e("days")) || "[]", S = this.toBool(this.val(e("silent-active"))), D = this.val(e("silent-rules")) || "[]", $ = `editDev${i}Priority`, g = `editDev${i}PowerMin`, v = `editDev${i}PowerMax`, h = `showTimeModal${i}`, p = this.state[$], z = this.state[g], M = this.state[v], A = this.state[h], I = p !== null ? p : l, N = z !== null ? z : m, U = M !== null ? M : u, G = u > 0 ? Math.min(100, x / u * 100) : 0, H = oe(a), W = {
+      const g = this.toBool(this.val(e("is-on"))), j = Number(this.val(e("power"))) || 0, v = this.val(e("last-action")) || "\u2013", z = this.toBool(this.val(e("holiday-blocked"))), $ = Number(this.val(e("notif-today"))) || 0, o = this.val(e("time-rules")) || "", p = this.val(e("time-start")) || "", d = this.val(e("time-end")) || "", _ = this.val(e("days")) || "[]", c = this.toBool(this.val(e("silent-active"))), y = this.val(e("silent-rules")) || "[]", S = `editDev${i}Priority`, f = `editDev${i}PowerMin`, x = `editDev${i}PowerMax`, m = `showTimeModal${i}`, h = this.state[S], M = this.state[f], C = this.state[x], A = this.state[m], I = h !== null ? h : r, N = M !== null ? M : u, H = C !== null ? C : b, K = b > 0 ? Math.min(100, j / b * 100) : 0, U = ae(l), T = {
         width: 65,
         padding: "3px 6px",
         fontSize: 12,
@@ -1132,15 +1210,15 @@ let __tla = Promise.all([
         color: "#111",
         textAlign: "right"
       }, X = {
-        ...W,
+        ...T,
         width: 40,
         fontSize: 11
       }, Z = {
-        ...W,
+        ...T,
         width: 70,
         fontSize: 11,
         textAlign: "center"
-      }, Y = de(c, d, f, b);
+      }, Y = pe(o, p, d, _);
       return t.jsxs("div", {
         style: {
           flex: "1 1 300px",
@@ -1155,7 +1233,7 @@ let __tla = Promise.all([
           t.jsx("div", {
             style: {
               height: 4,
-              background: H,
+              background: U,
               flexShrink: 0
             }
           }),
@@ -1180,8 +1258,8 @@ let __tla = Promise.all([
                       width: 10,
                       height: 10,
                       borderRadius: "50%",
-                      background: y ? "#2ec27e" : "rgba(0,0,0,0.2)",
-                      boxShadow: y ? "0 0 6px rgba(46,194,126,0.5)" : "none",
+                      background: g ? "#2ec27e" : "rgba(0,0,0,0.2)",
+                      boxShadow: g ? "0 0 6px rgba(46,194,126,0.5)" : "none",
                       flexShrink: 0
                     }
                   }),
@@ -1191,7 +1269,7 @@ let __tla = Promise.all([
                       fontWeight: 600,
                       color: "#111"
                     },
-                    children: o
+                    children: a
                   })
                 ]
               }),
@@ -1207,19 +1285,19 @@ let __tla = Promise.all([
                       fontSize: 11,
                       color: "#555"
                     },
-                    children: "P"
+                    children: "Prio"
                   }),
                   t.jsx("input", {
                     type: "number",
                     min: 1,
                     max: 99,
                     value: I,
-                    onChange: (_) => this.setState({
-                      [$]: Number(_.target.value)
+                    onChange: (w) => this.setState({
+                      [S]: Number(w.target.value)
                     }),
                     onBlur: () => {
-                      p !== null && (this.setVal(e("priority"), p), this.setState({
-                        [$]: null
+                      h !== null && (this.setVal(e("priority"), h), this.setState({
+                        [S]: null
                       }));
                     },
                     style: {
@@ -1235,7 +1313,7 @@ let __tla = Promise.all([
                   }),
                   t.jsx("div", {
                     onClick: () => this.setState({
-                      [h]: true
+                      [m]: true
                     }),
                     style: {
                       width: 28,
@@ -1280,9 +1358,9 @@ let __tla = Promise.all([
                       color: "#111"
                     },
                     children: [
-                      C(x),
+                      D(j),
                       " / ",
-                      C(u)
+                      D(b)
                     ]
                   })
                 ]
@@ -1297,9 +1375,9 @@ let __tla = Promise.all([
                 },
                 children: t.jsx("div", {
                   style: {
-                    width: `${G}%`,
+                    width: `${K}%`,
                     height: "100%",
-                    background: y ? "linear-gradient(90deg, #2ec27e, #2ec27ecc)" : "rgba(0,0,0,0.15)",
+                    background: g ? "linear-gradient(90deg, #2ec27e, #2ec27ecc)" : "rgba(0,0,0,0.15)",
                     borderRadius: 6,
                     transition: "width 0.5s ease"
                   }
@@ -1323,10 +1401,10 @@ let __tla = Promise.all([
                 },
                 children: n("em_dev_mode") || "Modus"
               }),
-              t.jsxs(Q, {
-                value: a,
+              t.jsxs(ee, {
+                value: l,
                 size: "small",
-                onChange: (_) => this.setVal(e("mode"), _.target.value),
+                onChange: (w) => this.setVal(e("mode"), w.target.value),
                 sx: {
                   flex: 1,
                   fontSize: 13,
@@ -1343,19 +1421,19 @@ let __tla = Promise.all([
                   }
                 },
                 children: [
-                  t.jsx(R, {
+                  t.jsx(k, {
                     value: "auto",
                     children: n("em_mode_auto") || "Auto"
                   }),
-                  t.jsx(R, {
+                  t.jsx(k, {
                     value: "manual_on",
                     children: n("em_mode_manual_on") || "Manuell EIN"
                   }),
-                  t.jsx(R, {
+                  t.jsx(k, {
                     value: "manual_off",
                     children: n("em_mode_manual_off") || "Manuell AUS"
                   }),
-                  t.jsx(R, {
+                  t.jsx(k, {
                     value: "disabled",
                     children: n("em_mode_disabled") || "Deaktiviert"
                   })
@@ -1367,10 +1445,10 @@ let __tla = Promise.all([
             style: {
               padding: "0 14px 8px"
             },
-            children: t.jsx(pe, {
-              on: j,
+            children: t.jsx(he, {
+              on: z,
               label: n("em_holiday_blocked") || "Urlaub-Sperre",
-              onClick: () => this.setVal(e("holiday-blocked"), !j)
+              onClick: () => this.setVal(e("holiday-blocked"), !z)
             })
           }),
           t.jsxs("div", {
@@ -1421,11 +1499,11 @@ let __tla = Promise.all([
                   fontSize: 10,
                   padding: "2px 6px",
                   borderRadius: 8,
-                  background: S ? "rgba(139,92,246,0.15)" : "rgba(0,0,0,0.06)",
-                  color: S ? "#8b5cf6" : "#777",
+                  background: c ? "rgba(139,92,246,0.15)" : "rgba(0,0,0,0.06)",
+                  color: c ? "#8b5cf6" : "#777",
                   fontWeight: 600
                 },
-                children: S ? "aktiv" : "aus"
+                children: c ? "aktiv" : "aus"
               }),
               t.jsx("span", {
                 style: {
@@ -1433,7 +1511,7 @@ let __tla = Promise.all([
                   color: "#555",
                   marginLeft: "auto"
                 },
-                children: re(D)
+                children: ce(y)
               })
             ]
           }),
@@ -1466,15 +1544,15 @@ let __tla = Promise.all([
                     min: 0,
                     step: 50,
                     value: N,
-                    onChange: (_) => this.setState({
-                      [g]: Number(_.target.value)
+                    onChange: (w) => this.setState({
+                      [f]: Number(w.target.value)
                     }),
                     onBlur: () => {
-                      z !== null && (this.setVal(e("power-min"), z), this.setState({
-                        [g]: null
+                      M !== null && (this.setVal(e("power-min"), M), this.setState({
+                        [f]: null
                       }));
                     },
-                    style: W
+                    style: T
                   })
                 ]
               }),
@@ -1496,16 +1574,16 @@ let __tla = Promise.all([
                     type: "number",
                     min: 0,
                     step: 50,
-                    value: U,
-                    onChange: (_) => this.setState({
-                      [v]: Number(_.target.value)
+                    value: H,
+                    onChange: (w) => this.setState({
+                      [x]: Number(w.target.value)
                     }),
                     onBlur: () => {
-                      M !== null && (this.setVal(e("power-max"), M), this.setState({
-                        [v]: null
+                      C !== null && (this.setVal(e("power-max"), C), this.setState({
+                        [x]: null
                       }));
                     },
-                    style: W
+                    style: T
                   })
                 ]
               }),
@@ -1519,16 +1597,17 @@ let __tla = Promise.all([
             ]
           }),
           this.renderDeviceSettings(i, e, X, Z),
-          A && t.jsx(me, {
+          A && t.jsx(ue, {
             rules: this.getTimeRulesForDevice(i),
+            silentRules: de(this.val(e("silent-rules")) || "[]"),
             excludeHolidays: this.toBool(this.val(e("excl-holidays"))),
-            onSave: (_, q) => {
-              this.setVal(e("time-rules"), JSON.stringify(_)), this.setVal(e("excl-holidays"), q), this.setState({
-                [h]: false
+            onSave: (w, q, Q) => {
+              this.setVal(e("time-rules"), JSON.stringify(w)), this.setVal(e("silent-rules"), JSON.stringify(q)), this.setVal(e("excl-holidays"), Q), this.setState({
+                [m]: false
               });
             },
             onCancel: () => this.setState({
-              [h]: false
+              [m]: false
             })
           }),
           t.jsxs("div", {
@@ -1550,9 +1629,9 @@ let __tla = Promise.all([
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap"
                 },
-                children: w
+                children: v
               }),
-              r > 0 && t.jsxs("div", {
+              $ > 0 && t.jsxs("div", {
                 style: {
                   marginLeft: 8,
                   padding: "1px 6px",
@@ -1563,7 +1642,7 @@ let __tla = Promise.all([
                   flexShrink: 0
                 },
                 children: [
-                  r,
+                  $,
                   " notif"
                 ]
               })
@@ -1572,17 +1651,17 @@ let __tla = Promise.all([
         ]
       }, i);
     }
-    renderDeviceSettings(i, e, o, a) {
-      const l = Number(this.val(e("min-soc"))) || 0, m = Number(this.val(e("soc-off"))) || 0, u = Number(this.val(e("surplus-on"))) || 0, y = Number(this.val(e("surplus-off"))) || 0, x = Number(this.val(e("avg-min"))) || 0;
+    renderDeviceSettings(i, e, a, l) {
+      const r = Number(this.val(e("min-soc"))) || 0, u = Number(this.val(e("soc-off"))) || 0, b = Number(this.val(e("surplus-on"))) || 0, g = Number(this.val(e("surplus-off"))) || 0, j = Number(this.val(e("avg-min"))) || 0;
       this.toBool(this.val(e("excl-holidays")));
-      const w = Number(this.val(e("min-runtime"))) || 0, j = Number(this.val(e("min-pause"))) || 0, r = this.toBool(this.val(e("notify"))), c = Number(this.val(e("max-notif"))) || 0, d = this.toBool(this.val(e("fc-enabled"))), f = this.val(e("fc-start")) || "", b = this.val(e("fc-end")) || "", S = Number(this.val(e("fc-min-soc"))) || 0, D = this.toBool(this.val(e("dis-holiday"))), $ = Number(this.val(e("hol-pre-days"))) || 0, g = {
+      const v = Number(this.val(e("min-runtime"))) || 0, z = Number(this.val(e("min-pause"))) || 0, $ = this.toBool(this.val(e("notify"))), o = Number(this.val(e("max-notif"))) || 0, p = this.toBool(this.val(e("fc-enabled"))), d = this.val(e("fc-start")) || "", _ = this.val(e("fc-end")) || "", c = Number(this.val(e("fc-min-soc"))) || 0, y = this.toBool(this.val(e("dis-holiday"))), S = Number(this.val(e("hol-pre-days"))) || 0, f = {
         padding: "6px 14px",
         display: "flex",
         flexWrap: "wrap",
         alignItems: "center",
         gap: 8,
         borderTop: "1px solid rgba(0,0,0,0.06)"
-      }, v = {
+      }, x = {
         fontSize: 10,
         fontWeight: 700,
         color: "#555",
@@ -1590,7 +1669,7 @@ let __tla = Promise.all([
         letterSpacing: "0.03em",
         width: "100%",
         marginBottom: 2
-      }, h = (p, z, M, A = 50, I = 1) => t.jsxs("div", {
+      }, m = (h, M, C, A = 50, I = 1) => t.jsxs("div", {
         style: {
           display: "flex",
           alignItems: "center",
@@ -1599,11 +1678,11 @@ let __tla = Promise.all([
         children: [
           t.jsx("input", {
             type: "number",
-            value: p,
+            value: h,
             step: I,
-            onChange: (N) => this.setVal(e(z), Number(N.target.value)),
+            onChange: (N) => this.setVal(e(M), Number(N.target.value)),
             style: {
-              ...o,
+              ...a,
               width: A
             }
           }),
@@ -1612,7 +1691,7 @@ let __tla = Promise.all([
               fontSize: 10,
               color: "#555"
             },
-            children: M
+            children: C
           })
         ]
       });
@@ -1623,10 +1702,10 @@ let __tla = Promise.all([
         },
         children: [
           t.jsxs("div", {
-            style: g,
+            style: f,
             children: [
               t.jsx("div", {
-                style: v,
+                style: x,
                 children: n("em_soc_thresholds") || "SOC & Schwellen"
               }),
               t.jsx("span", {
@@ -1636,7 +1715,7 @@ let __tla = Promise.all([
                 },
                 children: n("em_min_soc") || "Min SOC"
               }),
-              h(l, "min-soc", "%", 35),
+              m(r, "min-soc", "%", 35),
               t.jsx("span", {
                 style: {
                   fontSize: 11,
@@ -1644,7 +1723,7 @@ let __tla = Promise.all([
                 },
                 children: n("em_soc_off") || "SOC Aus"
               }),
-              h(m, "soc-off", "%", 35),
+              m(u, "soc-off", "%", 35),
               t.jsx("span", {
                 style: {
                   fontSize: 11,
@@ -1652,12 +1731,12 @@ let __tla = Promise.all([
                 },
                 children: n("em_avg_min") || "\xD8"
               }),
-              h(x, "avg-min", "min", 30)
+              m(j, "avg-min", "min", 30)
             ]
           }),
           t.jsxs("div", {
             style: {
-              ...g,
+              ...f,
               borderTop: "none",
               paddingTop: 0
             },
@@ -1669,7 +1748,7 @@ let __tla = Promise.all([
                 },
                 children: n("em_surplus_on") || "Einsch."
               }),
-              h(u, "surplus-on", "W", 45),
+              m(b, "surplus-on", "W", 45),
               t.jsx("span", {
                 style: {
                   fontSize: 11,
@@ -1677,14 +1756,14 @@ let __tla = Promise.all([
                 },
                 children: n("em_surplus_off") || "Aussch."
               }),
-              h(y, "surplus-off", "W", 45)
+              m(g, "surplus-off", "W", 45)
             ]
           }),
           t.jsxs("div", {
-            style: g,
+            style: f,
             children: [
               t.jsx("div", {
-                style: v,
+                style: x,
                 children: n("em_runtimes") || "Laufzeiten"
               }),
               t.jsx("span", {
@@ -1694,7 +1773,7 @@ let __tla = Promise.all([
                 },
                 children: n("em_min_runtime") || "Min. Lauf"
               }),
-              h(w, "min-runtime", "min"),
+              m(v, "min-runtime", "min"),
               t.jsx("span", {
                 style: {
                   fontSize: 11,
@@ -1702,20 +1781,20 @@ let __tla = Promise.all([
                 },
                 children: n("em_min_pause") || "Min. Pause"
               }),
-              h(j, "min-pause", "min")
+              m(z, "min-pause", "min")
             ]
           }),
           t.jsxs("div", {
-            style: g,
+            style: f,
             children: [
               t.jsx("div", {
-                style: v,
+                style: x,
                 children: n("em_notifications") || "Benachrichtigungen"
               }),
-              t.jsx(E, {
-                checked: r,
+              t.jsx(B, {
+                checked: $,
                 label: n("em_notify_active") || "Aktiv",
-                onChange: (p) => this.setVal(e("notify"), p)
+                onChange: (h) => this.setVal(e("notify"), h)
               }),
               t.jsx("span", {
                 style: {
@@ -1724,26 +1803,26 @@ let __tla = Promise.all([
                 },
                 children: n("em_max_notif") || "Max/Tag"
               }),
-              h(c, "max-notif", "", 40)
+              m(o, "max-notif", "", 40)
             ]
           }),
           t.jsxs("div", {
-            style: g,
+            style: f,
             children: [
               t.jsx("div", {
-                style: v,
+                style: x,
                 children: n("em_forecast") || "Forecast"
               }),
-              t.jsx(E, {
-                checked: d,
+              t.jsx(B, {
+                checked: p,
                 label: n("em_fc_preheat") || "Vorheizen",
-                onChange: (p) => this.setVal(e("fc-enabled"), p)
+                onChange: (h) => this.setVal(e("fc-enabled"), h)
               }),
               t.jsx("input", {
                 type: "time",
-                value: f,
-                onChange: (p) => this.setVal(e("fc-start"), p.target.value),
-                style: a
+                value: d,
+                onChange: (h) => this.setVal(e("fc-start"), h.target.value),
+                style: l
               }),
               t.jsx("span", {
                 style: {
@@ -1754,15 +1833,15 @@ let __tla = Promise.all([
               }),
               t.jsx("input", {
                 type: "time",
-                value: b,
-                onChange: (p) => this.setVal(e("fc-end"), p.target.value),
-                style: a
+                value: _,
+                onChange: (h) => this.setVal(e("fc-end"), h.target.value),
+                style: l
               })
             ]
           }),
           t.jsxs("div", {
             style: {
-              ...g,
+              ...f,
               borderTop: "none",
               paddingTop: 0
             },
@@ -1774,20 +1853,20 @@ let __tla = Promise.all([
                 },
                 children: n("em_fc_min_soc") || "Vorheiz SOC"
               }),
-              h(S, "fc-min-soc", "%", 40)
+              m(c, "fc-min-soc", "%", 40)
             ]
           }),
           t.jsxs("div", {
-            style: g,
+            style: f,
             children: [
               t.jsx("div", {
-                style: v,
+                style: x,
                 children: n("em_holiday_settings") || "Urlaub"
               }),
-              t.jsx(E, {
-                checked: D,
+              t.jsx(B, {
+                checked: y,
                 label: n("em_dis_holiday") || "Im Urlaub aus",
-                onChange: (p) => this.setVal(e("dis-holiday"), p)
+                onChange: (h) => this.setVal(e("dis-holiday"), h)
               }),
               t.jsx("span", {
                 style: {
@@ -1796,7 +1875,7 @@ let __tla = Promise.all([
                 },
                 children: n("em_hol_pre_days") || "Vorlauf"
               }),
-              h($, "hol-pre-days", n("em_holiday_days_label") || "Tage", 40)
+              m(S, "hol-pre-days", n("em_holiday_days_label") || "Tage", 40)
             ]
           })
         ]
@@ -1804,7 +1883,7 @@ let __tla = Promise.all([
     }
     renderWidgetBody(i) {
       super.renderWidgetBody(i), this.state.rxData.widgetTitle;
-      const e = parseFloat(this.val("oid-surplus-current")) || 0, o = parseFloat(this.val("oid-surplus-avg")) || 0, a = parseFloat(this.val("oid-pv-power")) || 0, l = parseFloat(this.val("oid-battery-soc")) || 0, m = parseFloat(this.val("oid-forecast-today")) || 0, u = parseFloat(this.val("oid-managed-power")) || 0, y = this.val("oid-active-devices") || "", x = parseFloat(this.val("oid-ww-temp-bottom")), w = parseFloat(this.val("oid-ww-temp-top"));
+      const e = parseFloat(this.val("oid-surplus-current")) || 0, a = parseFloat(this.val("oid-surplus-avg")) || 0, l = parseFloat(this.val("oid-pv-power")) || 0, r = parseFloat(this.val("oid-battery-soc")) || 0, u = parseFloat(this.val("oid-forecast-today")) || 0, b = parseFloat(this.val("oid-managed-power")) || 0, g = this.val("oid-active-devices") || "", j = parseFloat(this.val("oid-ww-temp-bottom")), v = parseFloat(this.val("oid-ww-temp-top"));
       return t.jsxs("div", {
         style: {
           width: "100%",
@@ -1825,42 +1904,42 @@ let __tla = Promise.all([
               gap: 10
             },
             children: [
-              t.jsx(T, {
+              t.jsx(R, {
                 label: n("em_pv_power") || "PV-Leistung",
-                value: C(a),
+                value: D(l),
                 color: "#f5a623"
               }),
-              t.jsx(T, {
+              t.jsx(R, {
                 label: e >= 0 ? n("em_grid_feed") || "Einspeisung" : n("em_grid_draw") || "Netzbezug",
-                value: C(Math.abs(e)),
-                color: ne(e),
-                sub: `\xD830min: ${C(o)}`
+                value: D(Math.abs(e)),
+                color: le(e),
+                sub: `\xD830min: ${D(a)}`
               }),
-              t.jsx(T, {
+              t.jsx(R, {
                 label: n("em_battery_soc") || "Batterie",
-                value: `${Math.round(l)}`,
+                value: `${Math.round(r)}`,
                 unit: "%",
-                color: ae(l)
+                color: oe(r)
               }),
-              t.jsx(T, {
+              t.jsx(R, {
                 label: n("em_forecast_today") || "Prognose",
-                value: `${m.toFixed(1)}`,
+                value: `${u.toFixed(1)}`,
                 unit: "kWh",
                 color: "#4a9edd"
               }),
-              t.jsx(T, {
+              t.jsx(R, {
                 label: n("em_managed_power") || "Gesteuert",
-                value: C(u),
+                value: D(b),
                 color: "#8b5cf6",
-                sub: y || n("em_no_devices") || "Keine"
+                sub: g || n("em_no_devices") || "Keine"
               }),
-              t.jsx(O, {
+              t.jsx(V, {
                 label: n("em_ww_temp_top") || "Warmwasser oben",
-                temp: w
+                temp: v
               }),
-              t.jsx(O, {
+              t.jsx(V, {
                 label: n("em_ww_temp_bottom") || "Warmwasser unten",
-                temp: x
+                temp: j
               })
             ]
           }),
@@ -1883,5 +1962,5 @@ let __tla = Promise.all([
 });
 export {
   __tla,
-  K as default
+  G as default
 };

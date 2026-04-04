@@ -284,6 +284,14 @@ interface SilentRule {
     silent: boolean;
 }
 
+function parseSilentRules(jsonStr: string): SilentRule[] {
+    try {
+        return JSON.parse(jsonStr) as SilentRule[];
+    } catch {
+        return [];
+    }
+}
+
 function formatSilentRules(jsonStr: string): string {
     try {
         const rules: SilentRule[] = JSON.parse(jsonStr);
@@ -458,8 +466,9 @@ function Checkbox({ checked, label, onChange }: { checked: boolean; label: strin
 // ---------------------------------------------------------------------------
 interface TimeRulesModalProps {
     rules: TimeRule[];
+    silentRules: SilentRule[];
     excludeHolidays: boolean;
-    onSave: (rules: TimeRule[], excludeHolidays: boolean) => void;
+    onSave: (rules: TimeRule[], silentRules: SilentRule[], excludeHolidays: boolean) => void;
     onCancel: () => void;
 }
 
@@ -468,19 +477,23 @@ interface DayRow {
     active: boolean;
     start: string;
     end: string;
+    silent: boolean;
+    silentBefore: string;
 }
 
-function TimeRulesModal({ rules, excludeHolidays, onSave, onCancel }: TimeRulesModalProps): React.JSX.Element {
+function TimeRulesModal({ rules, silentRules, excludeHolidays, onSave, onCancel }: TimeRulesModalProps): React.JSX.Element {
     const initRows = (): DayRow[] => {
         const rows: DayRow[] = [];
         for (let d = 1; d <= 7; d++) {
-            // Find a rule containing this day
             const rule = rules.find((r) => r.days.includes(d));
+            const sr = silentRules.find((r) => r.days.includes(d));
             rows.push({
                 day: d,
                 active: !!rule,
                 start: rule ? rule.start : '08:00',
                 end: rule ? rule.end : '20:00',
+                silent: sr ? sr.silent : false,
+                silentBefore: sr && sr.before ? sr.before : '',
             });
         }
         return rows;
@@ -498,19 +511,34 @@ function TimeRulesModal({ rules, excludeHolidays, onSave, onCancel }: TimeRulesM
     };
 
     const handleSave = (): void => {
-        // Group rows with same start+end into rules
-        const groups: Record<string, number[]> = {};
+        // Group time rules
+        const timeGroups: Record<string, number[]> = {};
         for (const row of dayRows) {
             if (!row.active) continue;
             const key = `${row.start}|${row.end}`;
-            if (!groups[key]) groups[key] = [];
-            groups[key].push(row.day);
+            if (!timeGroups[key]) timeGroups[key] = [];
+            timeGroups[key].push(row.day);
         }
-        const result: TimeRule[] = Object.entries(groups).map(([key, days]) => {
+        const timeResult: TimeRule[] = Object.entries(timeGroups).map(([key, days]) => {
             const [start, end] = key.split('|');
             return { days: days.sort((a, b) => a - b), start, end };
         });
-        onSave(result, exclHol);
+
+        // Group silent rules
+        const silentGroups: Record<string, number[]> = {};
+        for (const row of dayRows) {
+            const key = `${row.silent}|${row.silentBefore}`;
+            if (!silentGroups[key]) silentGroups[key] = [];
+            silentGroups[key].push(row.day);
+        }
+        const silentResult: SilentRule[] = Object.entries(silentGroups).map(([key, days]) => {
+            const [silent, before] = key.split('|');
+            const rule: SilentRule = { days: days.sort((a, b) => a - b), silent: silent === 'true' };
+            if (before) rule.before = before;
+            return rule;
+        });
+
+        onSave(timeResult, silentResult, exclHol);
     };
 
     const inputStyle: React.CSSProperties = {
@@ -529,34 +557,34 @@ function TimeRulesModal({ rules, excludeHolidays, onSave, onCancel }: TimeRulesM
             }}
         >
             <div style={{
-                background: '#fff', borderRadius: 12, padding: 24, minWidth: 340,
-                maxWidth: 480, boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-                color: '#111',
+                background: '#fff', borderRadius: 12, padding: 24, minWidth: 380,
+                maxWidth: 560, boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                color: '#111', maxHeight: '90vh', overflow: 'auto',
             }}>
                 <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: '#111' }}>
-                    {tr('em_time_rules') || 'Zeitfenster'}
+                    {tr('em_time_rules') || 'Zeitfenster'} & Silent
                 </div>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr>
-                            <th style={{ textAlign: 'left', fontSize: 12, color: '#555', padding: '4px 6px' }}>Tag</th>
-                            <th style={{ textAlign: 'center', fontSize: 12, color: '#555', padding: '4px 6px' }}>
-                                {tr('em_time_active') || 'Aktiv'}
-                            </th>
-                            <th style={{ textAlign: 'center', fontSize: 12, color: '#555', padding: '4px 6px' }}>Start</th>
-                            <th style={{ textAlign: 'center', fontSize: 12, color: '#555', padding: '4px 6px' }}>Ende</th>
+                            <th style={{ textAlign: 'left', fontSize: 11, color: '#555', padding: '4px 4px' }}>Tag</th>
+                            <th style={{ textAlign: 'center', fontSize: 11, color: '#555', padding: '4px 4px' }}>Aktiv</th>
+                            <th style={{ textAlign: 'center', fontSize: 11, color: '#555', padding: '4px 4px' }}>Start</th>
+                            <th style={{ textAlign: 'center', fontSize: 11, color: '#555', padding: '4px 4px' }}>Ende</th>
+                            <th style={{ textAlign: 'center', fontSize: 11, color: '#8b5cf6', padding: '4px 4px' }}>Silent</th>
+                            <th style={{ textAlign: 'center', fontSize: 11, color: '#8b5cf6', padding: '4px 4px' }}>bis</th>
                         </tr>
                     </thead>
                     <tbody>
                         {dayRows.map((row, idx) => (
                             <tr key={row.day} style={{
                                 borderTop: '1px solid rgba(0,0,0,0.08)',
-                                opacity: row.active ? 1 : 0.5,
+                                opacity: row.active ? 1 : 0.4,
                             }}>
-                                <td style={{ padding: '6px', fontSize: 13, fontWeight: 600, color: '#333' }}>
+                                <td style={{ padding: '4px', fontSize: 13, fontWeight: 600, color: '#333' }}>
                                     {DAY_NAMES_FULL[row.day]}
                                 </td>
-                                <td style={{ padding: '6px', textAlign: 'center' }}>
+                                <td style={{ padding: '4px', textAlign: 'center' }}>
                                     <input
                                         type="checkbox"
                                         checked={row.active}
@@ -564,22 +592,39 @@ function TimeRulesModal({ rules, excludeHolidays, onSave, onCancel }: TimeRulesM
                                         style={{ width: 16, height: 16 }}
                                     />
                                 </td>
-                                <td style={{ padding: '6px', textAlign: 'center' }}>
+                                <td style={{ padding: '4px', textAlign: 'center' }}>
                                     <input
                                         type="time"
                                         value={row.start}
                                         disabled={!row.active}
                                         onChange={(e) => updateRow(idx, 'start', e.target.value)}
-                                        style={{ ...inputStyle, opacity: row.active ? 1 : 0.4 }}
+                                        style={{ ...inputStyle, width: 75, opacity: row.active ? 1 : 0.3 }}
                                     />
                                 </td>
-                                <td style={{ padding: '6px', textAlign: 'center' }}>
+                                <td style={{ padding: '4px', textAlign: 'center' }}>
                                     <input
                                         type="time"
                                         value={row.end}
                                         disabled={!row.active}
                                         onChange={(e) => updateRow(idx, 'end', e.target.value)}
-                                        style={{ ...inputStyle, opacity: row.active ? 1 : 0.4 }}
+                                        style={{ ...inputStyle, width: 75, opacity: row.active ? 1 : 0.3 }}
+                                    />
+                                </td>
+                                <td style={{ padding: '4px', textAlign: 'center' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={row.silent}
+                                        onChange={(e) => updateRow(idx, 'silent', e.target.checked)}
+                                        style={{ width: 16, height: 16, accentColor: '#8b5cf6' }}
+                                    />
+                                </td>
+                                <td style={{ padding: '4px', textAlign: 'center' }}>
+                                    <input
+                                        type="time"
+                                        value={row.silentBefore}
+                                        disabled={!row.silent}
+                                        onChange={(e) => updateRow(idx, 'silentBefore', e.target.value)}
+                                        style={{ ...inputStyle, width: 75, opacity: row.silent ? 1 : 0.3 }}
                                     />
                                 </td>
                             </tr>
@@ -905,7 +950,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         {/* Priority input */}
-                        <span style={{ fontSize: 11, color: '#555' }}>P</span>
+                        <span style={{ fontSize: 11, color: '#555' }}>Prio</span>
                         <input
                             type="number"
                             min={1}
@@ -1081,9 +1126,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 {showTimeModal && (
                     <TimeRulesModal
                         rules={this.getTimeRulesForDevice(devNum)}
+                        silentRules={parseSilentRules(this.val(k('silent-rules')) || '[]')}
                         excludeHolidays={this.toBool(this.val(k('excl-holidays')))}
-                        onSave={(newRules, newExclHol) => {
+                        onSave={(newRules, newSilentRules, newExclHol) => {
                             this.setVal(k('time-rules'), JSON.stringify(newRules));
+                            this.setVal(k('silent-rules'), JSON.stringify(newSilentRules));
                             this.setVal(k('excl-holidays'), newExclHol);
                             this.setState({ [timeModalKey]: false } as any);
                         }}
