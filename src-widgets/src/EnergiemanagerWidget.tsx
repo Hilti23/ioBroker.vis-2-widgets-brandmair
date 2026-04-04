@@ -66,6 +66,9 @@ interface EmRxData {
     'oid-dev3-last-action': string;
     'oid-dev3-holiday-blocked': string;
     'oid-dev3-notif-today': string;
+    // Pool WP extras
+    'oid-dev3-silent-rules': string;
+    'oid-dev3-silent-active': string;
 }
 
 interface EmState extends VisRxWidgetState {
@@ -130,13 +133,15 @@ const OID_MAP: Array<[string, string]> = [
     ['oid-dev3-last-action', 'pool_wp.last_action'],
     ['oid-dev3-holiday-blocked', 'pool_wp.holiday_blocked'],
     ['oid-dev3-notif-today', 'pool_wp.notifications_today'],
+    ['oid-dev3-silent-rules', 'pool_wp.silent_rules'],
+    ['oid-dev3-silent-active', 'pool_wp.silent_active'],
 ];
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 function wwColor(t: number): string {
-    if (isNaN(t)) return 'rgba(255,255,255,0.5)';
+    if (isNaN(t)) return '#777';
     if (t < 30) return '#4a9edd';
     if (t < 45) return '#f5a623';
     return '#e8622a';
@@ -150,16 +155,6 @@ function socColor(soc: number): string {
     if (soc < 20) return '#e8622a';
     if (soc < 50) return '#f5a623';
     return '#2ec27e';
-}
-
-function modeLabel(mode: string): string {
-    switch (mode) {
-        case 'auto': return tr('em_mode_auto') || 'Auto';
-        case 'manual_on': return tr('em_mode_manual_on') || 'Manuell EIN';
-        case 'manual_off': return tr('em_mode_manual_off') || 'Manuell AUS';
-        case 'disabled': return tr('em_mode_disabled') || 'Deaktiviert';
-        default: return mode || '–';
-    }
 }
 
 function modeColor(mode: string): string {
@@ -177,6 +172,32 @@ function formatWatt(w: number): string {
     return `${Math.round(w)} W`;
 }
 
+const DAY_NAMES = ['', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+
+interface SilentRule {
+    days: number[];
+    before?: string;
+    silent: boolean;
+}
+
+function formatSilentRules(jsonStr: string): string {
+    try {
+        const rules: SilentRule[] = JSON.parse(jsonStr);
+        return rules
+            .filter((r) => r.silent)
+            .map((r) => {
+                const days = r.days.map((d) => DAY_NAMES[d] || d).join(',');
+                return r.before ? `${days} <${r.before}` : days;
+            })
+            .join(' | ') || '–';
+    } catch {
+        return '–';
+    }
+}
+
+// Text shadow for colored values on variable backgrounds
+const valueShadow = '0 0 3px rgba(0,0,0,0.6), 0 0 6px rgba(0,0,0,0.3)';
+
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
@@ -192,9 +213,12 @@ function StatCard({ label, value, unit, color, sub }: {
             <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
             </div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: color || '#111' }}>
+            <div style={{
+                fontSize: 22, fontWeight: 700, color: color || '#111',
+                textShadow: color ? valueShadow : 'none',
+            }}>
                 {value}
-                {unit && <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333' }}>{unit}</span>}
+                {unit && <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333', textShadow: 'none' }}>{unit}</span>}
             </div>
             {sub && (
                 <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{sub}</div>
@@ -214,10 +238,39 @@ function WaterTempCard({ label, temp }: { label: string; temp: number }) {
             <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
             </div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: wwColor(temp) }}>
+            <div style={{
+                fontSize: 22, fontWeight: 700, color: wwColor(temp),
+                textShadow: valueShadow,
+            }}>
                 {display}
-                <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333' }}>°C</span>
+                <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333', textShadow: 'none' }}>°C</span>
             </div>
+        </div>
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Toggle component
+// ---------------------------------------------------------------------------
+function Toggle({ on, label, onClick }: { on: boolean; label: string; onClick: () => void }) {
+    return (
+        <div onClick={onClick} style={{
+            display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none',
+        }}>
+            <div style={{
+                width: 36, height: 20, borderRadius: 10, position: 'relative',
+                background: on ? 'rgba(245,166,35,0.5)' : 'rgba(0,0,0,0.15)',
+                border: `1px solid ${on ? '#f5a623' : 'rgba(0,0,0,0.2)'}`,
+                transition: 'all 0.2s',
+            }}>
+                <div style={{
+                    width: 14, height: 14, borderRadius: '50%', position: 'absolute',
+                    top: 2, left: 2, transition: 'all 0.2s',
+                    transform: on ? 'translateX(14px)' : 'translateX(0)',
+                    background: on ? '#f5a623' : 'rgba(0,0,0,0.3)',
+                }} />
+            </div>
+            <span style={{ fontSize: 11, color: '#333' }}>{label}</span>
         </div>
     );
 }
@@ -227,7 +280,7 @@ function WaterTempCard({ label, temp }: { label: string; temp: number }) {
 // ---------------------------------------------------------------------------
 function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: string; type: string; label: string }> {
     const p = `oid-dev${devNum}`;
-    return [
+    const fields = [
         { name: `${p}-name`, type: 'id', label: `${labelPrefix}_name` },
         { name: `${p}-mode`, type: 'id', label: `${labelPrefix}_mode` },
         { name: `${p}-priority`, type: 'id', label: `${labelPrefix}_priority` },
@@ -240,6 +293,13 @@ function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: str
         { name: `${p}-holiday-blocked`, type: 'id', label: `${labelPrefix}_holiday_blocked` },
         { name: `${p}-notif-today`, type: 'id', label: `${labelPrefix}_notif_today` },
     ];
+    if (devNum === 3) {
+        fields.push(
+            { name: `${p}-silent-rules`, type: 'id', label: 'em_silent_rules' },
+            { name: `${p}-silent-active`, type: 'id', label: 'em_silent_active' },
+        );
+    }
+    return fields;
 }
 
 // ---------------------------------------------------------------------------
@@ -394,11 +454,39 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const mc = modeColor(mode);
 
         const inputStyle: React.CSSProperties = {
-            width: 70, padding: '4px 8px', fontSize: 13,
-            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 6,
+            width: 65, padding: '3px 6px', fontSize: 12,
+            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 5,
             background: 'transparent', color: '#111',
             textAlign: 'right',
         };
+
+        // Pool WP silent mode (only dev3)
+        let silentSection: React.JSX.Element | null = null;
+        if (devNum === 3) {
+            const silentActive = this.val(k('silent-active')) === true || this.val(k('silent-active')) === 'true';
+            const silentRulesStr: string = this.val(k('silent-rules')) || '[]';
+            silentSection = (
+                <div style={{
+                    padding: '6px 14px 10px', display: 'flex', alignItems: 'center', gap: 8,
+                    borderTop: '1px solid rgba(0,0,0,0.06)',
+                }}>
+                    <span style={{ fontSize: 11, color: '#333' }}>
+                        Silent
+                    </span>
+                    <span style={{
+                        fontSize: 10, padding: '2px 6px', borderRadius: 8,
+                        background: silentActive ? 'rgba(139,92,246,0.15)' : 'rgba(0,0,0,0.06)',
+                        color: silentActive ? '#8b5cf6' : '#777',
+                        fontWeight: 600,
+                    }}>
+                        {silentActive ? 'aktiv' : 'aus'}
+                    </span>
+                    <span style={{ fontSize: 10, color: '#555', marginLeft: 'auto' }}>
+                        {formatSilentRules(silentRulesStr)}
+                    </span>
+                </div>
+            );
+        }
 
         return (
             <div key={devNum} style={{
@@ -411,7 +499,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
 
                 {/* Header */}
                 <div style={{
-                    padding: '12px 14px 8px', display: 'flex',
+                    padding: '10px 14px 6px', display: 'flex',
                     alignItems: 'center', justifyContent: 'space-between', gap: 8,
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -426,30 +514,30 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         {isDimmable && (
                             <span style={{
                                 fontSize: 10, padding: '2px 6px', borderRadius: 8,
-                                background: '#e8f4ff', color: '#4a9edd',
+                                background: 'rgba(74,158,221,0.15)', color: '#4a9edd',
                             }}>
                                 {tr('em_dimmable') || 'stufenlos'}
                             </span>
                         )}
                     </div>
-                    {holidayBlocked && (
-                        <span style={{
-                            fontSize: 10, padding: '2px 8px', borderRadius: 8,
-                            background: '#fff3e0', color: '#f5a623', fontWeight: 600,
-                        }}>
-                            {tr('em_holiday_blocked') || 'Urlaub'}
-                        </span>
-                    )}
+                    {/* Priority badge */}
+                    <span style={{
+                        fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10,
+                        background: 'rgba(0,0,0,0.08)', color: '#333',
+                        border: '1px solid rgba(0,0,0,0.1)',
+                    }}>
+                        P{displayPri}
+                    </span>
                 </div>
 
                 {/* Power bar */}
-                <div style={{ padding: '0 14px 10px' }}>
+                <div style={{ padding: '0 14px 8px' }}>
                     <div style={{
                         display: 'flex', justifyContent: 'space-between',
                         fontSize: 12, color: '#333', marginBottom: 4,
                     }}>
                         <span>{tr('em_dev_power') || 'Leistung'}</span>
-                        <span style={{ fontWeight: 600, color: isOn ? '#fff' : 'rgba(255,255,255,0.5)' }}>
+                        <span style={{ fontWeight: 600, color: '#111' }}>
                             {formatWatt(power)} / {formatWatt(powerMax)}
                         </span>
                     </div>
@@ -468,9 +556,9 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </div>
                 </div>
 
-                {/* Mode selector */}
+                {/* Mode selector + Holiday toggle */}
                 <div style={{
-                    padding: '0 14px 10px', display: 'flex',
+                    padding: '0 14px 8px', display: 'flex',
                     alignItems: 'center', gap: 10,
                 }}>
                     <span style={{ fontSize: 12, color: '#333', minWidth: 45 }}>
@@ -496,15 +584,23 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </Select>
                 </div>
 
-                {/* Settings: Priority + Power limits */}
+                {/* Holiday blocked toggle */}
+                <div style={{ padding: '0 14px 8px' }}>
+                    <Toggle
+                        on={holidayBlocked}
+                        label={tr('em_holiday_blocked') || 'Urlaub-Sperre'}
+                        onClick={() => this.setVal(k('holiday-blocked'), !holidayBlocked)}
+                    />
+                </div>
+
+                {/* Settings row: Priority input + Min/Max W side by side */}
                 <div style={{
-                    padding: '0 14px 10px', display: 'flex', flexWrap: 'wrap', gap: 8,
+                    padding: '0 14px 8px', display: 'flex', alignItems: 'center', gap: 10,
+                    borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 8,
                 }}>
                     {/* Priority */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12, color: '#333' }}>
-                            {tr('em_dev_priority') || 'Prio'}
-                        </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 11, color: '#555' }}>Prio</span>
                         <input
                             type="number"
                             min={1}
@@ -517,12 +613,13 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                                     this.setState({ [priKey]: null } as any);
                                 }
                             }}
-                            style={{ ...inputStyle, width: 50 }}
+                            style={{ ...inputStyle, width: 42 }}
                         />
                     </div>
-                    {/* Power min */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12, color: '#333' }}>Min</span>
+                    <div style={{ width: 1, height: 20, background: 'rgba(0,0,0,0.1)' }} />
+                    {/* Min + Max side by side */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 11, color: '#555' }}>Min</span>
                         <input
                             type="number"
                             min={0}
@@ -537,11 +634,9 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             }}
                             style={inputStyle}
                         />
-                        <span style={{ fontSize: 11, color: '#555' }}>W</span>
                     </div>
-                    {/* Power max */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12, color: '#333' }}>Max</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 11, color: '#555' }}>Max</span>
                         <input
                             type="number"
                             min={0}
@@ -556,13 +651,16 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             }}
                             style={inputStyle}
                         />
-                        <span style={{ fontSize: 11, color: '#555' }}>W</span>
                     </div>
+                    <span style={{ fontSize: 10, color: '#555' }}>W</span>
                 </div>
+
+                {/* Silent mode (Pool WP only) */}
+                {silentSection}
 
                 {/* Footer: last action + notifications */}
                 <div style={{
-                    padding: '8px 14px', borderTop: '1px solid rgba(0,0,0,0.1)',
+                    padding: '6px 14px', borderTop: '1px solid rgba(0,0,0,0.08)',
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     fontSize: 11, color: '#555', marginTop: 'auto',
                 }}>
@@ -616,6 +714,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 {/* Title */}
                 <div style={{
                     fontSize: 18, fontWeight: 700, letterSpacing: '0.02em', color: '#111',
+                    textShadow: '0 0 4px rgba(0,0,0,0.3)',
                 }}>
                     {title}
                 </div>
@@ -673,15 +772,16 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 }}>
                     <div style={{
                         fontSize: 13, fontWeight: 600,
-                        color: isHoliday ? '#f5a623' : 'rgba(255,255,255,0.6)',
+                        color: isHoliday ? '#f5a623' : '#555',
                         display: 'flex', alignItems: 'center', gap: 6,
+                        textShadow: isHoliday ? valueShadow : 'none',
                     }}>
                         <span style={{ fontSize: 18 }}>&#9992;</span>
                         {tr('em_holiday') || 'Urlaub'}
                         {isHoliday && (
                             <span style={{
                                 fontSize: 11, padding: '2px 8px', borderRadius: 8,
-                                background: '#fff3e0', color: '#f5a623',
+                                background: '#fff3e0', color: '#f5a623', textShadow: 'none',
                             }}>
                                 {holidayDaysRemain > 0
                                     ? `${holidayDaysRemain} ${tr('em_holiday_days_label') || 'Tage'}`

@@ -110,5 +110,7 @@
     "em_mode_auto": "Auto",
     "em_mode_manual_on": "Manuell EIN",
     "em_mode_manual_off": "Manuell AUS",
-    "em_mode_disabled": "Deaktiviert"
+    "em_mode_disabled": "Deaktiviert",
+    "em_silent_rules": "Silent Regeln",
+    "em_silent_active": "Silent aktiv"
 }

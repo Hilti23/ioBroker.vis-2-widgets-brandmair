@@ -113,6 +113,8 @@ const translations: Record<string, any> = {
         em_mode_manual_on: 'Manual ON',
         em_mode_manual_off: 'Manual OFF',
         em_mode_disabled: 'Disabled',
+        em_silent_rules: 'Silent rules',
+        em_silent_active: 'Silent active',
     },
     de: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -227,6 +229,8 @@ const translations: Record<string, any> = {
         em_mode_manual_on: 'Manuell EIN',
         em_mode_manual_off: 'Manuell AUS',
         em_mode_disabled: 'Deaktiviert',
+        em_silent_rules: 'Silent Regeln',
+        em_silent_active: 'Silent aktiv',
     },
     ru: {
         thermostat_trvzb: 'Thermostat Sonoff TRVZB',
@@ -341,6 +345,8 @@ const translations: Record<string, any> = {
         em_mode_manual_on: 'Manual ON',
         em_mode_manual_off: 'Manual OFF',
         em_mode_disabled: 'Disabled',
+        em_silent_rules: 'Silent rules',
+        em_silent_active: 'Silent active',
     },
     prefix: 'vis_2_widgets_brandmair_',
 };

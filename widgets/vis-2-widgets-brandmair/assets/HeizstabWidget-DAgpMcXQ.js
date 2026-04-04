@@ -1,7 +1,7 @@
 import { j as t, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
 import { d as p, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
 import { G as u } from "./Generic-CM5BSTAz.js";
-import { t as x } from "./tr-COzJWtSl.js";
+import { t as x } from "./tr-DlxLwYzi.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
 let d;
