@@ -1,10 +1,10 @@
 import { j as e, __tla as __tla_0 } from "./jsx-runtime-DBblkrDb.js";
 import { a as F, b as j, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
 import { G as N } from "./Generic-CM5BSTAz.js";
-import { t as o } from "./tr-COzJWtSl.js";
+import { t as a } from "./tr-COzJWtSl.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-DCr90mXz.js";
 import { __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-36-XpKNE.js";
-let M;
+let D;
 let __tla = Promise.all([
   (() => {
     try {
@@ -201,17 +201,17 @@ let __tla = Promise.all([
       "pool_wp.notifications_today"
     ]
   ];
-  function B(a) {
-    return isNaN(a) ? "#999" : a < 30 ? "#4a9edd" : a < 45 ? "#f5a623" : "#e8622a";
+  function B(o) {
+    return isNaN(o) ? "rgba(255,255,255,0.5)" : o < 30 ? "#4a9edd" : o < 45 ? "#f5a623" : "#e8622a";
   }
-  function V(a) {
-    return a >= 0 ? "#2ec27e" : "#e8622a";
+  function V(o) {
+    return o >= 0 ? "#2ec27e" : "#e8622a";
   }
-  function O(a) {
-    return a < 20 ? "#e8622a" : a < 50 ? "#f5a623" : "#2ec27e";
+  function O(o) {
+    return o < 20 ? "#e8622a" : o < 50 ? "#f5a623" : "#2ec27e";
   }
-  function A(a) {
-    switch (a) {
+  function A(o) {
+    switch (o) {
       case "auto":
         return "#4a9edd";
       case "manual_on":
@@ -224,16 +224,16 @@ let __tla = Promise.all([
         return "#888";
     }
   }
-  function u(a) {
-    return Math.abs(a) >= 1e3 ? `${(a / 1e3).toFixed(1)} kW` : `${Math.round(a)} W`;
+  function u(o) {
+    return Math.abs(o) >= 1e3 ? `${(o / 1e3).toFixed(1)} kW` : `${Math.round(o)} W`;
   }
-  function f({ label: a, value: t, unit: i, color: d, sub: s }) {
+  function _({ label: o, value: t, unit: i, color: r, sub: l }) {
     return e.jsxs("div", {
       style: {
         flex: "1 1 0",
         minWidth: 120,
         padding: "12px 14px",
-        border: "1px solid #ddd",
+        border: "1px solid rgba(255,255,255,0.2)",
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
@@ -243,17 +243,17 @@ let __tla = Promise.all([
         e.jsx("div", {
           style: {
             fontSize: 11,
-            color: "#888",
+            color: "rgba(255,255,255,0.6)",
             textTransform: "uppercase",
             letterSpacing: "0.04em"
           },
-          children: a
+          children: o
         }),
         e.jsxs("div", {
           style: {
             fontSize: 22,
             fontWeight: 700,
-            color: d || "#000"
+            color: r || "#fff"
           },
           children: [
             t,
@@ -262,31 +262,31 @@ let __tla = Promise.all([
                 fontSize: 13,
                 fontWeight: 400,
                 marginLeft: 3,
-                color: "#888"
+                color: "rgba(255,255,255,0.6)"
               },
               children: i
             })
           ]
         }),
-        s && e.jsx("div", {
+        l && e.jsx("div", {
           style: {
             fontSize: 11,
-            color: "#999",
+            color: "rgba(255,255,255,0.5)",
             marginTop: 2
           },
-          children: s
+          children: l
         })
       ]
     });
   }
-  function D({ label: a, temp: t }) {
+  function M({ label: o, temp: t }) {
     const i = isNaN(t) ? "\u2013" : `${t.toFixed(1)}`;
     return e.jsxs("div", {
       style: {
         flex: "1 1 0",
         minWidth: 120,
         padding: "12px 14px",
-        border: "1px solid #ddd",
+        border: "1px solid rgba(255,255,255,0.2)",
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
@@ -296,11 +296,11 @@ let __tla = Promise.all([
         e.jsx("div", {
           style: {
             fontSize: 11,
-            color: "#888",
+            color: "rgba(255,255,255,0.6)",
             textTransform: "uppercase",
             letterSpacing: "0.04em"
           },
-          children: a
+          children: o
         }),
         e.jsxs("div", {
           style: {
@@ -315,7 +315,7 @@ let __tla = Promise.all([
                 fontSize: 13,
                 fontWeight: 400,
                 marginLeft: 3,
-                color: "#888"
+                color: "rgba(255,255,255,0.6)"
               },
               children: "\xB0C"
             })
@@ -324,8 +324,8 @@ let __tla = Promise.all([
       ]
     });
   }
-  function W(a, t) {
-    const i = `oid-dev${a}`;
+  function W(o, t) {
+    const i = `oid-dev${o}`;
     return [
       {
         name: `${i}-name`,
@@ -384,7 +384,7 @@ let __tla = Promise.all([
       }
     ];
   }
-  M = class extends N {
+  D = class extends N {
     constructor(t) {
       super(t), this.state = {
         ...this.state,
@@ -421,11 +421,11 @@ let __tla = Promise.all([
                 type: "text",
                 label: "em_base_oid",
                 tooltip: "em_base_oid_tooltip",
-                onChange: async (t, i, d) => {
-                  const s = i["oid-base"];
-                  if (s) {
-                    for (const [h, n] of T) i[h] = `${s}.${n}`;
-                    d(i);
+                onChange: async (t, i, r) => {
+                  const l = i["oid-base"];
+                  if (l) {
+                    for (const [h, n] of T) i[h] = `${l}.${n}`;
+                    r(i);
                   }
                 }
               }
@@ -534,36 +534,36 @@ let __tla = Promise.all([
       };
     }
     getWidgetInfo() {
-      return M.getWidgetInfo();
+      return D.getWidgetInfo();
     }
     val(t) {
       const i = this.state.rxData[t];
       if (i) return this.state.values[`${i}.val`];
     }
     setVal(t, i) {
-      const d = this.state.rxData[t];
-      if (!d) return;
-      const s = JSON.parse(JSON.stringify(this.state.values));
-      s[`${d}.val`] = i, this.setState({
-        values: s
-      }), this.props.context.setValue(d, i);
+      const r = this.state.rxData[t];
+      if (!r) return;
+      const l = JSON.parse(JSON.stringify(this.state.values));
+      l[`${r}.val`] = i, this.setState({
+        values: l
+      }), this.props.context.setValue(r, i);
     }
     renderDevice(t) {
-      const i = (l) => `oid-dev${t}-${l}`, d = this.val(i("name")) || `Ger\xE4t ${t}`, s = this.val(i("mode")) || "auto", h = Number(this.val(i("priority"))) || 1, n = Number(this.val(i("power-min"))) || 0, p = Number(this.val(i("power-max"))) || 0, S = this.val(i("is-dimmable")) === true || this.val(i("is-dimmable")) === "true", c = this.val(i("is-on")) === true || this.val(i("is-on")) === "true", m = Number(this.val(i("power"))) || 0, v = this.val(i("last-action")) || "\u2013", k = this.val(i("holiday-blocked")) === true || this.val(i("holiday-blocked")) === "true", x = Number(this.val(i("notif-today"))) || 0, y = `editDev${t}Priority`, _ = `editDev${t}PowerMin`, r = `editDev${t}PowerMax`, g = this.state[y], w = this.state[_], b = this.state[r], C = g !== null ? g : h, I = w !== null ? w : n, P = b !== null ? b : p, R = p > 0 ? Math.min(100, m / p * 100) : 0, z = A(s), $ = {
+      const i = (s) => `oid-dev${t}-${s}`, r = this.val(i("name")) || `Ger\xE4t ${t}`, l = this.val(i("mode")) || "auto", h = Number(this.val(i("priority"))) || 1, n = Number(this.val(i("power-min"))) || 0, p = Number(this.val(i("power-max"))) || 0, S = this.val(i("is-dimmable")) === true || this.val(i("is-dimmable")) === "true", c = this.val(i("is-on")) === true || this.val(i("is-on")) === "true", m = Number(this.val(i("power"))) || 0, g = this.val(i("last-action")) || "\u2013", k = this.val(i("holiday-blocked")) === true || this.val(i("holiday-blocked")) === "true", v = Number(this.val(i("notif-today"))) || 0, f = `editDev${t}Priority`, y = `editDev${t}PowerMin`, d = `editDev${t}PowerMax`, b = this.state[f], x = this.state[y], w = this.state[d], C = b !== null ? b : h, I = x !== null ? x : n, P = w !== null ? w : p, R = p > 0 ? Math.min(100, m / p * 100) : 0, z = A(l), $ = {
         width: 70,
         padding: "4px 8px",
         fontSize: 13,
-        border: "1px solid #ccc",
+        border: "1px solid rgba(255,255,255,0.25)",
         borderRadius: 6,
         background: "transparent",
-        color: "inherit",
+        color: "#fff",
         textAlign: "right"
       };
       return e.jsxs("div", {
         style: {
           flex: "1 1 300px",
           minWidth: 280,
-          border: "1px solid #ddd",
+          border: "1px solid rgba(255,255,255,0.2)",
           borderRadius: 12,
           display: "flex",
           flexDirection: "column",
@@ -598,7 +598,7 @@ let __tla = Promise.all([
                       width: 10,
                       height: 10,
                       borderRadius: "50%",
-                      background: c ? "#2ec27e" : "#ccc",
+                      background: c ? "#2ec27e" : "rgba(255,255,255,0.3)",
                       boxShadow: c ? "0 0 6px rgba(46,194,126,0.5)" : "none",
                       flexShrink: 0
                     }
@@ -606,9 +606,10 @@ let __tla = Promise.all([
                   e.jsx("div", {
                     style: {
                       fontSize: 15,
-                      fontWeight: 600
+                      fontWeight: 600,
+                      color: "#fff"
                     },
-                    children: d
+                    children: r
                   }),
                   S && e.jsx("span", {
                     style: {
@@ -618,7 +619,7 @@ let __tla = Promise.all([
                       background: "#e8f4ff",
                       color: "#4a9edd"
                     },
-                    children: o("em_dimmable") || "stufenlos"
+                    children: a("em_dimmable") || "stufenlos"
                   })
                 ]
               }),
@@ -631,7 +632,7 @@ let __tla = Promise.all([
                   color: "#f5a623",
                   fontWeight: 600
                 },
-                children: o("em_holiday_blocked") || "Urlaub"
+                children: a("em_holiday_blocked") || "Urlaub"
               })
             ]
           }),
@@ -645,17 +646,17 @@ let __tla = Promise.all([
                   display: "flex",
                   justifyContent: "space-between",
                   fontSize: 12,
-                  color: "#888",
+                  color: "rgba(255,255,255,0.6)",
                   marginBottom: 4
                 },
                 children: [
                   e.jsx("span", {
-                    children: o("em_dev_power") || "Leistung"
+                    children: a("em_dev_power") || "Leistung"
                   }),
                   e.jsxs("span", {
                     style: {
                       fontWeight: 600,
-                      color: c ? "#000" : "#888"
+                      color: c ? "#fff" : "rgba(255,255,255,0.5)"
                     },
                     children: [
                       u(m),
@@ -670,14 +671,14 @@ let __tla = Promise.all([
                   height: 22,
                   borderRadius: 6,
                   overflow: "hidden",
-                  background: "#f0f0f0",
+                  background: "rgba(255,255,255,0.1)",
                   position: "relative"
                 },
                 children: e.jsx("div", {
                   style: {
                     width: `${R}%`,
                     height: "100%",
-                    background: c ? `linear-gradient(90deg, ${z}, ${z}dd)` : "#ddd",
+                    background: c ? `linear-gradient(90deg, ${z}, ${z}dd)` : "rgba(255,255,255,0.2)",
                     borderRadius: 6,
                     transition: "width 0.5s ease"
                   }
@@ -696,42 +697,46 @@ let __tla = Promise.all([
               e.jsx("span", {
                 style: {
                   fontSize: 12,
-                  color: "#888",
+                  color: "rgba(255,255,255,0.6)",
                   minWidth: 45
                 },
-                children: o("em_dev_mode") || "Modus"
+                children: a("em_dev_mode") || "Modus"
               }),
               e.jsxs(F, {
-                value: s,
+                value: l,
                 size: "small",
-                onChange: (l) => this.setVal(i("mode"), l.target.value),
+                onChange: (s) => this.setVal(i("mode"), s.target.value),
                 sx: {
                   flex: 1,
                   fontSize: 13,
                   height: 32,
+                  color: "#fff",
                   "& .MuiSelect-select": {
                     padding: "4px 10px"
                   },
+                  "& .MuiSelect-icon": {
+                    color: "rgba(255,255,255,0.5)"
+                  },
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#ddd"
+                    borderColor: "rgba(255,255,255,0.25)"
                   }
                 },
                 children: [
                   e.jsx(j, {
                     value: "auto",
-                    children: o("em_mode_auto") || "Auto"
+                    children: a("em_mode_auto") || "Auto"
                   }),
                   e.jsx(j, {
                     value: "manual_on",
-                    children: o("em_mode_manual_on") || "Manuell EIN"
+                    children: a("em_mode_manual_on") || "Manuell EIN"
                   }),
                   e.jsx(j, {
                     value: "manual_off",
-                    children: o("em_mode_manual_off") || "Manuell AUS"
+                    children: a("em_mode_manual_off") || "Manuell AUS"
                   }),
                   e.jsx(j, {
                     value: "disabled",
-                    children: o("em_mode_disabled") || "Deaktiviert"
+                    children: a("em_mode_disabled") || "Deaktiviert"
                   })
                 ]
               })
@@ -755,21 +760,21 @@ let __tla = Promise.all([
                   e.jsx("span", {
                     style: {
                       fontSize: 12,
-                      color: "#888"
+                      color: "rgba(255,255,255,0.6)"
                     },
-                    children: o("em_dev_priority") || "Prio"
+                    children: a("em_dev_priority") || "Prio"
                   }),
                   e.jsx("input", {
                     type: "number",
                     min: 1,
                     max: 99,
                     value: C,
-                    onChange: (l) => this.setState({
-                      [y]: Number(l.target.value)
+                    onChange: (s) => this.setState({
+                      [f]: Number(s.target.value)
                     }),
                     onBlur: () => {
-                      g !== null && (this.setVal(i("priority"), g), this.setState({
-                        [y]: null
+                      b !== null && (this.setVal(i("priority"), b), this.setState({
+                        [f]: null
                       }));
                     },
                     style: {
@@ -789,7 +794,7 @@ let __tla = Promise.all([
                   e.jsx("span", {
                     style: {
                       fontSize: 12,
-                      color: "#888"
+                      color: "rgba(255,255,255,0.6)"
                     },
                     children: "Min"
                   }),
@@ -798,12 +803,12 @@ let __tla = Promise.all([
                     min: 0,
                     step: 50,
                     value: I,
-                    onChange: (l) => this.setState({
-                      [_]: Number(l.target.value)
+                    onChange: (s) => this.setState({
+                      [y]: Number(s.target.value)
                     }),
                     onBlur: () => {
-                      w !== null && (this.setVal(i("power-min"), w), this.setState({
-                        [_]: null
+                      x !== null && (this.setVal(i("power-min"), x), this.setState({
+                        [y]: null
                       }));
                     },
                     style: $
@@ -811,7 +816,7 @@ let __tla = Promise.all([
                   e.jsx("span", {
                     style: {
                       fontSize: 11,
-                      color: "#888"
+                      color: "rgba(255,255,255,0.5)"
                     },
                     children: "W"
                   })
@@ -827,7 +832,7 @@ let __tla = Promise.all([
                   e.jsx("span", {
                     style: {
                       fontSize: 12,
-                      color: "#888"
+                      color: "rgba(255,255,255,0.6)"
                     },
                     children: "Max"
                   }),
@@ -836,12 +841,12 @@ let __tla = Promise.all([
                     min: 0,
                     step: 50,
                     value: P,
-                    onChange: (l) => this.setState({
-                      [r]: Number(l.target.value)
+                    onChange: (s) => this.setState({
+                      [d]: Number(s.target.value)
                     }),
                     onBlur: () => {
-                      b !== null && (this.setVal(i("power-max"), b), this.setState({
-                        [r]: null
+                      w !== null && (this.setVal(i("power-max"), w), this.setState({
+                        [d]: null
                       }));
                     },
                     style: $
@@ -849,7 +854,7 @@ let __tla = Promise.all([
                   e.jsx("span", {
                     style: {
                       fontSize: 11,
-                      color: "#888"
+                      color: "rgba(255,255,255,0.5)"
                     },
                     children: "W"
                   })
@@ -860,12 +865,12 @@ let __tla = Promise.all([
           e.jsxs("div", {
             style: {
               padding: "8px 14px",
-              borderTop: "1px solid #eee",
+              borderTop: "1px solid rgba(255,255,255,0.1)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               fontSize: 11,
-              color: "#999",
+              color: "rgba(255,255,255,0.5)",
               marginTop: "auto"
             },
             children: [
@@ -876,20 +881,20 @@ let __tla = Promise.all([
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap"
                 },
-                children: v
+                children: g
               }),
-              x > 0 && e.jsxs("div", {
+              v > 0 && e.jsxs("div", {
                 style: {
                   marginLeft: 8,
                   padding: "1px 6px",
                   borderRadius: 8,
-                  background: "#f0f0f0",
+                  background: "rgba(255,255,255,0.1)",
                   fontSize: 10,
-                  color: "#888",
+                  color: "rgba(255,255,255,0.6)",
                   flexShrink: 0
                 },
                 children: [
-                  x,
+                  v,
                   " notif"
                 ]
               })
@@ -900,7 +905,7 @@ let __tla = Promise.all([
     }
     renderWidgetBody(t) {
       super.renderWidgetBody(t);
-      const i = this.state.rxData.widgetTitle || "Energiemanager", d = parseFloat(this.val("oid-surplus-current")) || 0, s = parseFloat(this.val("oid-surplus-avg")) || 0, h = parseFloat(this.val("oid-pv-power")) || 0, n = parseFloat(this.val("oid-battery-soc")) || 0, p = parseFloat(this.val("oid-forecast-today")) || 0, S = parseFloat(this.val("oid-managed-power")) || 0, c = this.val("oid-active-devices") || "", m = this.val("oid-is-holiday") === true || this.val("oid-is-holiday") === "true", v = Number(this.val("oid-holiday-days-remain")) || 0, k = parseFloat(this.val("oid-ww-temp-bottom")), x = parseFloat(this.val("oid-ww-temp-top")), y = this.val("oid-holiday-from") || "", _ = this.val("oid-holiday-to") || "";
+      const i = this.state.rxData.widgetTitle || "Energiemanager", r = parseFloat(this.val("oid-surplus-current")) || 0, l = parseFloat(this.val("oid-surplus-avg")) || 0, h = parseFloat(this.val("oid-pv-power")) || 0, n = parseFloat(this.val("oid-battery-soc")) || 0, p = parseFloat(this.val("oid-forecast-today")) || 0, S = parseFloat(this.val("oid-managed-power")) || 0, c = this.val("oid-active-devices") || "", m = this.val("oid-is-holiday") === true || this.val("oid-is-holiday") === "true", g = Number(this.val("oid-holiday-days-remain")) || 0, k = parseFloat(this.val("oid-ww-temp-bottom")), v = parseFloat(this.val("oid-ww-temp-top")), f = this.val("oid-holiday-from") || "", y = this.val("oid-holiday-to") || "";
       return e.jsxs("div", {
         style: {
           width: "100%",
@@ -918,7 +923,8 @@ let __tla = Promise.all([
             style: {
               fontSize: 18,
               fontWeight: 700,
-              letterSpacing: "0.02em"
+              letterSpacing: "0.02em",
+              color: "#fff"
             },
             children: i
           }),
@@ -929,41 +935,41 @@ let __tla = Promise.all([
               gap: 10
             },
             children: [
-              e.jsx(f, {
-                label: o("em_pv_power") || "PV-Leistung",
+              e.jsx(_, {
+                label: a("em_pv_power") || "PV-Leistung",
                 value: u(h),
                 color: "#f5a623"
               }),
-              e.jsx(f, {
-                label: d >= 0 ? o("em_grid_feed") || "Einspeisung" : o("em_grid_draw") || "Netzbezug",
-                value: u(Math.abs(d)),
-                color: V(d),
-                sub: `\xD830min: ${u(s)}`
+              e.jsx(_, {
+                label: r >= 0 ? a("em_grid_feed") || "Einspeisung" : a("em_grid_draw") || "Netzbezug",
+                value: u(Math.abs(r)),
+                color: V(r),
+                sub: `\xD830min: ${u(l)}`
               }),
-              e.jsx(f, {
-                label: o("em_battery_soc") || "Batterie",
+              e.jsx(_, {
+                label: a("em_battery_soc") || "Batterie",
                 value: `${Math.round(n)}`,
                 unit: "%",
                 color: O(n)
               }),
-              e.jsx(f, {
-                label: o("em_forecast_today") || "Prognose",
+              e.jsx(_, {
+                label: a("em_forecast_today") || "Prognose",
                 value: `${p.toFixed(1)}`,
                 unit: "kWh",
                 color: "#4a9edd"
               }),
-              e.jsx(f, {
-                label: o("em_managed_power") || "Gesteuert",
+              e.jsx(_, {
+                label: a("em_managed_power") || "Gesteuert",
                 value: u(S),
                 color: "#8b5cf6",
-                sub: c || o("em_no_devices") || "Keine"
+                sub: c || a("em_no_devices") || "Keine"
               }),
-              e.jsx(D, {
-                label: o("em_ww_temp_top") || "Warmwasser oben",
-                temp: x
+              e.jsx(M, {
+                label: a("em_ww_temp_top") || "Warmwasser oben",
+                temp: v
               }),
-              e.jsx(D, {
-                label: o("em_ww_temp_bottom") || "Warmwasser unten",
+              e.jsx(M, {
+                label: a("em_ww_temp_bottom") || "Warmwasser unten",
                 temp: k
               })
             ]
@@ -975,7 +981,7 @@ let __tla = Promise.all([
               alignItems: "center",
               gap: 12,
               padding: "10px 14px",
-              border: "1px solid #ddd",
+              border: "1px solid rgba(255,255,255,0.2)",
               borderRadius: 12,
               background: m ? "rgba(245,166,35,0.08)" : "transparent"
             },
@@ -984,7 +990,7 @@ let __tla = Promise.all([
                 style: {
                   fontSize: 13,
                   fontWeight: 600,
-                  color: m ? "#f5a623" : "#888",
+                  color: m ? "#f5a623" : "rgba(255,255,255,0.6)",
                   display: "flex",
                   alignItems: "center",
                   gap: 6
@@ -996,7 +1002,7 @@ let __tla = Promise.all([
                     },
                     children: "\u2708"
                   }),
-                  o("em_holiday") || "Urlaub",
+                  a("em_holiday") || "Urlaub",
                   m && e.jsx("span", {
                     style: {
                       fontSize: 11,
@@ -1005,7 +1011,7 @@ let __tla = Promise.all([
                       background: "#fff3e0",
                       color: "#f5a623"
                     },
-                    children: v > 0 ? `${v} ${o("em_holiday_days_label") || "Tage"}` : o("em_holiday_active") || "aktiv"
+                    children: g > 0 ? `${g} ${a("em_holiday_days_label") || "Tage"}` : a("em_holiday_active") || "aktiv"
                   })
                 ]
               }),
@@ -1020,41 +1026,41 @@ let __tla = Promise.all([
                   e.jsx("span", {
                     style: {
                       fontSize: 12,
-                      color: "#888"
+                      color: "rgba(255,255,255,0.6)"
                     },
-                    children: o("em_holiday_from") || "Von"
+                    children: a("em_holiday_from") || "Von"
                   }),
                   e.jsx("input", {
                     type: "date",
-                    value: y,
-                    onChange: (r) => this.setVal("oid-holiday-from", r.target.value),
+                    value: f,
+                    onChange: (d) => this.setVal("oid-holiday-from", d.target.value),
                     style: {
                       padding: "4px 8px",
                       fontSize: 13,
-                      border: "1px solid #ccc",
+                      border: "1px solid rgba(255,255,255,0.25)",
                       borderRadius: 6,
                       background: "transparent",
-                      color: "inherit"
+                      color: "#fff"
                     }
                   }),
                   e.jsx("span", {
                     style: {
                       fontSize: 12,
-                      color: "#888"
+                      color: "rgba(255,255,255,0.6)"
                     },
-                    children: o("em_holiday_to") || "Bis"
+                    children: a("em_holiday_to") || "Bis"
                   }),
                   e.jsx("input", {
                     type: "date",
-                    value: _,
-                    onChange: (r) => this.setVal("oid-holiday-to", r.target.value),
+                    value: y,
+                    onChange: (d) => this.setVal("oid-holiday-to", d.target.value),
                     style: {
                       padding: "4px 8px",
                       fontSize: 13,
-                      border: "1px solid #ccc",
+                      border: "1px solid rgba(255,255,255,0.25)",
                       borderRadius: 6,
                       background: "transparent",
-                      color: "inherit"
+                      color: "#fff"
                     }
                   })
                 ]
@@ -1080,5 +1086,5 @@ let __tla = Promise.all([
 });
 export {
   __tla,
-  M as default
+  D as default
 };
