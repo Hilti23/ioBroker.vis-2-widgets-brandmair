@@ -458,7 +458,8 @@ function Checkbox({ checked, label, onChange }: { checked: boolean; label: strin
 // ---------------------------------------------------------------------------
 interface TimeRulesModalProps {
     rules: TimeRule[];
-    onSave: (rules: TimeRule[]) => void;
+    excludeHolidays: boolean;
+    onSave: (rules: TimeRule[], excludeHolidays: boolean) => void;
     onCancel: () => void;
 }
 
@@ -469,7 +470,7 @@ interface DayRow {
     end: string;
 }
 
-function TimeRulesModal({ rules, onSave, onCancel }: TimeRulesModalProps): React.JSX.Element {
+function TimeRulesModal({ rules, excludeHolidays, onSave, onCancel }: TimeRulesModalProps): React.JSX.Element {
     const initRows = (): DayRow[] => {
         const rows: DayRow[] = [];
         for (let d = 1; d <= 7; d++) {
@@ -486,6 +487,7 @@ function TimeRulesModal({ rules, onSave, onCancel }: TimeRulesModalProps): React
     };
 
     const [dayRows, setDayRows] = React.useState<DayRow[]>(initRows);
+    const [exclHol, setExclHol] = React.useState(excludeHolidays);
 
     const updateRow = (idx: number, field: keyof DayRow, value: any): void => {
         setDayRows((prev) => {
@@ -508,7 +510,7 @@ function TimeRulesModal({ rules, onSave, onCancel }: TimeRulesModalProps): React
             const [start, end] = key.split('|');
             return { days: days.sort((a, b) => a - b), start, end };
         });
-        onSave(result);
+        onSave(result, exclHol);
     };
 
     const inputStyle: React.CSSProperties = {
@@ -584,7 +586,21 @@ function TimeRulesModal({ rules, onSave, onCancel }: TimeRulesModalProps): React
                         ))}
                     </tbody>
                 </table>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20 }}>
+                <div style={{
+                    marginTop: 14, padding: '10px 6px', borderTop: '1px solid rgba(0,0,0,0.1)',
+                    display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                    <input
+                        type="checkbox"
+                        checked={exclHol}
+                        onChange={(e) => setExclHol(e.target.checked)}
+                        style={{ width: 16, height: 16 }}
+                    />
+                    <span style={{ fontSize: 13, color: '#333' }}>
+                        {tr('em_excl_holidays') || 'An Feiertagen aus'}
+                    </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 14 }}>
                     <button
                         onClick={onCancel}
                         style={{
@@ -854,7 +870,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         };
 
         const smallInputStyle: React.CSSProperties = {
-            ...inputStyle, width: 50, fontSize: 11,
+            ...inputStyle, width: 40, fontSize: 11,
         };
 
         const timeInputStyle: React.CSSProperties = {
@@ -887,6 +903,19 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         }} />
                         <div style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>{name}</div>
                     </div>
+                    {/* Calendar icon for time rules */}
+                    <div
+                        onClick={() => this.setState({ [timeModalKey]: true } as any)}
+                        style={{
+                            width: 28, height: 28, borderRadius: 6,
+                            background: 'rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.1)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', fontSize: 14, flexShrink: 0,
+                        }}
+                        title={tr('em_time_rules') || 'Zeitfenster'}
+                    >
+                        &#128197;
+                    </div>
                 </div>
 
                 {/* Power bar */}
@@ -907,7 +936,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         <div style={{
                             width: `${pctPower}%`, height: '100%',
                             background: isOn
-                                ? `linear-gradient(90deg, ${mc}, ${mc}dd)`
+                                ? 'linear-gradient(90deg, #2ec27e, #2ec27ecc)'
                                 : 'rgba(0,0,0,0.15)',
                             borderRadius: 6,
                             transition: 'width 0.5s ease',
@@ -952,22 +981,13 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     />
                 </div>
 
-                {/* Time rules display */}
+                {/* Time rules summary */}
                 <div style={{
                     padding: '0 14px 8px', fontSize: 11, color: '#555',
                     display: 'flex', alignItems: 'center', gap: 4,
                 }}>
                     <span style={{ color: '#333', fontWeight: 600 }}>{tr('em_time_rules') || 'Zeitfenster'}:</span>
                     <span style={{ flex: 1 }}>{timeRulesSummary}</span>
-                    <span
-                        onClick={() => this.setState({ [timeModalKey]: true } as any)}
-                        style={{
-                            color: '#4a9edd', cursor: 'pointer', fontWeight: 600,
-                            textDecoration: 'underline', fontSize: 11,
-                        }}
-                    >
-                        {tr('em_time_edit') || 'Bearbeiten'}
-                    </span>
                 </div>
 
                 {/* Silent status */}
@@ -1058,8 +1078,10 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 {showTimeModal && (
                     <TimeRulesModal
                         rules={this.getTimeRulesForDevice(devNum)}
-                        onSave={(newRules) => {
+                        excludeHolidays={this.toBool(this.val(k('excl-holidays')))}
+                        onSave={(newRules, newExclHol) => {
                             this.setVal(k('time-rules'), JSON.stringify(newRules));
+                            this.setVal(k('excl-holidays'), newExclHol);
                             this.setState({ [timeModalKey]: false } as any);
                         }}
                         onCancel={() => this.setState({ [timeModalKey]: false } as any)}
@@ -1146,29 +1168,22 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 background: 'rgba(0,0,0,0.02)',
                 borderTop: '1px solid rgba(0,0,0,0.08)',
             }}>
-                {/* SOC & Thresholds */}
+                {/* SOC & Thresholds - Row 1: SOC */}
                 <div style={sectionStyle}>
                     <div style={sectionLabel}>{tr('em_soc_thresholds') || 'SOC & Schwellen'}</div>
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_min_soc') || 'Min SOC'}</span>
-                    {numInput(minSoc, 'min-soc', '%')}
+                    {numInput(minSoc, 'min-soc', '%', 40)}
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_soc_off') || 'SOC Aus'}</span>
-                    {numInput(socOff, 'soc-off', '%')}
-                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_on') || 'Einsch.'}</span>
-                    {numInput(surplusOn, 'surplus-on', 'W', 60)}
-                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_off') || 'Aussch.'}</span>
-                    {numInput(surplusOff, 'surplus-off', 'W', 60)}
-                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_avg_min') || '\u00d8'}</span>
-                    {numInput(avgMin, 'avg-min', 'min')}
+                    {numInput(socOff, 'soc-off', '%', 40)}
                 </div>
-
-                {/* Exclude holidays checkbox */}
-                <div style={sectionStyle}>
-                    <div style={sectionLabel}>{tr('em_time_window') || 'Zeitfenster'}</div>
-                    <Checkbox
-                        checked={exclHolidays}
-                        label={tr('em_excl_holidays') || 'Feiertage aus'}
-                        onChange={(v) => this.setVal(k('excl-holidays'), v)}
-                    />
+                {/* SOC & Thresholds - Row 2: Surplus + Avg */}
+                <div style={{ ...sectionStyle, borderTop: 'none', paddingTop: 0 }}>
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_on') || 'Einsch.'}</span>
+                    {numInput(surplusOn, 'surplus-on', 'W', 45)}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_off') || 'Aussch.'}</span>
+                    {numInput(surplusOff, 'surplus-off', 'W', 45)}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_avg_min') || '\u00d8'}</span>
+                    {numInput(avgMin, 'avg-min', 'min', 40)}
                 </div>
 
                 {/* Runtimes */}
@@ -1192,7 +1207,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     {numInput(maxNotif, 'max-notif', '', 40)}
                 </div>
 
-                {/* Forecast */}
+                {/* Forecast - Row 1 */}
                 <div style={sectionStyle}>
                     <div style={sectionLabel}>{tr('em_forecast') || 'Forecast'}</div>
                     <Checkbox
@@ -1213,8 +1228,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         onChange={(e) => this.setVal(k('fc-end'), e.target.value)}
                         style={timeInputStyle}
                     />
+                </div>
+                {/* Forecast - Row 2 */}
+                <div style={{ ...sectionStyle, borderTop: 'none', paddingTop: 0 }}>
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_fc_min_soc') || 'Vorheiz SOC'}</span>
-                    {numInput(fcMinSoc, 'fc-min-soc', '%')}
+                    {numInput(fcMinSoc, 'fc-min-soc', '%', 40)}
                 </div>
 
                 {/* Holiday */}

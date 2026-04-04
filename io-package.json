@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "vis-2-widgets-brandmair",
-    "version": "0.19.0",
+    "version": "0.19.1",
     "titleLang": {
       "en": "Brandmair Widgets for Vis2",
       "de": "Brandmair Widgets für die Vis2"
