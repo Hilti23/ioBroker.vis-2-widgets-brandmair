@@ -24,6 +24,7 @@ const config = {
                 './MuelltonnenWidget': './src/MuelltonnenWidget',
                 './VerbrauchWidget': './src/VerbrauchWidget',
                 './EnergiemanagerWidget': './src/EnergiemanagerWidget',
+                './UrlaubWidget': './src/UrlaubWidget',
                 './translations': './src/translations',
             },
             remotes: {},

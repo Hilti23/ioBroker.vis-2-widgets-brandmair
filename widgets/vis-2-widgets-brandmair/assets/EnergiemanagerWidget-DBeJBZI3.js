@@ -2,7 +2,7 @@ import { j as t, __tla as __tla_0 } from "./jsx-runtime-LXN0Dejw.js";
 import { b as Y, __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-Cq4bBQs0.js";
 import { a as q, b as R, __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare___mf_0_mui_mf_1_material__loadShare__.js-DEdXGH34.js";
 import { G as Q } from "./Generic-CM5BSTAz.js";
-import { t as n } from "./tr-D1YOJ6eL.js";
+import { t as n } from "./tr-miy5TWOP.js";
 import { __tla as __tla_3 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-Dkt6rraE.js";
 let U;
 let __tla = Promise.all([

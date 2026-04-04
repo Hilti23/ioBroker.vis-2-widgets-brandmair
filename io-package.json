@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "vis-2-widgets-brandmair",
-    "version": "0.18.0",
+    "version": "0.19.0",
     "titleLang": {
       "en": "Brandmair Widgets for Vis2",
       "de": "Brandmair Widgets für die Vis2"
@@ -31,7 +31,7 @@
         "name": "vis2brandmairWidgets",
         "url": "vis-2-widgets-brandmair/customWidgets.js",
         "bundlerType": "module",
-        "components": ["TrvzbThermostat", "HeizstabWidget", "PvSpeicherWidget", "WarmwasserWidget", "TimerWidget", "MuelltonnenWidget", "VerbrauchWidget", "EnergiemanagerWidget"]
+        "components": ["TrvzbThermostat", "HeizstabWidget", "PvSpeicherWidget", "WarmwasserWidget", "TimerWidget", "MuelltonnenWidget", "VerbrauchWidget", "EnergiemanagerWidget", "UrlaubWidget"]
       }
     },
     "dependencies": [{ "vis-2": ">=2.12.8" }],

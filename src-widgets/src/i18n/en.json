@@ -139,5 +139,14 @@
     "em_time_edit": "Edit",
     "em_time_save": "Save",
     "em_time_cancel": "Cancel",
-    "em_time_active": "Active"
+    "em_time_active": "Active",
+    "urlaub_widget": "Holiday",
+    "urlaub_from": "Holiday from",
+    "urlaub_to": "Holiday to",
+    "urlaub_active": "Holiday active",
+    "urlaub_days_remain": "Days remaining",
+    "urlaub_von": "From",
+    "urlaub_bis": "To",
+    "urlaub_tage": "days",
+    "urlaub_aktiv": "active"
 }
