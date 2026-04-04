@@ -23,6 +23,7 @@ const config = {
                 './TimerWidget': './src/TimerWidget',
                 './MuelltonnenWidget': './src/MuelltonnenWidget',
                 './VerbrauchWidget': './src/VerbrauchWidget',
+                './EnergiemanagerWidget': './src/EnergiemanagerWidget',
                 './translations': './src/translations',
             },
             remotes: {},
