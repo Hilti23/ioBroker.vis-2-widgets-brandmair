@@ -635,14 +635,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             flexShrink: 0,
                         }} />
                         <div style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>{name}</div>
-                        {isDimmable && (
-                            <span style={{
-                                fontSize: 10, padding: '2px 6px', borderRadius: 8,
-                                background: 'rgba(74,158,221,0.15)', color: '#4a9edd',
-                            }}>
-                                {tr('em_dimmable') || 'stufenlos'}
-                            </span>
-                        )}
                     </div>
                     {/* Priority badge */}
                     <span style={{
@@ -807,19 +799,24 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </div>
                     <span style={{ fontSize: 10, color: '#555' }}>W</span>
 
-                    {/* Settings toggle button */}
+                </div>
+
+                {/* Settings toggle button */}
+                <div style={{ padding: '0 14px 8px' }}>
                     <div
                         onClick={() => this.setState({ [showKey]: !showSettings } as any)}
                         style={{
-                            marginLeft: 'auto', cursor: 'pointer', userSelect: 'none',
-                            fontSize: 16, color: showSettings ? '#4a9edd' : '#999',
-                            padding: '2px 4px', borderRadius: 4,
-                            background: showSettings ? 'rgba(74,158,221,0.1)' : 'transparent',
+                            cursor: 'pointer', userSelect: 'none',
+                            fontSize: 12, fontWeight: 600,
+                            color: showSettings ? '#4a9edd' : '#333',
+                            padding: '6px 12px', borderRadius: 8,
+                            background: showSettings ? 'rgba(74,158,221,0.12)' : 'rgba(0,0,0,0.05)',
+                            border: `1px solid ${showSettings ? 'rgba(74,158,221,0.3)' : 'rgba(0,0,0,0.1)'}`,
+                            textAlign: 'center',
                             transition: 'all 0.2s',
                         }}
-                        title={tr('em_settings') || 'Einstellungen'}
                     >
-                        &#9881;
+                        {showSettings ? '▲ ' : '▼ '}{tr('em_settings') || 'Einstellungen'}
                     </div>
                 </div>
 
