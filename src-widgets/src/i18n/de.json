@@ -130,7 +130,7 @@
     "em_max_notif": "Max/Tag",
     "em_forecast": "Forecast",
     "em_fc_preheat": "Vorheizen",
-    "em_fc_min_soc": "Min. SOC",
+    "em_fc_min_soc": "Vorheiz SOC",
     "em_dis_holiday": "Im Urlaub aus",
     "em_hol_pre_days": "Vorlauf",
     "em_runtimes": "Laufzeiten",

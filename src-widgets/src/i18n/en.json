@@ -130,7 +130,7 @@
     "em_max_notif": "Max/day",
     "em_forecast": "Forecast",
     "em_fc_preheat": "Preheat",
-    "em_fc_min_soc": "Min. SOC",
+    "em_fc_min_soc": "Preheat SOC",
     "em_dis_holiday": "Off during holiday",
     "em_hol_pre_days": "Pre-days",
     "em_runtimes": "Runtimes",

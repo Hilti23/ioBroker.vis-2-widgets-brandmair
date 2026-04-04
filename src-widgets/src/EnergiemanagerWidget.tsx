@@ -716,7 +716,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         display: 'flex', alignItems: 'center', gap: 4,
                     }}>
                         <span style={{ color: '#333', fontWeight: 600 }}>{tr('em_time_window') || 'Zeitfenster'}:</span>
-                        <span>{timeStart || '--:--'} \u2013 {timeEnd || '--:--'}</span>
+                        <span>{timeStart || '--:--'} - {timeEnd || '--:--'}</span>
                     </div>
                 )}
 
@@ -938,7 +938,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         onChange={(e) => this.setVal(k('time-start'), e.target.value)}
                         style={timeInputStyle}
                     />
-                    <span style={{ fontSize: 11, color: '#555' }}>\u2013</span>
+                    <span style={{ fontSize: 11, color: '#555' }}>-</span>
                     <input
                         type="time"
                         value={timeEnd}
@@ -1006,14 +1006,14 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         onChange={(e) => this.setVal(k('fc-start'), e.target.value)}
                         style={timeInputStyle}
                     />
-                    <span style={{ fontSize: 11, color: '#555' }}>\u2013</span>
+                    <span style={{ fontSize: 11, color: '#555' }}>-</span>
                     <input
                         type="time"
                         value={fcEnd}
                         onChange={(e) => this.setVal(k('fc-end'), e.target.value)}
                         style={timeInputStyle}
                     />
-                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_fc_min_soc') || 'Min SOC'}</span>
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_fc_min_soc') || 'Vorheiz SOC'}</span>
                     {numInput(fcMinSoc, 'fc-min-soc', '%')}
                 </div>
 
@@ -1063,14 +1063,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 display: 'flex', flexDirection: 'column', overflow: 'auto',
                 padding: 16, gap: 16, boxSizing: 'border-box',
             }}>
-                {/* Title */}
-                <div style={{
-                    fontSize: 18, fontWeight: 700, letterSpacing: '0.02em', color: '#111',
-                    textShadow: '0 0 4px rgba(0,0,0,0.3)',
-                }}>
-                    {title}
-                </div>
-
                 {/* Global stat cards */}
                 <div style={{
                     display: 'flex', flexWrap: 'wrap', gap: 10,
