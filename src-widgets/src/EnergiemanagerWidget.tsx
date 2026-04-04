@@ -378,6 +378,7 @@ function StatCard({ label, value, unit, color, sub }: {
             flex: '1 1 0', minWidth: 120, padding: '12px 14px',
             border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
             display: 'flex', flexDirection: 'column', gap: 2,
+            alignItems: 'center', textAlign: 'center',
         }}>
             <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
@@ -397,12 +398,13 @@ function StatCard({ label, value, unit, color, sub }: {
 }
 
 function WaterTempCard({ label, temp }: { label: string; temp: number }) {
-    const display = isNaN(temp) ? '\u2013' : `${temp.toFixed(1)}`;
+    const display = isNaN(temp) ? '-' : `${temp.toFixed(1)}`;
     return (
         <div style={{
             flex: '1 1 0', minWidth: 120, padding: '12px 14px',
             border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
             display: 'flex', flexDirection: 'column', gap: 2,
+            alignItems: 'center', textAlign: 'center',
         }}>
             <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
@@ -1039,14 +1041,18 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </Select>
                 </div>
 
-                {/* Holiday blocked toggle */}
-                <div style={{ padding: '0 14px 8px' }}>
-                    <Toggle
-                        on={holidayBlocked}
-                        label={tr('em_holiday_blocked') || 'Urlaub-Sperre'}
-                        onClick={() => this.setVal(k('holiday-blocked'), !holidayBlocked)}
-                    />
-                </div>
+                {/* Holiday blocked status (read-only, set by script) */}
+                {holidayBlocked && (
+                    <div style={{ padding: '0 14px 8px' }}>
+                        <span style={{
+                            fontSize: 11, padding: '3px 10px', borderRadius: 8,
+                            background: 'rgba(245,166,35,0.15)', color: '#f5a623',
+                            fontWeight: 600,
+                        }}>
+                            {tr('em_holiday_blocked') || 'Urlaub-Sperre aktiv'}
+                        </span>
+                    </div>
+                )}
 
                 {/* Time rules summary */}
                 <div style={{
