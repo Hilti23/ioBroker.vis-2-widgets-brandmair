@@ -42,6 +42,28 @@ interface EmRxData {
     'oid-dev1-last-action': string;
     'oid-dev1-holiday-blocked': string;
     'oid-dev1-notif-today': string;
+    'oid-dev1-min-soc': string;
+    'oid-dev1-soc-off': string;
+    'oid-dev1-surplus-on': string;
+    'oid-dev1-surplus-off': string;
+    'oid-dev1-avg-min': string;
+    'oid-dev1-time-start': string;
+    'oid-dev1-time-end': string;
+    'oid-dev1-days': string;
+    'oid-dev1-excl-holidays': string;
+    'oid-dev1-min-runtime': string;
+    'oid-dev1-min-pause': string;
+    'oid-dev1-notify': string;
+    'oid-dev1-max-notif': string;
+    'oid-dev1-fc-enabled': string;
+    'oid-dev1-fc-start': string;
+    'oid-dev1-fc-end': string;
+    'oid-dev1-fc-min-soc': string;
+    'oid-dev1-fc-rules': string;
+    'oid-dev1-dis-holiday': string;
+    'oid-dev1-hol-pre-days': string;
+    'oid-dev1-silent-rules': string;
+    'oid-dev1-silent-active': string;
     // Device 2
     'oid-dev2-name': string;
     'oid-dev2-mode': string;
@@ -54,6 +76,28 @@ interface EmRxData {
     'oid-dev2-last-action': string;
     'oid-dev2-holiday-blocked': string;
     'oid-dev2-notif-today': string;
+    'oid-dev2-min-soc': string;
+    'oid-dev2-soc-off': string;
+    'oid-dev2-surplus-on': string;
+    'oid-dev2-surplus-off': string;
+    'oid-dev2-avg-min': string;
+    'oid-dev2-time-start': string;
+    'oid-dev2-time-end': string;
+    'oid-dev2-days': string;
+    'oid-dev2-excl-holidays': string;
+    'oid-dev2-min-runtime': string;
+    'oid-dev2-min-pause': string;
+    'oid-dev2-notify': string;
+    'oid-dev2-max-notif': string;
+    'oid-dev2-fc-enabled': string;
+    'oid-dev2-fc-start': string;
+    'oid-dev2-fc-end': string;
+    'oid-dev2-fc-min-soc': string;
+    'oid-dev2-fc-rules': string;
+    'oid-dev2-dis-holiday': string;
+    'oid-dev2-hol-pre-days': string;
+    'oid-dev2-silent-rules': string;
+    'oid-dev2-silent-active': string;
     // Device 3
     'oid-dev3-name': string;
     'oid-dev3-mode': string;
@@ -66,7 +110,26 @@ interface EmRxData {
     'oid-dev3-last-action': string;
     'oid-dev3-holiday-blocked': string;
     'oid-dev3-notif-today': string;
-    // Pool WP extras
+    'oid-dev3-min-soc': string;
+    'oid-dev3-soc-off': string;
+    'oid-dev3-surplus-on': string;
+    'oid-dev3-surplus-off': string;
+    'oid-dev3-avg-min': string;
+    'oid-dev3-time-start': string;
+    'oid-dev3-time-end': string;
+    'oid-dev3-days': string;
+    'oid-dev3-excl-holidays': string;
+    'oid-dev3-min-runtime': string;
+    'oid-dev3-min-pause': string;
+    'oid-dev3-notify': string;
+    'oid-dev3-max-notif': string;
+    'oid-dev3-fc-enabled': string;
+    'oid-dev3-fc-start': string;
+    'oid-dev3-fc-end': string;
+    'oid-dev3-fc-min-soc': string;
+    'oid-dev3-fc-rules': string;
+    'oid-dev3-dis-holiday': string;
+    'oid-dev3-hol-pre-days': string;
     'oid-dev3-silent-rules': string;
     'oid-dev3-silent-active': string;
 }
@@ -81,11 +144,45 @@ interface EmState extends VisRxWidgetState {
     editDev2PowerMax: number | null;
     editDev3PowerMin: number | null;
     editDev3PowerMax: number | null;
+    showSettings1: boolean;
+    showSettings2: boolean;
+    showSettings3: boolean;
 }
 
 // ---------------------------------------------------------------------------
 // Auto-fill mapping
 // ---------------------------------------------------------------------------
+const DEVICE_PREFIXES: Record<number, string> = {
+    1: 'heizstab_warmwasser',
+    2: 'luftentfeuchter_keller',
+    3: 'pool_wp',
+};
+
+const DEVICE_NEW_FIELDS: Array<[string, string]> = [
+    ['min-soc', 'min_soc'],
+    ['soc-off', 'soc_off'],
+    ['surplus-on', 'surplus_on_avg_w'],
+    ['surplus-off', 'surplus_off_avg_w'],
+    ['avg-min', 'avg_minutes'],
+    ['time-start', 'time_start'],
+    ['time-end', 'time_end'],
+    ['days', 'days'],
+    ['excl-holidays', 'exclude_holidays'],
+    ['min-runtime', 'min_runtime_min'],
+    ['min-pause', 'min_pause_min'],
+    ['notify', 'notify'],
+    ['max-notif', 'max_notifications_per_day'],
+    ['fc-enabled', 'forecast_enabled'],
+    ['fc-start', 'forecast_preheat_start'],
+    ['fc-end', 'forecast_preheat_end'],
+    ['fc-min-soc', 'forecast_preheat_min_soc'],
+    ['fc-rules', 'forecast_rules'],
+    ['dis-holiday', 'disable_on_holiday'],
+    ['hol-pre-days', 'holiday_pre_days'],
+    ['silent-rules', 'silent_rules'],
+    ['silent-active', 'silent_active'],
+];
+
 const OID_MAP: Array<[string, string]> = [
     // Global
     ['oid-surplus-current', 'surplus_current_w'],
@@ -97,45 +194,35 @@ const OID_MAP: Array<[string, string]> = [
     ['oid-active-devices', 'active_devices'],
     ['oid-is-holiday', 'is_holiday'],
     ['oid-holiday-days-remain', 'holiday_days_remaining'],
-    // Device 1: heizstab_warmwasser
-    ['oid-dev1-name', 'heizstab_warmwasser.name'],
-    ['oid-dev1-mode', 'heizstab_warmwasser.mode'],
-    ['oid-dev1-priority', 'heizstab_warmwasser.priority'],
-    ['oid-dev1-power-min', 'heizstab_warmwasser.power_min_w'],
-    ['oid-dev1-power-max', 'heizstab_warmwasser.power_max_w'],
-    ['oid-dev1-is-dimmable', 'heizstab_warmwasser.is_dimmable'],
-    ['oid-dev1-is-on', 'heizstab_warmwasser.is_on'],
-    ['oid-dev1-power', 'heizstab_warmwasser.power_w'],
-    ['oid-dev1-last-action', 'heizstab_warmwasser.last_action'],
-    ['oid-dev1-holiday-blocked', 'heizstab_warmwasser.holiday_blocked'],
-    ['oid-dev1-notif-today', 'heizstab_warmwasser.notifications_today'],
-    // Device 2: luftentfeuchter_keller
-    ['oid-dev2-name', 'luftentfeuchter_keller.name'],
-    ['oid-dev2-mode', 'luftentfeuchter_keller.mode'],
-    ['oid-dev2-priority', 'luftentfeuchter_keller.priority'],
-    ['oid-dev2-power-min', 'luftentfeuchter_keller.power_min_w'],
-    ['oid-dev2-power-max', 'luftentfeuchter_keller.power_max_w'],
-    ['oid-dev2-is-dimmable', 'luftentfeuchter_keller.is_dimmable'],
-    ['oid-dev2-is-on', 'luftentfeuchter_keller.is_on'],
-    ['oid-dev2-power', 'luftentfeuchter_keller.power_w'],
-    ['oid-dev2-last-action', 'luftentfeuchter_keller.last_action'],
-    ['oid-dev2-holiday-blocked', 'luftentfeuchter_keller.holiday_blocked'],
-    ['oid-dev2-notif-today', 'luftentfeuchter_keller.notifications_today'],
-    // Device 3: pool_wp
-    ['oid-dev3-name', 'pool_wp.name'],
-    ['oid-dev3-mode', 'pool_wp.mode'],
-    ['oid-dev3-priority', 'pool_wp.priority'],
-    ['oid-dev3-power-min', 'pool_wp.power_min_w'],
-    ['oid-dev3-power-max', 'pool_wp.power_max_w'],
-    ['oid-dev3-is-dimmable', 'pool_wp.is_dimmable'],
-    ['oid-dev3-is-on', 'pool_wp.is_on'],
-    ['oid-dev3-power', 'pool_wp.power_w'],
-    ['oid-dev3-last-action', 'pool_wp.last_action'],
-    ['oid-dev3-holiday-blocked', 'pool_wp.holiday_blocked'],
-    ['oid-dev3-notif-today', 'pool_wp.notifications_today'],
-    ['oid-dev3-silent-rules', 'pool_wp.silent_rules'],
-    ['oid-dev3-silent-active', 'pool_wp.silent_active'],
+    ['oid-ww-temp-bottom', 'warmwasser_temp_bottom'],
+    ['oid-ww-temp-top', 'warmwasser_temp_top'],
+    ['oid-holiday-from', 'holiday_from'],
+    ['oid-holiday-to', 'holiday_to'],
 ];
+
+// Build device OID mappings for all 3 devices
+for (let d = 1; d <= 3; d++) {
+    const prefix = DEVICE_PREFIXES[d];
+    const dp = `oid-dev${d}`;
+    // Existing fields
+    OID_MAP.push(
+        [`${dp}-name`, `${prefix}.name`],
+        [`${dp}-mode`, `${prefix}.mode`],
+        [`${dp}-priority`, `${prefix}.priority`],
+        [`${dp}-power-min`, `${prefix}.power_min_w`],
+        [`${dp}-power-max`, `${prefix}.power_max_w`],
+        [`${dp}-is-dimmable`, `${prefix}.is_dimmable`],
+        [`${dp}-is-on`, `${prefix}.is_on`],
+        [`${dp}-power`, `${prefix}.power_w`],
+        [`${dp}-last-action`, `${prefix}.last_action`],
+        [`${dp}-holiday-blocked`, `${prefix}.holiday_blocked`],
+        [`${dp}-notif-today`, `${prefix}.notifications_today`],
+    );
+    // New fields
+    for (const [shortName, oidSuffix] of DEVICE_NEW_FIELDS) {
+        OID_MAP.push([`${dp}-${shortName}`, `${prefix}.${oidSuffix}`]);
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -189,10 +276,18 @@ function formatSilentRules(jsonStr: string): string {
                 const days = r.days.map((d) => DAY_NAMES[d] || d).join(',');
                 return r.before ? `${days} <${r.before}` : days;
             })
-            .join(' | ') || '–';
+            .join(' | ') || '\u2013';
     } catch {
-        return '–';
+        return '\u2013';
     }
+}
+
+function parseDaysArray(jsonStr: string): number[] {
+    try {
+        const arr = JSON.parse(jsonStr);
+        if (Array.isArray(arr)) return arr;
+    } catch { /* ignore */ }
+    return [];
 }
 
 // Text shadow for colored values on variable backgrounds
@@ -228,7 +323,7 @@ function StatCard({ label, value, unit, color, sub }: {
 }
 
 function WaterTempCard({ label, temp }: { label: string; temp: number }) {
-    const display = isNaN(temp) ? '–' : `${temp.toFixed(1)}`;
+    const display = isNaN(temp) ? '\u2013' : `${temp.toFixed(1)}`;
     return (
         <div style={{
             flex: '1 1 0', minWidth: 120, padding: '12px 14px',
@@ -243,7 +338,7 @@ function WaterTempCard({ label, temp }: { label: string; temp: number }) {
                 textShadow: valueShadow,
             }}>
                 {display}
-                <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333', textShadow: 'none' }}>°C</span>
+                <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333', textShadow: 'none' }}>&deg;C</span>
             </div>
         </div>
     );
@@ -276,6 +371,23 @@ function Toggle({ on, label, onClick }: { on: boolean; label: string; onClick: (
 }
 
 // ---------------------------------------------------------------------------
+// Compact checkbox
+// ---------------------------------------------------------------------------
+function Checkbox({ checked, label, onChange }: { checked: boolean; label: string; onChange: (v: boolean) => void }) {
+    return (
+        <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: 11, color: '#333' }}>
+            <input
+                type="checkbox"
+                checked={checked}
+                onChange={(e) => onChange(e.target.checked)}
+                style={{ width: 14, height: 14, margin: 0 }}
+            />
+            {label}
+        </label>
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Device OID field generator
 // ---------------------------------------------------------------------------
 function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: string; type: string; label: string }> {
@@ -292,13 +404,30 @@ function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: str
         { name: `${p}-last-action`, type: 'id', label: `${labelPrefix}_last_action` },
         { name: `${p}-holiday-blocked`, type: 'id', label: `${labelPrefix}_holiday_blocked` },
         { name: `${p}-notif-today`, type: 'id', label: `${labelPrefix}_notif_today` },
+        // New fields for all devices
+        { name: `${p}-min-soc`, type: 'id', label: 'em_min_soc' },
+        { name: `${p}-soc-off`, type: 'id', label: 'em_soc_off' },
+        { name: `${p}-surplus-on`, type: 'id', label: 'em_surplus_on' },
+        { name: `${p}-surplus-off`, type: 'id', label: 'em_surplus_off' },
+        { name: `${p}-avg-min`, type: 'id', label: 'em_avg_min' },
+        { name: `${p}-time-start`, type: 'id', label: 'em_time_window' },
+        { name: `${p}-time-end`, type: 'id', label: 'em_time_window' },
+        { name: `${p}-days`, type: 'id', label: 'em_days_label' },
+        { name: `${p}-excl-holidays`, type: 'id', label: 'em_excl_holidays' },
+        { name: `${p}-min-runtime`, type: 'id', label: 'em_min_runtime' },
+        { name: `${p}-min-pause`, type: 'id', label: 'em_min_pause' },
+        { name: `${p}-notify`, type: 'id', label: 'em_notify_active' },
+        { name: `${p}-max-notif`, type: 'id', label: 'em_max_notif' },
+        { name: `${p}-fc-enabled`, type: 'id', label: 'em_forecast' },
+        { name: `${p}-fc-start`, type: 'id', label: 'em_fc_preheat' },
+        { name: `${p}-fc-end`, type: 'id', label: 'em_fc_preheat' },
+        { name: `${p}-fc-min-soc`, type: 'id', label: 'em_fc_min_soc' },
+        { name: `${p}-fc-rules`, type: 'id', label: 'em_forecast' },
+        { name: `${p}-dis-holiday`, type: 'id', label: 'em_dis_holiday' },
+        { name: `${p}-hol-pre-days`, type: 'id', label: 'em_hol_pre_days' },
+        { name: `${p}-silent-rules`, type: 'id', label: 'em_silent_rules' },
+        { name: `${p}-silent-active`, type: 'id', label: 'em_silent_active' },
     ];
-    if (devNum === 3) {
-        fields.push(
-            { name: `${p}-silent-rules`, type: 'id', label: 'em_silent_rules' },
-            { name: `${p}-silent-active`, type: 'id', label: 'em_silent_active' },
-        );
-    }
     return fields;
 }
 
@@ -319,10 +448,13 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
             editDev2PowerMax: null,
             editDev3PowerMin: null,
             editDev3PowerMax: null,
+            showSettings1: false,
+            showSettings2: false,
+            showSettings3: false,
         };
     }
 
-    // ── Widget metadata ──────────────────────────────────────────────────
+    // -- Widget metadata ----------------------------------------------------
     static getWidgetInfo(): RxWidgetInfo {
         return {
             id: 'tplEnergiemanagerWidget',
@@ -406,7 +538,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         return EnergiemanagerWidget.getWidgetInfo();
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
+    // -- Helpers ------------------------------------------------------------
     private val(key: keyof EmRxData): any {
         const oid = this.state.rxData[key];
         if (!oid) return undefined;
@@ -422,29 +554,41 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         this.props.context.setValue(oid, value);
     }
 
-    // ── Device card renderer ─────────────────────────────────────────────
+    private toBool(v: any): boolean {
+        return v === true || v === 'true';
+    }
+
+    // -- Device card renderer -----------------------------------------------
     private renderDevice(devNum: 1 | 2 | 3): React.JSX.Element {
         const k = (suffix: string): keyof EmRxData => `oid-dev${devNum}-${suffix}` as keyof EmRxData;
 
-        const name: string = this.val(k('name')) || `Gerät ${devNum}`;
+        const name: string = this.val(k('name')) || `Ger\u00e4t ${devNum}`;
         const mode: string = this.val(k('mode')) || 'auto';
         const priority = Number(this.val(k('priority'))) || 1;
         const powerMin = Number(this.val(k('power-min'))) || 0;
         const powerMax = Number(this.val(k('power-max'))) || 0;
-        const isDimmable = this.val(k('is-dimmable')) === true || this.val(k('is-dimmable')) === 'true';
-        const isOn = this.val(k('is-on')) === true || this.val(k('is-on')) === 'true';
+        const isDimmable = this.toBool(this.val(k('is-dimmable')));
+        const isOn = this.toBool(this.val(k('is-on')));
         const power = Number(this.val(k('power'))) || 0;
-        const lastAction: string = this.val(k('last-action')) || '–';
-        const holidayBlocked = this.val(k('holiday-blocked')) === true || this.val(k('holiday-blocked')) === 'true';
+        const lastAction: string = this.val(k('last-action')) || '\u2013';
+        const holidayBlocked = this.toBool(this.val(k('holiday-blocked')));
         const notifToday = Number(this.val(k('notif-today'))) || 0;
+
+        // New fields
+        const timeStart: string = this.val(k('time-start')) || '';
+        const timeEnd: string = this.val(k('time-end')) || '';
+        const silentActive = this.toBool(this.val(k('silent-active')));
+        const silentRulesStr: string = this.val(k('silent-rules')) || '[]';
 
         // Edit state keys
         const priKey = `editDev${devNum}Priority` as keyof EmState;
         const pMinKey = `editDev${devNum}PowerMin` as keyof EmState;
         const pMaxKey = `editDev${devNum}PowerMax` as keyof EmState;
+        const showKey = `showSettings${devNum}` as keyof EmState;
         const editPri = this.state[priKey] as number | null;
         const editPMin = this.state[pMinKey] as number | null;
         const editPMax = this.state[pMaxKey] as number | null;
+        const showSettings = this.state[showKey] as boolean;
 
         const displayPri = editPri !== null ? editPri : priority;
         const displayPMin = editPMin !== null ? editPMin : powerMin;
@@ -460,33 +604,13 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
             textAlign: 'right',
         };
 
-        // Pool WP silent mode (only dev3)
-        let silentSection: React.JSX.Element | null = null;
-        if (devNum === 3) {
-            const silentActive = this.val(k('silent-active')) === true || this.val(k('silent-active')) === 'true';
-            const silentRulesStr: string = this.val(k('silent-rules')) || '[]';
-            silentSection = (
-                <div style={{
-                    padding: '6px 14px 10px', display: 'flex', alignItems: 'center', gap: 8,
-                    borderTop: '1px solid rgba(0,0,0,0.06)',
-                }}>
-                    <span style={{ fontSize: 11, color: '#333' }}>
-                        Silent
-                    </span>
-                    <span style={{
-                        fontSize: 10, padding: '2px 6px', borderRadius: 8,
-                        background: silentActive ? 'rgba(139,92,246,0.15)' : 'rgba(0,0,0,0.06)',
-                        color: silentActive ? '#8b5cf6' : '#777',
-                        fontWeight: 600,
-                    }}>
-                        {silentActive ? 'aktiv' : 'aus'}
-                    </span>
-                    <span style={{ fontSize: 10, color: '#555', marginLeft: 'auto' }}>
-                        {formatSilentRules(silentRulesStr)}
-                    </span>
-                </div>
-            );
-        }
+        const smallInputStyle: React.CSSProperties = {
+            ...inputStyle, width: 50, fontSize: 11,
+        };
+
+        const timeInputStyle: React.CSSProperties = {
+            ...inputStyle, width: 70, fontSize: 11, textAlign: 'center',
+        };
 
         return (
             <div key={devNum} style={{
@@ -593,6 +717,35 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     />
                 </div>
 
+                {/* Time window display */}
+                {(timeStart || timeEnd) && (
+                    <div style={{
+                        padding: '0 14px 8px', fontSize: 11, color: '#555',
+                        display: 'flex', alignItems: 'center', gap: 4,
+                    }}>
+                        <span style={{ color: '#333', fontWeight: 600 }}>{tr('em_time_window') || 'Zeitfenster'}:</span>
+                        <span>{timeStart || '--:--'} \u2013 {timeEnd || '--:--'}</span>
+                    </div>
+                )}
+
+                {/* Silent status */}
+                <div style={{
+                    padding: '0 14px 8px', display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                    <span style={{ fontSize: 11, color: '#333' }}>Silent</span>
+                    <span style={{
+                        fontSize: 10, padding: '2px 6px', borderRadius: 8,
+                        background: silentActive ? 'rgba(139,92,246,0.15)' : 'rgba(0,0,0,0.06)',
+                        color: silentActive ? '#8b5cf6' : '#777',
+                        fontWeight: 600,
+                    }}>
+                        {silentActive ? 'aktiv' : 'aus'}
+                    </span>
+                    <span style={{ fontSize: 10, color: '#555', marginLeft: 'auto' }}>
+                        {formatSilentRules(silentRulesStr)}
+                    </span>
+                </div>
+
                 {/* Settings row: Priority input + Min/Max W side by side */}
                 <div style={{
                     padding: '0 14px 8px', display: 'flex', alignItems: 'center', gap: 10,
@@ -653,10 +806,25 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         />
                     </div>
                     <span style={{ fontSize: 10, color: '#555' }}>W</span>
+
+                    {/* Settings toggle button */}
+                    <div
+                        onClick={() => this.setState({ [showKey]: !showSettings } as any)}
+                        style={{
+                            marginLeft: 'auto', cursor: 'pointer', userSelect: 'none',
+                            fontSize: 16, color: showSettings ? '#4a9edd' : '#999',
+                            padding: '2px 4px', borderRadius: 4,
+                            background: showSettings ? 'rgba(74,158,221,0.1)' : 'transparent',
+                            transition: 'all 0.2s',
+                        }}
+                        title={tr('em_settings') || 'Einstellungen'}
+                    >
+                        &#9881;
+                    </div>
                 </div>
 
-                {/* Silent mode (Pool WP only) */}
-                {silentSection}
+                {/* Expandable settings section */}
+                {showSettings && this.renderDeviceSettings(devNum, k, smallInputStyle, timeInputStyle)}
 
                 {/* Footer: last action + notifications */}
                 <div style={{
@@ -680,7 +848,194 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         );
     }
 
-    // ── Render ────────────────────────────────────────────────────────────
+    // -- Expandable settings per device -------------------------------------
+    private renderDeviceSettings(
+        devNum: 1 | 2 | 3,
+        k: (suffix: string) => keyof EmRxData,
+        smallInputStyle: React.CSSProperties,
+        timeInputStyle: React.CSSProperties,
+    ): React.JSX.Element {
+        const minSoc = Number(this.val(k('min-soc'))) || 0;
+        const socOff = Number(this.val(k('soc-off'))) || 0;
+        const surplusOn = Number(this.val(k('surplus-on'))) || 0;
+        const surplusOff = Number(this.val(k('surplus-off'))) || 0;
+        const avgMin = Number(this.val(k('avg-min'))) || 0;
+        const timeStart: string = this.val(k('time-start')) || '';
+        const timeEnd: string = this.val(k('time-end')) || '';
+        const daysStr: string = this.val(k('days')) || '[]';
+        const daysArr = parseDaysArray(daysStr);
+        const exclHolidays = this.toBool(this.val(k('excl-holidays')));
+        const minRuntime = Number(this.val(k('min-runtime'))) || 0;
+        const minPause = Number(this.val(k('min-pause'))) || 0;
+        const notifyEnabled = this.toBool(this.val(k('notify')));
+        const maxNotif = Number(this.val(k('max-notif'))) || 0;
+        const fcEnabled = this.toBool(this.val(k('fc-enabled')));
+        const fcStart: string = this.val(k('fc-start')) || '';
+        const fcEnd: string = this.val(k('fc-end')) || '';
+        const fcMinSoc = Number(this.val(k('fc-min-soc'))) || 0;
+        const disHoliday = this.toBool(this.val(k('dis-holiday')));
+        const holPreDays = Number(this.val(k('hol-pre-days'))) || 0;
+
+        const sectionStyle: React.CSSProperties = {
+            padding: '6px 14px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8,
+            borderTop: '1px solid rgba(0,0,0,0.06)',
+        };
+
+        const sectionLabel: React.CSSProperties = {
+            fontSize: 10, fontWeight: 700, color: '#555', textTransform: 'uppercase',
+            letterSpacing: '0.03em', width: '100%', marginBottom: 2,
+        };
+
+        const numInput = (
+            value: number,
+            oidSuffix: string,
+            unit: string,
+            width: number = 50,
+            step: number = 1,
+        ): React.JSX.Element => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <input
+                    type="number"
+                    value={value}
+                    step={step}
+                    onChange={(e) => this.setVal(k(oidSuffix), Number(e.target.value))}
+                    style={{ ...smallInputStyle, width }}
+                />
+                <span style={{ fontSize: 10, color: '#555' }}>{unit}</span>
+            </div>
+        );
+
+        const toggleDay = (dayNum: number): void => {
+            const newDays = daysArr.includes(dayNum)
+                ? daysArr.filter((d) => d !== dayNum)
+                : [...daysArr, dayNum].sort();
+            this.setVal(k('days'), JSON.stringify(newDays));
+        };
+
+        return (
+            <div style={{
+                background: 'rgba(0,0,0,0.02)',
+                borderTop: '1px solid rgba(0,0,0,0.08)',
+            }}>
+                {/* SOC & Thresholds */}
+                <div style={sectionStyle}>
+                    <div style={sectionLabel}>{tr('em_soc_thresholds') || 'SOC & Schwellen'}</div>
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_min_soc') || 'Min SOC'}</span>
+                    {numInput(minSoc, 'min-soc', '%')}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_soc_off') || 'SOC Aus'}</span>
+                    {numInput(socOff, 'soc-off', '%')}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_on') || 'Einsch.'}</span>
+                    {numInput(surplusOn, 'surplus-on', 'W', 60)}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_surplus_off') || 'Aussch.'}</span>
+                    {numInput(surplusOff, 'surplus-off', 'W', 60)}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_avg_min') || '\u00d8'}</span>
+                    {numInput(avgMin, 'avg-min', 'min')}
+                </div>
+
+                {/* Time window */}
+                <div style={sectionStyle}>
+                    <div style={sectionLabel}>{tr('em_time_window') || 'Zeitfenster'}</div>
+                    <input
+                        type="time"
+                        value={timeStart}
+                        onChange={(e) => this.setVal(k('time-start'), e.target.value)}
+                        style={timeInputStyle}
+                    />
+                    <span style={{ fontSize: 11, color: '#555' }}>\u2013</span>
+                    <input
+                        type="time"
+                        value={timeEnd}
+                        onChange={(e) => this.setVal(k('time-end'), e.target.value)}
+                        style={timeInputStyle}
+                    />
+                    <div style={{ width: 1, height: 16, background: 'rgba(0,0,0,0.1)' }} />
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_days_label') || 'Tage'}:</span>
+                    {[1, 2, 3, 4, 5, 6, 7].map((d) => (
+                        <span
+                            key={d}
+                            onClick={() => toggleDay(d)}
+                            style={{
+                                fontSize: 10, padding: '2px 5px', borderRadius: 4, cursor: 'pointer',
+                                userSelect: 'none',
+                                background: daysArr.includes(d) ? 'rgba(74,158,221,0.2)' : 'rgba(0,0,0,0.06)',
+                                color: daysArr.includes(d) ? '#4a9edd' : '#777',
+                                fontWeight: daysArr.includes(d) ? 600 : 400,
+                                border: `1px solid ${daysArr.includes(d) ? 'rgba(74,158,221,0.3)' : 'rgba(0,0,0,0.1)'}`,
+                            }}
+                        >
+                            {DAY_NAMES[d]}
+                        </span>
+                    ))}
+                    <div style={{ width: 1, height: 16, background: 'rgba(0,0,0,0.1)' }} />
+                    <Checkbox
+                        checked={exclHolidays}
+                        label={tr('em_excl_holidays') || 'Feiertage aus'}
+                        onChange={(v) => this.setVal(k('excl-holidays'), v)}
+                    />
+                </div>
+
+                {/* Runtimes */}
+                <div style={sectionStyle}>
+                    <div style={sectionLabel}>{tr('em_runtimes') || 'Laufzeiten'}</div>
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_min_runtime') || 'Min. Lauf'}</span>
+                    {numInput(minRuntime, 'min-runtime', 'min')}
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_min_pause') || 'Min. Pause'}</span>
+                    {numInput(minPause, 'min-pause', 'min')}
+                </div>
+
+                {/* Notifications */}
+                <div style={sectionStyle}>
+                    <div style={sectionLabel}>{tr('em_notifications') || 'Benachrichtigungen'}</div>
+                    <Checkbox
+                        checked={notifyEnabled}
+                        label={tr('em_notify_active') || 'Aktiv'}
+                        onChange={(v) => this.setVal(k('notify'), v)}
+                    />
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_max_notif') || 'Max/Tag'}</span>
+                    {numInput(maxNotif, 'max-notif', '', 40)}
+                </div>
+
+                {/* Forecast */}
+                <div style={sectionStyle}>
+                    <div style={sectionLabel}>{tr('em_forecast') || 'Forecast'}</div>
+                    <Checkbox
+                        checked={fcEnabled}
+                        label={tr('em_fc_preheat') || 'Vorheizen'}
+                        onChange={(v) => this.setVal(k('fc-enabled'), v)}
+                    />
+                    <input
+                        type="time"
+                        value={fcStart}
+                        onChange={(e) => this.setVal(k('fc-start'), e.target.value)}
+                        style={timeInputStyle}
+                    />
+                    <span style={{ fontSize: 11, color: '#555' }}>\u2013</span>
+                    <input
+                        type="time"
+                        value={fcEnd}
+                        onChange={(e) => this.setVal(k('fc-end'), e.target.value)}
+                        style={timeInputStyle}
+                    />
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_fc_min_soc') || 'Min SOC'}</span>
+                    {numInput(fcMinSoc, 'fc-min-soc', '%')}
+                </div>
+
+                {/* Holiday */}
+                <div style={sectionStyle}>
+                    <div style={sectionLabel}>{tr('em_holiday_settings') || 'Urlaub'}</div>
+                    <Checkbox
+                        checked={disHoliday}
+                        label={tr('em_dis_holiday') || 'Im Urlaub aus'}
+                        onChange={(v) => this.setVal(k('dis-holiday'), v)}
+                    />
+                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_hol_pre_days') || 'Vorlauf'}</span>
+                    {numInput(holPreDays, 'hol-pre-days', tr('em_holiday_days_label') || 'Tage', 40)}
+                </div>
+            </div>
+        );
+    }
+
+    // -- Render -------------------------------------------------------------
     renderWidgetBody(props: RxRenderWidgetProps): React.JSX.Element | null {
         super.renderWidgetBody(props);
 
@@ -734,7 +1089,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             : (tr('em_grid_draw') || 'Netzbezug')}
                         value={formatWatt(Math.abs(surplusCurrent))}
                         color={surplusColor(surplusCurrent)}
-                        sub={`Ø30min: ${formatWatt(surplusAvg)}`}
+                        sub={`\u00d830min: ${formatWatt(surplusAvg)}`}
                     />
                     <StatCard
                         label={tr('em_battery_soc') || 'Batterie'}

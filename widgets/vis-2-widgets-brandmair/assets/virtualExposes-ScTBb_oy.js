@@ -16,7 +16,7 @@ let __tla = (async () => {
   c = {
     "./TrvzbThermostat": async () => {
       await o("./TrvzbThermostat");
-      const t = await r(() => import("./TrvzbThermostat-CpiH5q1f.js").then(async (m) => {
+      const t = await r(() => import("./TrvzbThermostat-CyjTP7Vv.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -27,7 +27,7 @@ let __tla = (async () => {
     },
     "./HeizstabWidget": async () => {
       await o("./HeizstabWidget");
-      const t = await r(() => import("./HeizstabWidget-DAgpMcXQ.js").then(async (m) => {
+      const t = await r(() => import("./HeizstabWidget-BUN183Hb.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -38,7 +38,7 @@ let __tla = (async () => {
     },
     "./PvSpeicherWidget": async () => {
       await o("./PvSpeicherWidget");
-      const t = await r(() => import("./PvSpeicherWidget-KHmlC6MN.js").then(async (m) => {
+      const t = await r(() => import("./PvSpeicherWidget-CMLnzqmH.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -71,7 +71,7 @@ let __tla = (async () => {
     },
     "./MuelltonnenWidget": async () => {
       await o("./MuelltonnenWidget");
-      const t = await r(() => import("./MuelltonnenWidget-BYtMeqJl.js").then(async (m) => {
+      const t = await r(() => import("./MuelltonnenWidget-5AhKlsxz.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -93,7 +93,7 @@ let __tla = (async () => {
     },
     "./EnergiemanagerWidget": async () => {
       await o("./EnergiemanagerWidget");
-      const t = await r(() => import("./EnergiemanagerWidget-CSrd6PNG.js").then(async (m) => {
+      const t = await r(() => import("./EnergiemanagerWidget-D5CZP-8j.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -104,7 +104,7 @@ let __tla = (async () => {
     },
     "./translations": async () => {
       await o("./translations");
-      const t = await r(() => import("./translations-CpF5HZvw.js"), [], import.meta.url), e = {};
+      const t = await r(() => import("./translations-C750X1tx.js"), [], import.meta.url), e = {};
       return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
         value: true,
         enumerable: false
