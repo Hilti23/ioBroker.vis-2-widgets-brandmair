@@ -186,18 +186,18 @@ function StatCard({ label, value, unit, color, sub }: {
     return (
         <div style={{
             flex: '1 1 0', minWidth: 120, padding: '12px 14px',
-            border: '1px solid rgba(255,255,255,0.2)', borderRadius: 12,
+            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
             display: 'flex', flexDirection: 'column', gap: 2,
         }}>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
             </div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: color || '#fff' }}>
+            <div style={{ fontSize: 22, fontWeight: 700, color: color || '#111' }}>
                 {value}
-                {unit && <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: 'rgba(255,255,255,0.6)' }}>{unit}</span>}
+                {unit && <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333' }}>{unit}</span>}
             </div>
             {sub && (
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>{sub}</div>
+                <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{sub}</div>
             )}
         </div>
     );
@@ -208,15 +208,15 @@ function WaterTempCard({ label, temp }: { label: string; temp: number }) {
     return (
         <div style={{
             flex: '1 1 0', minWidth: 120, padding: '12px 14px',
-            border: '1px solid rgba(255,255,255,0.2)', borderRadius: 12,
+            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
             display: 'flex', flexDirection: 'column', gap: 2,
         }}>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
             </div>
             <div style={{ fontSize: 22, fontWeight: 700, color: wwColor(temp) }}>
                 {display}
-                <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: 'rgba(255,255,255,0.6)' }}>°C</span>
+                <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333' }}>°C</span>
             </div>
         </div>
     );
@@ -395,15 +395,15 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
 
         const inputStyle: React.CSSProperties = {
             width: 70, padding: '4px 8px', fontSize: 13,
-            border: '1px solid rgba(255,255,255,0.25)', borderRadius: 6,
-            background: 'transparent', color: '#fff',
+            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 6,
+            background: 'transparent', color: '#111',
             textAlign: 'right',
         };
 
         return (
             <div key={devNum} style={{
                 flex: '1 1 300px', minWidth: 280,
-                border: '1px solid rgba(255,255,255,0.2)', borderRadius: 12,
+                border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
                 display: 'flex', flexDirection: 'column', overflow: 'hidden',
             }}>
                 {/* Mode color stripe */}
@@ -418,11 +418,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         {/* Status dot */}
                         <div style={{
                             width: 10, height: 10, borderRadius: '50%',
-                            background: isOn ? '#2ec27e' : 'rgba(255,255,255,0.3)',
+                            background: isOn ? '#2ec27e' : 'rgba(0,0,0,0.2)',
                             boxShadow: isOn ? '0 0 6px rgba(46,194,126,0.5)' : 'none',
                             flexShrink: 0,
                         }} />
-                        <div style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}>{name}</div>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>{name}</div>
                         {isDimmable && (
                             <span style={{
                                 fontSize: 10, padding: '2px 6px', borderRadius: 8,
@@ -446,7 +446,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 <div style={{ padding: '0 14px 10px' }}>
                     <div style={{
                         display: 'flex', justifyContent: 'space-between',
-                        fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 4,
+                        fontSize: 12, color: '#333', marginBottom: 4,
                     }}>
                         <span>{tr('em_dev_power') || 'Leistung'}</span>
                         <span style={{ fontWeight: 600, color: isOn ? '#fff' : 'rgba(255,255,255,0.5)' }}>
@@ -455,13 +455,13 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </div>
                     <div style={{
                         height: 22, borderRadius: 6, overflow: 'hidden',
-                        background: 'rgba(255,255,255,0.1)', position: 'relative',
+                        background: 'rgba(0,0,0,0.08)', position: 'relative',
                     }}>
                         <div style={{
                             width: `${pctPower}%`, height: '100%',
                             background: isOn
                                 ? `linear-gradient(90deg, ${mc}, ${mc}dd)`
-                                : 'rgba(255,255,255,0.2)',
+                                : 'rgba(0,0,0,0.15)',
                             borderRadius: 6,
                             transition: 'width 0.5s ease',
                         }} />
@@ -473,7 +473,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     padding: '0 14px 10px', display: 'flex',
                     alignItems: 'center', gap: 10,
                 }}>
-                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', minWidth: 45 }}>
+                    <span style={{ fontSize: 12, color: '#333', minWidth: 45 }}>
                         {tr('em_dev_mode') || 'Modus'}
                     </span>
                     <Select
@@ -481,11 +481,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         size="small"
                         onChange={(e: SelectChangeEvent) => this.setVal(k('mode'), e.target.value)}
                         sx={{
-                            flex: 1, fontSize: 13, height: 32, color: '#fff',
+                            flex: 1, fontSize: 13, height: 32, color: '#111',
                             '& .MuiSelect-select': { padding: '4px 10px' },
-                            '& .MuiSelect-icon': { color: 'rgba(255,255,255,0.5)' },
+                            '& .MuiSelect-icon': { color: '#555' },
                             '& .MuiOutlinedInput-notchedOutline': {
-                                borderColor: 'rgba(255,255,255,0.25)',
+                                borderColor: 'rgba(0,0,0,0.15)',
                             },
                         }}
                     >
@@ -502,7 +502,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 }}>
                     {/* Priority */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
+                        <span style={{ fontSize: 12, color: '#333' }}>
                             {tr('em_dev_priority') || 'Prio'}
                         </span>
                         <input
@@ -522,7 +522,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     </div>
                     {/* Power min */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>Min</span>
+                        <span style={{ fontSize: 12, color: '#333' }}>Min</span>
                         <input
                             type="number"
                             min={0}
@@ -537,11 +537,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             }}
                             style={inputStyle}
                         />
-                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>W</span>
+                        <span style={{ fontSize: 11, color: '#555' }}>W</span>
                     </div>
                     {/* Power max */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>Max</span>
+                        <span style={{ fontSize: 12, color: '#333' }}>Max</span>
                         <input
                             type="number"
                             min={0}
@@ -556,15 +556,15 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             }}
                             style={inputStyle}
                         />
-                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>W</span>
+                        <span style={{ fontSize: 11, color: '#555' }}>W</span>
                     </div>
                 </div>
 
                 {/* Footer: last action + notifications */}
                 <div style={{
-                    padding: '8px 14px', borderTop: '1px solid rgba(255,255,255,0.1)',
+                    padding: '8px 14px', borderTop: '1px solid rgba(0,0,0,0.1)',
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 'auto',
+                    fontSize: 11, color: '#555', marginTop: 'auto',
                 }}>
                     <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {lastAction}
@@ -572,7 +572,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     {notifToday > 0 && (
                         <div style={{
                             marginLeft: 8, padding: '1px 6px', borderRadius: 8,
-                            background: 'rgba(255,255,255,0.1)', fontSize: 10, color: 'rgba(255,255,255,0.6)', flexShrink: 0,
+                            background: 'rgba(0,0,0,0.08)', fontSize: 10, color: '#333', flexShrink: 0,
                         }}>
                             {notifToday} notif
                         </div>
@@ -615,7 +615,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
             }}>
                 {/* Title */}
                 <div style={{
-                    fontSize: 18, fontWeight: 700, letterSpacing: '0.02em', color: '#fff',
+                    fontSize: 18, fontWeight: 700, letterSpacing: '0.02em', color: '#111',
                 }}>
                     {title}
                 </div>
@@ -668,7 +668,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 {/* Holiday section */}
                 <div style={{
                     display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12,
-                    padding: '10px 14px', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 12,
+                    padding: '10px 14px', border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
                     background: isHoliday ? 'rgba(245,166,35,0.08)' : 'transparent',
                 }}>
                     <div style={{
@@ -690,7 +690,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         )}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
-                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
+                        <span style={{ fontSize: 12, color: '#333' }}>
                             {tr('em_holiday_from') || 'Von'}
                         </span>
                         <input
@@ -698,11 +698,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             value={holidayFrom}
                             onChange={(e) => this.setVal('oid-holiday-from', e.target.value)}
                             style={{
-                                padding: '4px 8px', fontSize: 13, border: '1px solid rgba(255,255,255,0.25)',
-                                borderRadius: 6, background: 'transparent', color: '#fff',
+                                padding: '4px 8px', fontSize: 13, border: '1px solid rgba(0,0,0,0.15)',
+                                borderRadius: 6, background: 'transparent', color: '#111',
                             }}
                         />
-                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
+                        <span style={{ fontSize: 12, color: '#333' }}>
                             {tr('em_holiday_to') || 'Bis'}
                         </span>
                         <input
@@ -710,8 +710,8 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             value={holidayTo}
                             onChange={(e) => this.setVal('oid-holiday-to', e.target.value)}
                             style={{
-                                padding: '4px 8px', fontSize: 13, border: '1px solid rgba(255,255,255,0.25)',
-                                borderRadius: 6, background: 'transparent', color: '#fff',
+                                padding: '4px 8px', fontSize: 13, border: '1px solid rgba(0,0,0,0.15)',
+                                borderRadius: 6, background: 'transparent', color: '#111',
                             }}
                         />
                     </div>
