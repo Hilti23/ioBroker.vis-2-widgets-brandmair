@@ -27,7 +27,7 @@ interface EmRxData {
     // Warmwasser Temperaturen
     'oid-ww-temp-bottom': string;
     'oid-ww-temp-top': string;
-    // Holiday RW
+    // Holiday RW (kept for backwards compat)
     'oid-holiday-from': string;
     'oid-holiday-to': string;
     // Device 1
@@ -64,6 +64,7 @@ interface EmRxData {
     'oid-dev1-hol-pre-days': string;
     'oid-dev1-silent-rules': string;
     'oid-dev1-silent-active': string;
+    'oid-dev1-time-rules': string;
     // Device 2
     'oid-dev2-name': string;
     'oid-dev2-mode': string;
@@ -98,6 +99,7 @@ interface EmRxData {
     'oid-dev2-hol-pre-days': string;
     'oid-dev2-silent-rules': string;
     'oid-dev2-silent-active': string;
+    'oid-dev2-time-rules': string;
     // Device 3
     'oid-dev3-name': string;
     'oid-dev3-mode': string;
@@ -132,6 +134,7 @@ interface EmRxData {
     'oid-dev3-hol-pre-days': string;
     'oid-dev3-silent-rules': string;
     'oid-dev3-silent-active': string;
+    'oid-dev3-time-rules': string;
 }
 
 interface EmState extends VisRxWidgetState {
@@ -144,9 +147,21 @@ interface EmState extends VisRxWidgetState {
     editDev2PowerMax: number | null;
     editDev3PowerMin: number | null;
     editDev3PowerMax: number | null;
-    showSettings1: boolean;
-    showSettings2: boolean;
-    showSettings3: boolean;
+    showTimeModal1: boolean;
+    showTimeModal2: boolean;
+    showTimeModal3: boolean;
+    editTimeRules1: TimeRule[] | null;
+    editTimeRules2: TimeRule[] | null;
+    editTimeRules3: TimeRule[] | null;
+}
+
+// ---------------------------------------------------------------------------
+// Time rules types
+// ---------------------------------------------------------------------------
+interface TimeRule {
+    days: number[];
+    start: string;
+    end: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -181,6 +196,7 @@ const DEVICE_NEW_FIELDS: Array<[string, string]> = [
     ['hol-pre-days', 'holiday_pre_days'],
     ['silent-rules', 'silent_rules'],
     ['silent-active', 'silent_active'],
+    ['time-rules', 'time_rules'],
 ];
 
 const OID_MAP: Array<[string, string]> = [
@@ -260,6 +276,7 @@ function formatWatt(w: number): string {
 }
 
 const DAY_NAMES = ['', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+const DAY_NAMES_FULL = ['', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
 
 interface SilentRule {
     days: number[];
@@ -288,6 +305,55 @@ function parseDaysArray(jsonStr: string): number[] {
         if (Array.isArray(arr)) return arr;
     } catch { /* ignore */ }
     return [];
+}
+
+function parseTimeRules(jsonStr: string): TimeRule[] {
+    try {
+        const arr = JSON.parse(jsonStr);
+        if (Array.isArray(arr)) return arr;
+    } catch { /* ignore */ }
+    return [];
+}
+
+function formatTimeRules(rulesJson: string, legacyStart: string, legacyEnd: string, legacyDays: string): string {
+    let rules = parseTimeRules(rulesJson);
+    if (rules.length === 0 && (legacyStart || legacyEnd)) {
+        // Fall back to legacy
+        const days = parseDaysArray(legacyDays);
+        if (days.length > 0 && (legacyStart || legacyEnd)) {
+            rules = [{ days, start: legacyStart || '00:00', end: legacyEnd || '23:59' }];
+        }
+    }
+    if (rules.length === 0) return '\u2013';
+
+    return rules.map((r) => {
+        const dayStr = formatDayRange(r.days);
+        return `${dayStr} ${r.start}-${r.end}`;
+    }).join(' | ');
+}
+
+function formatDayRange(days: number[]): string {
+    if (days.length === 0) return '';
+    const sorted = [...days].sort((a, b) => a - b);
+    const ranges: string[] = [];
+    let start = sorted[0];
+    let prev = sorted[0];
+    for (let i = 1; i <= sorted.length; i++) {
+        if (i < sorted.length && sorted[i] === prev + 1) {
+            prev = sorted[i];
+        } else {
+            if (start === prev) {
+                ranges.push(DAY_NAMES[start]);
+            } else {
+                ranges.push(`${DAY_NAMES[start]}-${DAY_NAMES[prev]}`);
+            }
+            if (i < sorted.length) {
+                start = sorted[i];
+                prev = sorted[i];
+            }
+        }
+    }
+    return ranges.join(',');
 }
 
 // Text shadow for colored values on variable backgrounds
@@ -388,6 +454,163 @@ function Checkbox({ checked, label, onChange }: { checked: boolean; label: strin
 }
 
 // ---------------------------------------------------------------------------
+// TimeRulesModal
+// ---------------------------------------------------------------------------
+interface TimeRulesModalProps {
+    rules: TimeRule[];
+    onSave: (rules: TimeRule[]) => void;
+    onCancel: () => void;
+}
+
+interface DayRow {
+    day: number;
+    active: boolean;
+    start: string;
+    end: string;
+}
+
+function TimeRulesModal({ rules, onSave, onCancel }: TimeRulesModalProps): React.JSX.Element {
+    const initRows = (): DayRow[] => {
+        const rows: DayRow[] = [];
+        for (let d = 1; d <= 7; d++) {
+            // Find a rule containing this day
+            const rule = rules.find((r) => r.days.includes(d));
+            rows.push({
+                day: d,
+                active: !!rule,
+                start: rule ? rule.start : '08:00',
+                end: rule ? rule.end : '20:00',
+            });
+        }
+        return rows;
+    };
+
+    const [dayRows, setDayRows] = React.useState<DayRow[]>(initRows);
+
+    const updateRow = (idx: number, field: keyof DayRow, value: any): void => {
+        setDayRows((prev) => {
+            const next = [...prev];
+            next[idx] = { ...next[idx], [field]: value };
+            return next;
+        });
+    };
+
+    const handleSave = (): void => {
+        // Group rows with same start+end into rules
+        const groups: Record<string, number[]> = {};
+        for (const row of dayRows) {
+            if (!row.active) continue;
+            const key = `${row.start}|${row.end}`;
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(row.day);
+        }
+        const result: TimeRule[] = Object.entries(groups).map(([key, days]) => {
+            const [start, end] = key.split('|');
+            return { days: days.sort((a, b) => a - b), start, end };
+        });
+        onSave(result);
+    };
+
+    const inputStyle: React.CSSProperties = {
+        padding: '4px 6px', fontSize: 13, border: '1px solid rgba(0,0,0,0.2)',
+        borderRadius: 5, background: '#fff', color: '#111', textAlign: 'center',
+        width: 80,
+    };
+
+    return (
+        <div
+            onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+            style={{
+                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', zIndex: 1100,
+            }}
+        >
+            <div style={{
+                background: '#fff', borderRadius: 12, padding: 24, minWidth: 340,
+                maxWidth: 480, boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                color: '#111',
+            }}>
+                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: '#111' }}>
+                    {tr('em_time_rules') || 'Zeitfenster'}
+                </div>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr>
+                            <th style={{ textAlign: 'left', fontSize: 12, color: '#555', padding: '4px 6px' }}>Tag</th>
+                            <th style={{ textAlign: 'center', fontSize: 12, color: '#555', padding: '4px 6px' }}>
+                                {tr('em_time_active') || 'Aktiv'}
+                            </th>
+                            <th style={{ textAlign: 'center', fontSize: 12, color: '#555', padding: '4px 6px' }}>Start</th>
+                            <th style={{ textAlign: 'center', fontSize: 12, color: '#555', padding: '4px 6px' }}>Ende</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {dayRows.map((row, idx) => (
+                            <tr key={row.day} style={{
+                                borderTop: '1px solid rgba(0,0,0,0.08)',
+                                opacity: row.active ? 1 : 0.5,
+                            }}>
+                                <td style={{ padding: '6px', fontSize: 13, fontWeight: 600, color: '#333' }}>
+                                    {DAY_NAMES_FULL[row.day]}
+                                </td>
+                                <td style={{ padding: '6px', textAlign: 'center' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={row.active}
+                                        onChange={(e) => updateRow(idx, 'active', e.target.checked)}
+                                        style={{ width: 16, height: 16 }}
+                                    />
+                                </td>
+                                <td style={{ padding: '6px', textAlign: 'center' }}>
+                                    <input
+                                        type="time"
+                                        value={row.start}
+                                        disabled={!row.active}
+                                        onChange={(e) => updateRow(idx, 'start', e.target.value)}
+                                        style={{ ...inputStyle, opacity: row.active ? 1 : 0.4 }}
+                                    />
+                                </td>
+                                <td style={{ padding: '6px', textAlign: 'center' }}>
+                                    <input
+                                        type="time"
+                                        value={row.end}
+                                        disabled={!row.active}
+                                        onChange={(e) => updateRow(idx, 'end', e.target.value)}
+                                        style={{ ...inputStyle, opacity: row.active ? 1 : 0.4 }}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20 }}>
+                    <button
+                        onClick={onCancel}
+                        style={{
+                            padding: '8px 20px', fontSize: 13, border: '1px solid rgba(0,0,0,0.2)',
+                            borderRadius: 6, background: '#f5f5f5', color: '#333', cursor: 'pointer',
+                        }}
+                    >
+                        {tr('em_time_cancel') || 'Abbrechen'}
+                    </button>
+                    <button
+                        onClick={handleSave}
+                        style={{
+                            padding: '8px 20px', fontSize: 13, border: '1px solid #4a9edd',
+                            borderRadius: 6, background: '#4a9edd', color: '#fff', cursor: 'pointer',
+                            fontWeight: 600,
+                        }}
+                    >
+                        {tr('em_time_save') || 'Speichern'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Device OID field generator
 // ---------------------------------------------------------------------------
 function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: string; type: string; label: string }> {
@@ -427,6 +650,7 @@ function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: str
         { name: `${p}-hol-pre-days`, type: 'id', label: 'em_hol_pre_days' },
         { name: `${p}-silent-rules`, type: 'id', label: 'em_silent_rules' },
         { name: `${p}-silent-active`, type: 'id', label: 'em_silent_active' },
+        { name: `${p}-time-rules`, type: 'id', label: 'em_time_rules' },
     ];
     return fields;
 }
@@ -448,9 +672,12 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
             editDev2PowerMax: null,
             editDev3PowerMin: null,
             editDev3PowerMax: null,
-            showSettings1: false,
-            showSettings2: false,
-            showSettings3: false,
+            showTimeModal1: false,
+            showTimeModal2: false,
+            showTimeModal3: false,
+            editTimeRules1: null,
+            editTimeRules2: null,
+            editTimeRules3: null,
         };
     }
 
@@ -558,6 +785,24 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         return v === true || v === 'true';
     }
 
+    // -- Get time rules for a device, with fallback -------------------------
+    private getTimeRulesForDevice(devNum: 1 | 2 | 3): TimeRule[] {
+        const k = (suffix: string): keyof EmRxData => `oid-dev${devNum}-${suffix}` as keyof EmRxData;
+        const rulesStr: string = this.val(k('time-rules')) || '';
+        const rules = parseTimeRules(rulesStr);
+        if (rules.length > 0) return rules;
+
+        // Fallback to legacy
+        const timeStart: string = this.val(k('time-start')) || '';
+        const timeEnd: string = this.val(k('time-end')) || '';
+        const daysStr: string = this.val(k('days')) || '[]';
+        const days = parseDaysArray(daysStr);
+        if (days.length > 0 && (timeStart || timeEnd)) {
+            return [{ days, start: timeStart || '00:00', end: timeEnd || '23:59' }];
+        }
+        return [];
+    }
+
     // -- Device card renderer -----------------------------------------------
     private renderDevice(devNum: 1 | 2 | 3): React.JSX.Element {
         const k = (suffix: string): keyof EmRxData => `oid-dev${devNum}-${suffix}` as keyof EmRxData;
@@ -574,9 +819,13 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const holidayBlocked = this.toBool(this.val(k('holiday-blocked')));
         const notifToday = Number(this.val(k('notif-today'))) || 0;
 
-        // New fields
+        // Time rules
+        const timeRulesStr: string = this.val(k('time-rules')) || '';
         const timeStart: string = this.val(k('time-start')) || '';
         const timeEnd: string = this.val(k('time-end')) || '';
+        const daysStr: string = this.val(k('days')) || '[]';
+
+        // Silent
         const silentActive = this.toBool(this.val(k('silent-active')));
         const silentRulesStr: string = this.val(k('silent-rules')) || '[]';
 
@@ -584,11 +833,11 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const priKey = `editDev${devNum}Priority` as keyof EmState;
         const pMinKey = `editDev${devNum}PowerMin` as keyof EmState;
         const pMaxKey = `editDev${devNum}PowerMax` as keyof EmState;
-        const showKey = `showSettings${devNum}` as keyof EmState;
+        const timeModalKey = `showTimeModal${devNum}` as keyof EmState;
         const editPri = this.state[priKey] as number | null;
         const editPMin = this.state[pMinKey] as number | null;
         const editPMax = this.state[pMaxKey] as number | null;
-        const showSettings = this.state[showKey] as boolean;
+        const showTimeModal = this.state[timeModalKey] as boolean;
 
         const displayPri = editPri !== null ? editPri : priority;
         const displayPMin = editPMin !== null ? editPMin : powerMin;
@@ -611,6 +860,8 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const timeInputStyle: React.CSSProperties = {
             ...inputStyle, width: 70, fontSize: 11, textAlign: 'center',
         };
+
+        const timeRulesSummary = formatTimeRules(timeRulesStr, timeStart, timeEnd, daysStr);
 
         return (
             <div key={devNum} style={{
@@ -636,14 +887,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         }} />
                         <div style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>{name}</div>
                     </div>
-                    {/* Priority badge */}
-                    <span style={{
-                        fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10,
-                        background: 'rgba(0,0,0,0.08)', color: '#333',
-                        border: '1px solid rgba(0,0,0,0.1)',
-                    }}>
-                        P{displayPri}
-                    </span>
                 </div>
 
                 {/* Power bar */}
@@ -709,16 +952,23 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     />
                 </div>
 
-                {/* Time window display */}
-                {(timeStart || timeEnd) && (
-                    <div style={{
-                        padding: '0 14px 8px', fontSize: 11, color: '#555',
-                        display: 'flex', alignItems: 'center', gap: 4,
-                    }}>
-                        <span style={{ color: '#333', fontWeight: 600 }}>{tr('em_time_window') || 'Zeitfenster'}:</span>
-                        <span>{timeStart || '--:--'} - {timeEnd || '--:--'}</span>
-                    </div>
-                )}
+                {/* Time rules display */}
+                <div style={{
+                    padding: '0 14px 8px', fontSize: 11, color: '#555',
+                    display: 'flex', alignItems: 'center', gap: 4,
+                }}>
+                    <span style={{ color: '#333', fontWeight: 600 }}>{tr('em_time_rules') || 'Zeitfenster'}:</span>
+                    <span style={{ flex: 1 }}>{timeRulesSummary}</span>
+                    <span
+                        onClick={() => this.setState({ [timeModalKey]: true } as any)}
+                        style={{
+                            color: '#4a9edd', cursor: 'pointer', fontWeight: 600,
+                            textDecoration: 'underline', fontSize: 11,
+                        }}
+                    >
+                        {tr('em_time_edit') || 'Bearbeiten'}
+                    </span>
+                </div>
 
                 {/* Silent status */}
                 <div style={{
@@ -801,27 +1051,20 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
 
                 </div>
 
-                {/* Settings toggle button */}
-                <div style={{ padding: '0 14px 8px' }}>
-                    <div
-                        onClick={() => this.setState({ [showKey]: !showSettings } as any)}
-                        style={{
-                            cursor: 'pointer', userSelect: 'none',
-                            fontSize: 12, fontWeight: 600,
-                            color: showSettings ? '#4a9edd' : '#333',
-                            padding: '6px 12px', borderRadius: 8,
-                            background: showSettings ? 'rgba(74,158,221,0.12)' : 'rgba(0,0,0,0.05)',
-                            border: `1px solid ${showSettings ? 'rgba(74,158,221,0.3)' : 'rgba(0,0,0,0.1)'}`,
-                            textAlign: 'center',
-                            transition: 'all 0.2s',
-                        }}
-                    >
-                        {showSettings ? '▲ ' : '▼ '}{tr('em_settings') || 'Einstellungen'}
-                    </div>
-                </div>
+                {/* Expandable settings section - always visible */}
+                {this.renderDeviceSettings(devNum, k, smallInputStyle, timeInputStyle)}
 
-                {/* Expandable settings section */}
-                {showSettings && this.renderDeviceSettings(devNum, k, smallInputStyle, timeInputStyle)}
+                {/* Time rules modal */}
+                {showTimeModal && (
+                    <TimeRulesModal
+                        rules={this.getTimeRulesForDevice(devNum)}
+                        onSave={(newRules) => {
+                            this.setVal(k('time-rules'), JSON.stringify(newRules));
+                            this.setState({ [timeModalKey]: false } as any);
+                        }}
+                        onCancel={() => this.setState({ [timeModalKey]: false } as any)}
+                    />
+                )}
 
                 {/* Footer: last action + notifications */}
                 <div style={{
@@ -857,10 +1100,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const surplusOn = Number(this.val(k('surplus-on'))) || 0;
         const surplusOff = Number(this.val(k('surplus-off'))) || 0;
         const avgMin = Number(this.val(k('avg-min'))) || 0;
-        const timeStart: string = this.val(k('time-start')) || '';
-        const timeEnd: string = this.val(k('time-end')) || '';
-        const daysStr: string = this.val(k('days')) || '[]';
-        const daysArr = parseDaysArray(daysStr);
         const exclHolidays = this.toBool(this.val(k('excl-holidays')));
         const minRuntime = Number(this.val(k('min-runtime'))) || 0;
         const minPause = Number(this.val(k('min-pause'))) || 0;
@@ -902,13 +1141,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
             </div>
         );
 
-        const toggleDay = (dayNum: number): void => {
-            const newDays = daysArr.includes(dayNum)
-                ? daysArr.filter((d) => d !== dayNum)
-                : [...daysArr, dayNum].sort();
-            this.setVal(k('days'), JSON.stringify(newDays));
-        };
-
         return (
             <div style={{
                 background: 'rgba(0,0,0,0.02)',
@@ -929,41 +1161,9 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     {numInput(avgMin, 'avg-min', 'min')}
                 </div>
 
-                {/* Time window */}
+                {/* Exclude holidays checkbox */}
                 <div style={sectionStyle}>
                     <div style={sectionLabel}>{tr('em_time_window') || 'Zeitfenster'}</div>
-                    <input
-                        type="time"
-                        value={timeStart}
-                        onChange={(e) => this.setVal(k('time-start'), e.target.value)}
-                        style={timeInputStyle}
-                    />
-                    <span style={{ fontSize: 11, color: '#555' }}>-</span>
-                    <input
-                        type="time"
-                        value={timeEnd}
-                        onChange={(e) => this.setVal(k('time-end'), e.target.value)}
-                        style={timeInputStyle}
-                    />
-                    <div style={{ width: 1, height: 16, background: 'rgba(0,0,0,0.1)' }} />
-                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_days_label') || 'Tage'}:</span>
-                    {[1, 2, 3, 4, 5, 6, 7].map((d) => (
-                        <span
-                            key={d}
-                            onClick={() => toggleDay(d)}
-                            style={{
-                                fontSize: 10, padding: '2px 5px', borderRadius: 4, cursor: 'pointer',
-                                userSelect: 'none',
-                                background: daysArr.includes(d) ? 'rgba(74,158,221,0.2)' : 'rgba(0,0,0,0.06)',
-                                color: daysArr.includes(d) ? '#4a9edd' : '#777',
-                                fontWeight: daysArr.includes(d) ? 600 : 400,
-                                border: `1px solid ${daysArr.includes(d) ? 'rgba(74,158,221,0.3)' : 'rgba(0,0,0,0.1)'}`,
-                            }}
-                        >
-                            {DAY_NAMES[d]}
-                        </span>
-                    ))}
-                    <div style={{ width: 1, height: 16, background: 'rgba(0,0,0,0.1)' }} />
                     <Checkbox
                         checked={exclHolidays}
                         label={tr('em_excl_holidays') || 'Feiertage aus'}
@@ -1046,16 +1246,10 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const forecastToday = parseFloat(this.val('oid-forecast-today')) || 0;
         const managedPower = parseFloat(this.val('oid-managed-power')) || 0;
         const activeDevices: string = this.val('oid-active-devices') || '';
-        const isHoliday = this.val('oid-is-holiday') === true || this.val('oid-is-holiday') === 'true';
-        const holidayDaysRemain = Number(this.val('oid-holiday-days-remain')) || 0;
 
         // Warmwasser
         const wwBottom = parseFloat(this.val('oid-ww-temp-bottom'));
         const wwTop = parseFloat(this.val('oid-ww-temp-top'));
-
-        // Holiday dates
-        const holidayFrom: string = this.val('oid-holiday-from') || '';
-        const holidayTo: string = this.val('oid-holiday-to') || '';
 
         return (
             <div style={{
@@ -1106,59 +1300,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         label={tr('em_ww_temp_bottom') || 'Warmwasser unten'}
                         temp={wwBottom}
                     />
-                </div>
-
-                {/* Holiday section */}
-                <div style={{
-                    display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12,
-                    padding: '10px 14px', border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
-                    background: isHoliday ? 'rgba(245,166,35,0.08)' : 'transparent',
-                }}>
-                    <div style={{
-                        fontSize: 13, fontWeight: 600,
-                        color: isHoliday ? '#f5a623' : '#555',
-                        display: 'flex', alignItems: 'center', gap: 6,
-                        textShadow: isHoliday ? valueShadow : 'none',
-                    }}>
-                        <span style={{ fontSize: 18 }}>&#9992;</span>
-                        {tr('em_holiday') || 'Urlaub'}
-                        {isHoliday && (
-                            <span style={{
-                                fontSize: 11, padding: '2px 8px', borderRadius: 8,
-                                background: '#fff3e0', color: '#f5a623', textShadow: 'none',
-                            }}>
-                                {holidayDaysRemain > 0
-                                    ? `${holidayDaysRemain} ${tr('em_holiday_days_label') || 'Tage'}`
-                                    : (tr('em_holiday_active') || 'aktiv')}
-                            </span>
-                        )}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
-                        <span style={{ fontSize: 12, color: '#333' }}>
-                            {tr('em_holiday_from') || 'Von'}
-                        </span>
-                        <input
-                            type="date"
-                            value={holidayFrom}
-                            onChange={(e) => this.setVal('oid-holiday-from', e.target.value)}
-                            style={{
-                                padding: '4px 8px', fontSize: 13, border: '1px solid rgba(0,0,0,0.15)',
-                                borderRadius: 6, background: 'transparent', color: '#111',
-                            }}
-                        />
-                        <span style={{ fontSize: 12, color: '#333' }}>
-                            {tr('em_holiday_to') || 'Bis'}
-                        </span>
-                        <input
-                            type="date"
-                            value={holidayTo}
-                            onChange={(e) => this.setVal('oid-holiday-to', e.target.value)}
-                            style={{
-                                padding: '4px 8px', fontSize: 13, border: '1px solid rgba(0,0,0,0.15)',
-                                borderRadius: 6, background: 'transparent', color: '#111',
-                            }}
-                        />
-                    </div>
                 </div>
 
                 {/* Device cards */}

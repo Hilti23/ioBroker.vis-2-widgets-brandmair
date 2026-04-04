@@ -134,5 +134,10 @@
     "em_dis_holiday": "Off during holiday",
     "em_hol_pre_days": "Pre-days",
     "em_runtimes": "Runtimes",
-    "em_holiday_settings": "Holiday"
+    "em_holiday_settings": "Holiday",
+    "em_time_rules": "Time rules",
+    "em_time_edit": "Edit",
+    "em_time_save": "Save",
+    "em_time_cancel": "Cancel",
+    "em_time_active": "Active"
 }

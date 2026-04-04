@@ -134,5 +134,10 @@
     "em_dis_holiday": "Im Urlaub aus",
     "em_hol_pre_days": "Vorlauf",
     "em_runtimes": "Laufzeiten",
-    "em_holiday_settings": "Urlaub"
+    "em_holiday_settings": "Urlaub",
+    "em_time_rules": "Zeitfenster",
+    "em_time_edit": "Bearbeiten",
+    "em_time_save": "Speichern",
+    "em_time_cancel": "Abbrechen",
+    "em_time_active": "Aktiv"
 }
