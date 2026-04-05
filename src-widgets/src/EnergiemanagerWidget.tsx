@@ -30,6 +30,9 @@ interface EmRxData {
     'oid-pool-temp': string;
     'oid-outside-temp': string;
     'oid-humidity': string;
+    // Temp-Abschaltung Heizstab
+    'oid-dev1-temp-restart': string;
+    'oid-dev1-temp-blocked': string;
     // Holiday RW (kept for backwards compat)
     'oid-holiday-from': string;
     'oid-holiday-to': string;
@@ -242,6 +245,11 @@ for (let d = 1; d <= 3; d++) {
         OID_MAP.push([`${dp}-${shortName}`, `${prefix}.${oidSuffix}`]);
     }
 }
+// Dev1-specific: Temperatur-Abschaltung
+OID_MAP.push(
+    ['oid-dev1-temp-restart', 'heizstab_warmwasser.temp_restart'],
+    ['oid-dev1-temp-blocked', 'heizstab_warmwasser.temp_blocked'],
+);
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -719,6 +727,12 @@ function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: str
         { name: `${p}-silent-active`, type: 'id', label: 'em_silent_active' },
         { name: `${p}-time-rules`, type: 'id', label: 'em_time_rules' },
     ];
+    if (devNum === 1) {
+        fields.push(
+            { name: `${p}-temp-restart`, type: 'id', label: 'em_temp_restart' },
+            { name: `${p}-temp-blocked`, type: 'id', label: 'em_temp_blocked' },
+        );
+    }
     return fields;
 }
 
@@ -1309,6 +1323,28 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     <span style={{ fontSize: 11, color: '#333' }}>{tr('em_hol_pre_days') || 'Vorlauf'}</span>
                     {numInput(holPreDays, 'hol-pre-days', tr('em_holiday_days_label') || 'Tage', 40)}
                 </div>
+
+                {/* Temperatur-Abschaltung (nur dev1 / Heizstab) */}
+                {devNum === 1 && (() => {
+                    const tempRestart = Number(this.val(k('temp-restart'))) || 0;
+                    const tempBlocked = this.toBool(this.val(k('temp-blocked')));
+                    return (
+                        <div style={sectionStyle}>
+                            <div style={sectionLabel}>{tr('em_temp_section') || 'Temperatur'}</div>
+                            <span style={{ fontSize: 11, color: '#333' }}>{tr('em_temp_restart') || 'Wiedereinsch.'}</span>
+                            {numInput(tempRestart, 'temp-restart', '°C', 40)}
+                            {tempBlocked && (
+                                <span style={{
+                                    fontSize: 10, padding: '2px 8px', borderRadius: 8,
+                                    background: 'rgba(232,98,42,0.15)', color: '#e8622a',
+                                    fontWeight: 600, marginLeft: 8,
+                                }}>
+                                    {tr('em_temp_blocked') || 'Temp-Sperre aktiv'}
+                                </span>
+                            )}
+                        </div>
+                    );
+                })()}
             </div>
         );
     }

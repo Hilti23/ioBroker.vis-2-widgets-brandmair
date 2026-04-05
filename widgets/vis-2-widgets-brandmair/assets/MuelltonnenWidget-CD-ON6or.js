@@ -1,6 +1,6 @@
 import { j as t, __tla as __tla_0 } from "./jsx-runtime-LXN0Dejw.js";
 import { G as f } from "./Generic-CM5BSTAz.js";
-import { t as n } from "./tr-CzH2vFeX.js";
+import { t as n } from "./tr-CDlrC61U.js";
 import { __tla as __tla_1 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js_commonjs-proxy-Dkt6rraE.js";
 import { __tla as __tla_2 } from "./vis2brandmairWidgets__loadShare__react__loadShare__.js-Cq4bBQs0.js";
 let a;
