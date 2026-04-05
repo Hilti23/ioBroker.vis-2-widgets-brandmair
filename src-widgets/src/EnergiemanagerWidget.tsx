@@ -24,9 +24,12 @@ interface EmRxData {
     'oid-active-devices': string;
     'oid-is-holiday': string;
     'oid-holiday-days-remain': string;
-    // Warmwasser Temperaturen
+    // Temperaturen & Sensoren
     'oid-ww-temp-bottom': string;
     'oid-ww-temp-top': string;
+    'oid-pool-temp': string;
+    'oid-outside-temp': string;
+    'oid-humidity': string;
     // Holiday RW (kept for backwards compat)
     'oid-holiday-from': string;
     'oid-holiday-to': string;
@@ -375,46 +378,47 @@ function StatCard({ label, value, unit, color, sub }: {
 }) {
     return (
         <div style={{
-            flex: '1 1 0', minWidth: 120, padding: '12px 14px',
-            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
-            display: 'flex', flexDirection: 'column', gap: 2,
+            flex: '1 1 0', minWidth: 100, padding: '6px 10px',
+            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 10,
+            display: 'flex', flexDirection: 'column', gap: 1,
             alignItems: 'center', textAlign: 'center',
         }}>
-            <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: 10, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
             </div>
             <div style={{
-                fontSize: 22, fontWeight: 700, color: color || '#111',
+                fontSize: 18, fontWeight: 700, color: color || '#111',
                 textShadow: color ? valueShadow : 'none',
             }}>
                 {value}
-                {unit && <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333', textShadow: 'none' }}>{unit}</span>}
+                {unit && <span style={{ fontSize: 11, fontWeight: 400, marginLeft: 2, color: '#333', textShadow: 'none' }}>{unit}</span>}
             </div>
             {sub && (
-                <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{sub}</div>
+                <div style={{ fontSize: 10, color: '#555' }}>{sub}</div>
             )}
         </div>
     );
 }
 
-function WaterTempCard({ label, temp }: { label: string; temp: number }) {
-    const display = isNaN(temp) ? '-' : `${temp.toFixed(1)}`;
+function SensorCard({ label, value, unit, color }: {
+    label: string; value: string; unit: string; color?: string;
+}) {
     return (
         <div style={{
-            flex: '1 1 0', minWidth: 120, padding: '12px 14px',
-            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 12,
-            display: 'flex', flexDirection: 'column', gap: 2,
+            flex: '1 1 0', minWidth: 100, padding: '6px 10px',
+            border: '1px solid rgba(0,0,0,0.15)', borderRadius: 10,
+            display: 'flex', flexDirection: 'column', gap: 1,
             alignItems: 'center', textAlign: 'center',
         }}>
-            <div style={{ fontSize: 11, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: 10, color: '#333', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {label}
             </div>
             <div style={{
-                fontSize: 22, fontWeight: 700, color: wwColor(temp),
-                textShadow: valueShadow,
+                fontSize: 18, fontWeight: 700, color: color || '#111',
+                textShadow: color ? valueShadow : 'none',
             }}>
-                {display}
-                <span style={{ fontSize: 13, fontWeight: 400, marginLeft: 3, color: '#333', textShadow: 'none' }}>&deg;C</span>
+                {value}
+                <span style={{ fontSize: 11, fontWeight: 400, marginLeft: 2, color: '#333', textShadow: 'none' }}>{unit}</span>
             </div>
         </div>
     );
@@ -788,6 +792,9 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         { name: 'oid-holiday-days-remain', type: 'id', label: 'em_holiday_days' },
                         { name: 'oid-ww-temp-bottom', type: 'id', label: 'em_ww_temp_bottom' },
                         { name: 'oid-ww-temp-top', type: 'id', label: 'em_ww_temp_top' },
+                        { name: 'oid-pool-temp', type: 'id', label: 'em_pool_temp' },
+                        { name: 'oid-outside-temp', type: 'id', label: 'em_outside_temp' },
+                        { name: 'oid-humidity', type: 'id', label: 'em_humidity' },
                     ],
                 },
                 {
@@ -1321,20 +1328,21 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const managedPower = parseFloat(this.val('oid-managed-power')) || 0;
         const activeDevices: string = this.val('oid-active-devices') || '';
 
-        // Warmwasser
+        // Temperaturen & Sensoren
         const wwBottom = parseFloat(this.val('oid-ww-temp-bottom'));
         const wwTop = parseFloat(this.val('oid-ww-temp-top'));
+        const poolTemp = parseFloat(this.val('oid-pool-temp'));
+        const outsideTemp = parseFloat(this.val('oid-outside-temp'));
+        const humidity = parseFloat(this.val('oid-humidity'));
 
         return (
             <div style={{
                 width: '100%', height: '100%', fontFamily: 'sans-serif',
                 display: 'flex', flexDirection: 'column', overflow: 'auto',
-                padding: 16, gap: 16, boxSizing: 'border-box',
+                padding: 16, gap: 10, boxSizing: 'border-box',
             }}>
-                {/* Global stat cards */}
-                <div style={{
-                    display: 'flex', flexWrap: 'wrap', gap: 10,
-                }}>
+                {/* Zeile 1: Strom & Energie */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     <StatCard
                         label={tr('em_pv_power') || 'PV-Leistung'}
                         value={formatWatt(pvPower)}
@@ -1346,7 +1354,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                             : (tr('em_grid_draw') || 'Netzbezug')}
                         value={formatWatt(Math.abs(surplusCurrent))}
                         color={surplusColor(surplusCurrent)}
-                        sub={`\u00d830min: ${formatWatt(surplusAvg)}`}
+                        sub={`Avg: ${formatWatt(surplusAvg)}`}
                     />
                     <StatCard
                         label={tr('em_battery_soc') || 'Batterie'}
@@ -1366,13 +1374,39 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         color="#8b5cf6"
                         sub={activeDevices || (tr('em_no_devices') || 'Keine')}
                     />
-                    <WaterTempCard
-                        label={tr('em_ww_temp_top') || 'Warmwasser oben'}
-                        temp={wwTop}
+                </div>
+
+                {/* Zeile 2: Temperaturen & Luftfeuchtigkeit */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    <SensorCard
+                        label={tr('em_ww_temp_top') || 'WW oben'}
+                        value={isNaN(wwTop) ? '-' : wwTop.toFixed(1)}
+                        unit="°C"
+                        color={wwColor(wwTop)}
                     />
-                    <WaterTempCard
-                        label={tr('em_ww_temp_bottom') || 'Warmwasser unten'}
-                        temp={wwBottom}
+                    <SensorCard
+                        label={tr('em_ww_temp_bottom') || 'WW unten'}
+                        value={isNaN(wwBottom) ? '-' : wwBottom.toFixed(1)}
+                        unit="°C"
+                        color={wwColor(wwBottom)}
+                    />
+                    <SensorCard
+                        label={tr('em_pool_temp') || 'Pool'}
+                        value={isNaN(poolTemp) ? '-' : poolTemp.toFixed(1)}
+                        unit="°C"
+                        color={wwColor(poolTemp)}
+                    />
+                    <SensorCard
+                        label={tr('em_outside_temp') || 'Außen'}
+                        value={isNaN(outsideTemp) ? '-' : outsideTemp.toFixed(1)}
+                        unit="°C"
+                        color={wwColor(outsideTemp)}
+                    />
+                    <SensorCard
+                        label={tr('em_humidity') || 'Feuchte'}
+                        value={isNaN(humidity) ? '-' : Math.round(humidity).toString()}
+                        unit="%"
+                        color={humidity > 65 ? '#e8622a' : humidity > 50 ? '#f5a623' : '#2ec27e'}
                     />
                 </div>
 
