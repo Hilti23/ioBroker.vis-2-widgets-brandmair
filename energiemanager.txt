@@ -48,7 +48,13 @@ const DEVICES = [
         disable_on_holiday: true,
         holiday_pre_days: 1,
         silent_mode_dp: null,
-        silent_rules: null
+        silent_rules: null,
+        // Temperatur-Abschaltung (nur Heizstab)
+        temp_sensor_dp: 'modbus.0.holdingRegisters.15_THeizstab', // WW unten (Hauptsteuerung)
+        temp_sensor_top_dp: 'modbus.0.holdingRegisters.25_T2Heizstab', // WW oben (Sicherheitsgrenze)
+        temp_max_dp: 'modbus.0.holdingRegisters.30_Maximaltemperatur', // Max-Temp unten vom Modbus
+        temp_max_top: 75,   // Max-Temp oben (Sicherheitsgrenze)
+        temp_restart: 45    // Erst wieder einschalten unter dieser Temperatur
     },
     {
         id: 'luftentfeuchter_keller',
@@ -149,7 +155,7 @@ const CONFIG = {
 };
 
 const DP_BASE = '0_userdata.0.Energiemanager';
-const state = { surplus_history: [], device_states: {}, notification_counts: {}, initialized: false };
+const state = { surplus_history: [], device_states: {}, initialized: false };
 
 // =============================================================================
 // LOGGING & NOTIFICATIONS
@@ -160,12 +166,6 @@ function logDebug(msg) { if (CONFIG.debug) log(`${CONFIG.log_prefix} ${msg}`, 'd
 function logWarn(msg) { log(`${CONFIG.log_prefix} ${msg}`, 'warn'); }
 
 function notify(deviceId, text) {
-    if (deviceId) {
-        const maxN = g(deviceId, 'max_notifications_per_day', 100);
-        if (!state.notification_counts[deviceId]) state.notification_counts[deviceId] = 0;
-        if (state.notification_counts[deviceId] >= maxN) return;
-        state.notification_counts[deviceId]++;
-    }
     sendTo(CONFIG.notify_adapter, 'send', { message: text, title: CONFIG.notify_title, sound: '', priority: 0 });
 }
 
@@ -215,7 +215,30 @@ function dFcRules(d) { return gJson(d.id, 'forecast_rules', d.forecast_rules); }
 function dHolidayDisable(d) { return g(d.id, 'disable_on_holiday', d.disable_on_holiday); }
 function dHolidayPre(d) { return g(d.id, 'holiday_pre_days', d.holiday_pre_days); }
 function dSilentRules(d) { return gJson(d.id, 'silent_rules', d.silent_rules); }
+function dTempMax(d) {
+    // Max-Temp direkt vom Modbus-Datenpunkt lesen wenn vorhanden
+    if (d.temp_max_dp) {
+        try { return getState(d.temp_max_dp).val || 0; }
+        catch (e) { return 0; }
+    }
+    return g(d.id, 'temp_max', d.temp_max || 0);
+}
+function dTempRestart(d) { return g(d.id, 'temp_restart', d.temp_restart || 0); }
+function dTempMaxTop(d) { return g(d.id, 'temp_max_top', d.temp_max_top || 75); }
 function dMode(d) { return g(d.id, 'mode', 'auto') || 'auto'; }
+
+// Temperatur vom unteren Sensor (Hauptsteuerung)
+function getDeviceTemp(d) {
+    if (!d.temp_sensor_dp) return 0;
+    try { return getState(d.temp_sensor_dp).val || 0; }
+    catch (e) { return 0; }
+}
+// Temperatur vom oberen Sensor (Sicherheitsgrenze)
+function getDeviceTempTop(d) {
+    if (!d.temp_sensor_top_dp) return 0;
+    try { return getState(d.temp_sensor_top_dp).val || 0; }
+    catch (e) { return 0; }
+}
 
 // =============================================================================
 // SENSOR-FUNKTIONEN
@@ -224,6 +247,12 @@ function dMode(d) { return g(d.id, 'mode', 'auto') || 'auto'; }
 function getSurplus() { return getState(CONFIG.pv_grid_dp).val * -1; }
 function getSOC() { return getState(CONFIG.battery_soc_dp).val; }
 function getPVPower() { return (getState(CONFIG.pv_dc_string1_dp).val || 0) + (getState(CONFIG.pv_dc_string2_dp).val || 0); }
+// Batterie-Ladeleistung: Rückgabe positiv = Laden, negativ = Entladen
+// RCT liefert negativ bei Laden, daher * -1
+function getBatteryChargePower() {
+    try { return (getState(CONFIG.battery_power_dp).val || 0) * -1; }
+    catch (e) { return 0; }
+}
 
 function getForecastTodayKwh() {
     let fc = 0, sc = 0, cnt = 0;
@@ -294,8 +323,17 @@ function isDeviceDisabledByHoliday(d) {
 }
 
 function isDeviceOn(d) {
-    try { const v = getState(d.switch_dp).val; return v === true || v === 1; }
+    try {
+        const v = getState(d.switch_dp).val;
+        return v === true || v === 1 || v === '1' || v === 'true';
+    }
     catch (e) { return false; }
+}
+
+// Verwende internen State wenn der externe DP nicht zuverlässig ist (z.B. Modbus/Tuya)
+function isDeviceOnInternal(d) {
+    const ds = state.device_states[d.id];
+    return ds ? ds.is_on === true : isDeviceOn(d);
 }
 
 // =============================================================================
@@ -318,33 +356,40 @@ function switchOn(d, pw) {
     if (!isMinPauseMet(d)) return;
     const maxW = dPowerMax(d);
     if (d.is_dimmable && d.power_set_dp) setState(d.power_set_dp, Math.round(pw));
-    setState(d.switch_dp, true);
+    // Modbus erwartet number, Shelly/Tuya boolean
+    const onVal = d.switch_dp.startsWith('modbus.') ? 1 : true;
+    setState(d.switch_dp, onVal);
     if (!state.device_states[d.id]) state.device_states[d.id] = {};
     state.device_states[d.id].is_on = true;
     state.device_states[d.id].last_on = Date.now();
     state.device_states[d.id].power_set = pw || maxW;
-    logInfo(`✓ ${dName(d)} EIN (${Math.round(pw || maxW)}W)`);
+    const t = d.temp_sensor_dp ? ` | WW: ${getDeviceTemp(d).toFixed(1)}/${getDeviceTempTop(d).toFixed(1)}°C` : '';
+    logInfo(`✓ ${dName(d)} EIN (${Math.round(pw || maxW)}W) | SOC: ${Math.round(getSOC())}% | PV: ${Math.round(getPVPower())}W${t}`);
 }
 
 function switchOff(d) {
     if (!isMinRuntimeMet(d)) return;
     if (d.is_dimmable && d.power_set_dp) setState(d.power_set_dp, 0);
-    setState(d.switch_dp, false);
+    const offVal = d.switch_dp.startsWith('modbus.') ? 0 : false;
+    setState(d.switch_dp, offVal);
     if (!state.device_states[d.id]) state.device_states[d.id] = {};
     state.device_states[d.id].is_on = false;
     state.device_states[d.id].last_off = Date.now();
     state.device_states[d.id].power_set = 0;
-    logInfo(`✗ ${dName(d)} AUS`);
+    const t2 = d.temp_sensor_dp ? ` | WW: ${getDeviceTemp(d).toFixed(1)}/${getDeviceTempTop(d).toFixed(1)}°C` : '';
+    logInfo(`✗ ${dName(d)} AUS | SOC: ${Math.round(getSOC())}% | PV: ${Math.round(getPVPower())}W${t2}`);
 }
 
 function switchOffForce(d) {
     if (d.is_dimmable && d.power_set_dp) setState(d.power_set_dp, 0);
-    setState(d.switch_dp, false);
+    const offVal = d.switch_dp.startsWith('modbus.') ? 0 : false;
+    setState(d.switch_dp, offVal);
     if (!state.device_states[d.id]) state.device_states[d.id] = {};
     state.device_states[d.id].is_on = false;
     state.device_states[d.id].last_off = Date.now();
     state.device_states[d.id].power_set = 0;
-    logInfo(`⚠ ${dName(d)} SOFORT AUS`);
+    const t3 = d.temp_sensor_dp ? ` | WW: ${getDeviceTemp(d).toFixed(1)}/${getDeviceTempTop(d).toFixed(1)}°C` : '';
+    logInfo(`⚠ ${dName(d)} SOFORT AUS | SOC: ${Math.round(getSOC())}% | PV: ${Math.round(getPVPower())}W${t3}`);
 }
 
 function adjustPower(d, pw) {
@@ -354,6 +399,34 @@ function adjustPower(d, pw) {
     if (!state.device_states[d.id]) state.device_states[d.id] = {};
     state.device_states[d.id].power_set = cl;
     logDebug(`${dName(d)}: ${cl}W`);
+}
+
+// Tatsächlichen Gerätestatus lesen und internen State synchronisieren
+function syncActualState(d) {
+    if (!state.device_states[d.id]) state.device_states[d.id] = {};
+    const ds = state.device_states[d.id];
+
+    // Switch-Status synchronisieren (für alle Geräte)
+    try {
+        const actualOn = isDeviceOn(d);
+        if (ds.is_on !== actualOn) {
+            logInfo(`${dName(d)}: Externe Status-Änderung ${ds.is_on ? 'EIN' : 'AUS'} → ${actualOn ? 'EIN' : 'AUS'}`);
+            ds.is_on = actualOn;
+            if (actualOn) { ds.last_on = Date.now(); ds.power_set = dPowerMax(d); }
+            else { ds.last_off = Date.now(); ds.power_set = 0; }
+        }
+    } catch (e) { /* DP nicht erreichbar */ }
+
+    // Leistung synchronisieren (nur dimmbare Geräte)
+    if (d.is_dimmable && d.power_set_dp) {
+        try {
+            const actual = getState(d.power_set_dp).val || 0;
+            if (Math.abs(actual - ds.power_set) > 10) {
+                logInfo(`${dName(d)}: Externe Leistungs-Änderung ${ds.power_set}W → ${actual}W`);
+                ds.power_set = actual;
+            }
+        } catch (e) { /* DP nicht erreichbar */ }
+    }
 }
 
 // =============================================================================
@@ -385,12 +458,35 @@ function getPreheatingPower(d) {
     const s = dFcStart(d), e = dFcEnd(d);
     if (!s || !e || !isInTimeWindow(s, e)) return 0;
     const soc = getSOC();
-    if (soc < dFcMinSoc(d)) return 0;
+    const minSoc = dFcMinSoc(d);
+    if (soc < minSoc) return 0;
     const kwh = getForecastTodayKwh();
+    const minW = dPowerMin(d), maxW = dPowerMax(d);
+
+    // Mindest-Forecast prüfen (niedrigste Regel)
     const rules = dFcRules(d);
-    if (!rules) return 0;
-    for (const r of rules) { if (kwh >= r.min_forecast_kwh) return r.power_w; }
-    return 0;
+    if (!rules || rules.length === 0) return 0;
+    const minForecast = Math.min(...rules.map(r => r.min_forecast_kwh));
+    if (kwh < minForecast) return 0;
+
+    // Dynamische Berechnung basierend auf Batterie-Ladeleistung
+    // Idee: Was in die Batterie fließt können wir umleiten zum Heizstab
+    const batCharge = getBatteryChargePower(); // positiv = Laden
+    const surplus = Math.max(0, getSurplus());
+    const PUFFER = 150; // W Puffer damit Batterie nicht ganz leer gesaugt wird
+
+    // Verfügbar = was gerade in die Batterie fließt (minus Puffer) + ggf. Netz-Einspeisung
+    const available = Math.max(0, batCharge - PUFFER) + surplus;
+
+    // Bei gutem Forecast zusätzlich etwas Batterie-Entnahme erlauben
+    const forecastFactor = Math.min(2.0, kwh / 20);
+    const socReserve = Math.max(0, soc - minSoc);
+    const batteryBonus = socReserve * 15 * forecastFactor; // reduziert (15 statt 30), da Ladeleistung schon genutzt wird
+
+    const total = Math.round(Math.max(minW, Math.min(maxW, available + batteryBonus)));
+
+    logDebug(`${dName(d)}: Vorheizen BatLade=${Math.round(batCharge)}W Surplus=${Math.round(surplus)}W Bonus=${Math.round(batteryBonus)}W → ${total}W (SOC ${Math.round(soc)}%, Forecast ${Math.round(kwh)}kWh)`);
+    return total;
 }
 
 // =============================================================================
@@ -461,6 +557,14 @@ function createDatapoints() {
         createState(`${b}.silent_rules`, JSON.stringify(d.silent_rules || []), { name: 'Silent Mode Regeln', type: 'string', role: 'json', def: JSON.stringify(d.silent_rules || []), desc: 'JSON: [{"days":[1,2,3,4],"before":"16:00","silent":true}]' });
         createState(`${b}.silent_active`, false, { name: 'Silent Mode aktiv', type: 'boolean', role: 'indicator' });
 
+        // Temperatur-Abschaltung (RW)
+        if (d.temp_sensor_dp) {
+            // temp_max (unten) kommt vom Modbus (temp_max_dp), kein eigener DP nötig
+            createState(`${b}.temp_max_top`, d.temp_max_top || 75, { name: 'Max. Temperatur oben', type: 'number', unit: '°C', def: d.temp_max_top || 75, desc: 'Sicherheitsgrenze oben - sofort abschalten' });
+            createState(`${b}.temp_restart`, d.temp_restart || 45, { name: 'Wiedereinschalt-Temperatur', type: 'number', unit: '°C', def: d.temp_restart || 45, desc: 'Erst unter dieser Temperatur (unten) wieder einschalten' });
+            createState(`${b}.temp_blocked`, false, { name: 'Temp-Sperre aktiv', type: 'boolean', role: 'indicator' });
+        }
+
         // Status (R)
         createState(`${b}.is_on`, false, { name: 'Status', type: 'boolean', role: 'switch' });
         createState(`${b}.power_w`, 0, { name: 'Aktuelle Leistung', type: 'number', unit: 'W', role: 'value.power' });
@@ -496,15 +600,80 @@ function runEnergyManager() {
     for (const d of sorted) {
         const mode = dMode(d), on = isDeviceOn(d), avg = getAvgSurplus(dAvgMin(d));
         const nm = dName(d), minW = dPowerMin(d), maxW = dPowerMax(d), nfy = dNotify(d);
+        // Tatsächlichen Gerätestatus synchronisieren (nicht bei disabled/offline)
+        if (mode !== 'disabled') {
+            const isOnline = !d.online_dp || (function() { try { return getState(d.online_dp).val; } catch(e) { return false; } })();
+            if (isOnline) syncActualState(d);
+        }
 
         // Urlaub
         const hb = isDeviceDisabledByHoliday(d);
         setState(`${DP_BASE}.${d.id}.holiday_blocked`, hb, true);
-        if (hb && mode === 'auto') { if (on) { switchOffForce(d); if (nfy) notify(d.id, `🏖️ ${nm} AUS (Urlaub)`); } continue; }
+        if (hb && mode === 'auto') {
+            if (on) {
+                const ds = state.device_states[d.id];
+                if (!ds || ds.is_on !== false) { switchOffForce(d); if (nfy) notify(d.id, `🏖️ ${nm} AUS (Urlaub)`); }
+                else { const offV = d.switch_dp.startsWith('modbus.') ? 0 : false; setState(d.switch_dp, offV); }
+            }
+            continue;
+        }
+
+        // Temperatur-Abschaltung (höchste Priorität nach Urlaub)
+        // Unten = Hauptsteuerung (wo der Heizstab sitzt) → Abschalten wenn unten >= Max
+        // Oben = nur Notfall-Sicherheit bei >= 75°C (Verbrühschutz)
+        // Wiedereinschalten wenn unten < Restart
+        if (d.temp_sensor_dp) {
+            const tempBottom = getDeviceTemp(d);
+            const tempTop = getDeviceTempTop(d);
+            const tMax = dTempMax(d);
+            const tRestart = dTempRestart(d);
+            const tMaxTop = dTempMaxTop(d);
+            const tempBlocked = state.device_states[d.id] ? state.device_states[d.id].temp_blocked || false : false;
+
+            if (tMax > 0 && (tempBottom >= tMax || tempTop >= tMaxTop) && !tempBlocked) {
+                const reason = tempTop >= tMaxTop
+                    ? `Sicherheit oben ${tempTop.toFixed(1)}°C >= ${tMaxTop}°C`
+                    : `unten ${tempBottom.toFixed(1)}°C >= ${tMax}°C`;
+                if (on) { switchOffForce(d); if (nfy) notify(d.id, `🌡️ ${nm} AUS (${reason})`); }
+                if (state.device_states[d.id]) state.device_states[d.id].temp_blocked = true;
+                setState(`${DP_BASE}.${d.id}.temp_blocked`, true, true);
+                logInfo(`${nm}: Temp-Sperre aktiv (${reason}) [oben=${tempTop.toFixed(1)} unten=${tempBottom.toFixed(1)}]`);
+                continue;
+            }
+
+            if (tempBlocked) {
+                if (tRestart > 0 && tempBottom < tRestart) {
+                    if (state.device_states[d.id]) state.device_states[d.id].temp_blocked = false;
+                    setState(`${DP_BASE}.${d.id}.temp_blocked`, false, true);
+                    logInfo(`${nm}: Temp-Sperre aufgehoben (unten ${tempBottom.toFixed(1)}°C < ${tRestart}°C) [oben=${tempTop.toFixed(1)}]`);
+                } else {
+                    // Noch gesperrt → nicht einschalten
+                    if (on) switchOffForce(d);
+                    setState(`${DP_BASE}.${d.id}.temp_blocked`, true, true);
+                    continue;
+                }
+            }
+        }
 
         // Manual
-        if (mode === 'manual_on') { if (!on) switchOn(d, maxW); if (on) { totalP += maxW; active.push(`${nm} (manuell)`); } handleSilentMode(d); continue; }
-        if (mode === 'manual_off' || mode === 'disabled') { if (on) switchOffForce(d); continue; }
+        if (mode === 'manual_on') {
+            if (!on) switchOn(d, maxW);
+            if (!state.device_states[d.id]) state.device_states[d.id] = {};
+            state.device_states[d.id].is_on = true;
+            state.device_states[d.id].power_set = maxW;
+            totalP += maxW; active.push(`${nm} (manuell)`);
+            handleSilentMode(d); continue;
+        }
+        if (mode === 'manual_off' || mode === 'disabled') {
+            // Bei offline-Geräten (kein Strom) nicht versuchen zu schalten
+            const isOnline = !d.online_dp || (function() { try { return getState(d.online_dp).val; } catch(e) { return false; } })();
+            if (isOnline && on) {
+                const ds = state.device_states[d.id];
+                if (!ds || ds.is_on !== false) switchOffForce(d);
+                else { const offV = d.switch_dp.startsWith('modbus.') ? 0 : false; setState(d.switch_dp, offV); }
+            }
+            continue;
+        }
 
         // Auto-Checks
         if (!isInSchedule(d)) { if (on) { switchOffForce(d); if (nfy) notify(d.id, `${nm} AUS (Zeitfenster)`); } continue; }
@@ -515,8 +684,8 @@ function runEnergyManager() {
         // Forecast
         const php = getPreheatingPower(d);
         if (php > 0) {
-            if (!on) { switchOn(d, php); if (nfy) notify(d.id, `☀️ ${nm} VORHEIZEN ${php}W\nForecast: ${Math.round(getForecastTodayKwh())} kWh | SOC: ${Math.round(soc)}%`); }
-            else if (d.is_dimmable) { const cp = (state.device_states[d.id] || {}).power_set || php; const np = Math.max(php, php + avail); const cl = Math.max(minW, Math.min(maxW, np)); if (Math.abs(cl - cp) > 50) adjustPower(d, cl); totalP += cl; active.push(`${nm} (Vorheizen ${Math.round(cl)}W)`); }
+            if (!on) { switchOn(d, php); if (nfy) notify(d.id, `☀️ ${nm} VORHEIZEN ${php}W\nForecast: ${Math.round(getForecastTodayKwh())} kWh | SOC: ${Math.round(soc)}%`); totalP += php; active.push(`${nm} (Vorheizen ${php}W)`); }
+            else if (d.is_dimmable) { const cp = (state.device_states[d.id] || {}).power_set || php; if (Math.abs(php - cp) > 50) adjustPower(d, php); totalP += php; active.push(`${nm} (Vorheizen ${php}W)`); }
             else { totalP += php; active.push(`${nm} (Vorheizen)`); }
             handleSilentMode(d); continue;
         }
@@ -554,11 +723,13 @@ function runEnergyManager() {
     setState(`${DP_BASE}.managed_power_w`, Math.round(totalP), true);
     setState(`${DP_BASE}.active_devices`, active.join(', ') || 'keine', true);
     for (const d of DEVICES) {
-        const on = isDeviceOn(d), pw = on ? ((state.device_states[d.id] || {}).power_set || 0) : 0;
+        // Internen State bevorzugen (Modbus/Tuya melden nicht immer zuverlässig)
+        const ds = state.device_states[d.id] || {};
+        const on = ds.is_on === true ? true : isDeviceOn(d);
+        const pw = on ? (ds.power_set || 0) : 0;
         setState(`${DP_BASE}.${d.id}.is_on`, on, true);
         setState(`${DP_BASE}.${d.id}.power_w`, pw, true);
         setState(`${DP_BASE}.${d.id}.last_action`, `${new Date().toLocaleString('de-DE')}: ${on ? 'EIN ' + pw + 'W' : 'AUS'}`, true);
-        setState(`${DP_BASE}.${d.id}.notifications_today`, state.notification_counts[d.id] || 0, true);
     }
     logDebug(`Surplus: ${Math.round(cs)}W | Ø30: ${Math.round(getAvgSurplus(30))}W | Managed: ${Math.round(totalP)}W | ${active.join(', ') || 'keine'}`);
 }
@@ -585,7 +756,7 @@ function midnightReset() {
         else logInfo(`${dName(d)}: bleibt 'disabled'`);
         if (isDeviceOn(d)) { switchOffForce(d); logInfo(`${dName(d)}: Reset → AUS`); }
     }
-    state.notification_counts = {}; state.surplus_history = [];
+    state.surplus_history = [];
     logInfo('Reset abgeschlossen');
 }
 
@@ -595,8 +766,29 @@ function startup() {
     logInfo('=============================================');
     createDatapoints();
     for (const d of DEVICES) {
-        state.device_states[d.id] = { is_on: isDeviceOn(d), last_on: 0, last_off: 0, power_set: 0 };
-        state.notification_counts[d.id] = 0;
+        // Switch-Datenpunkte beim Start auf korrekten Typ bereinigen
+        try {
+            const v = getState(d.switch_dp).val;
+            if (d.switch_dp.startsWith('modbus.')) {
+                // Modbus braucht number: true→1, false→0
+                if (v === true) { setState(d.switch_dp, 1); logInfo(`${dName(d)}: Modbus Fix true→1`); }
+                else if (v === false) { setState(d.switch_dp, 0); logInfo(`${dName(d)}: Modbus Fix false→0`); }
+            }
+        } catch (e) { /* DP nicht erreichbar */ }
+
+        const devOn = isDeviceOn(d);
+        // Wenn Gerät beim Start schon an ist, power_set aus dem Datenpunkt lesen
+        let initPower = 0;
+        if (devOn) {
+            try { initPower = getState(`${DP_BASE}.${d.id}.power_w`).val || dPowerMax(d); }
+            catch (e) { initPower = dPowerMax(d); }
+        }
+        // temp_blocked vom Datenpunkt lesen falls vorhanden
+        let tempBlocked = false;
+        if (d.temp_sensor_dp) {
+            try { tempBlocked = getState(`${DP_BASE}.${d.id}.temp_blocked`).val === true; } catch (e) { }
+        }
+        state.device_states[d.id] = { is_on: devOn, last_on: devOn ? Date.now() : 0, last_off: 0, power_set: initPower, temp_blocked: tempBlocked };
         logInfo(`${dName(d)}: Prio ${dPriority(d)} | ${dPowerMin(d)}-${dPowerMax(d)}W | ${d.is_dimmable ? 'dimmbar' : 'on/off'} | ${state.device_states[d.id].is_on ? 'EIN' : 'AUS'}`);
     }
     setupDependencyWatchers();

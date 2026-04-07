@@ -904,7 +904,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const power = Number(this.val(k('power'))) || 0;
         const lastAction: string = this.val(k('last-action')) || '\u2013';
         const holidayBlocked = this.toBool(this.val(k('holiday-blocked')));
-        const notifToday = Number(this.val(k('notif-today'))) || 0;
 
         // Time rules
         const timeRulesStr: string = this.val(k('time-rules')) || '';
@@ -1168,23 +1167,13 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     />
                 )}
 
-                {/* Footer: last action + notifications */}
+                {/* Footer: last action */}
                 <div style={{
                     padding: '6px 14px', borderTop: '1px solid rgba(0,0,0,0.08)',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     fontSize: 11, color: '#555', marginTop: 'auto',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>
-                    <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {lastAction}
-                    </div>
-                    {notifToday > 0 && (
-                        <div style={{
-                            marginLeft: 8, padding: '1px 6px', borderRadius: 8,
-                            background: 'rgba(0,0,0,0.08)', fontSize: 10, color: '#333', flexShrink: 0,
-                        }}>
-                            {notifToday} notif
-                        </div>
-                    )}
+                    {lastAction}
                 </div>
             </div>
         );
@@ -1206,7 +1195,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const minRuntime = Number(this.val(k('min-runtime'))) || 0;
         const minPause = Number(this.val(k('min-pause'))) || 0;
         const notifyEnabled = this.toBool(this.val(k('notify')));
-        const maxNotif = Number(this.val(k('max-notif'))) || 0;
         const fcEnabled = this.toBool(this.val(k('fc-enabled')));
         const fcStart: string = this.val(k('fc-start')) || '';
         const fcEnd: string = this.val(k('fc-end')) || '';
@@ -1283,8 +1271,6 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         label={tr('em_notify_active') || 'Aktiv'}
                         onChange={(v) => this.setVal(k('notify'), v)}
                     />
-                    <span style={{ fontSize: 11, color: '#333' }}>{tr('em_max_notif') || 'Max/Tag'}</span>
-                    {numInput(maxNotif, 'max-notif', '', 40)}
                 </div>
 
                 {/* Forecast - Row 1 */}
@@ -1334,20 +1320,22 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                     const tempBlocked = this.toBool(this.val(k('temp-blocked')));
                     return (
                         <div style={sectionStyle}>
-                            <div style={sectionLabel}>{tr('em_temp_section') || 'Temperatur'}</div>
+                            <div style={{ ...sectionLabel, display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span>{tr('em_temp_section') || 'Temperatur'}</span>
+                                {tempBlocked && (
+                                    <span style={{
+                                        fontSize: 10, padding: '2px 8px', borderRadius: 8,
+                                        background: 'rgba(232,98,42,0.15)', color: '#e8622a',
+                                        fontWeight: 600, textTransform: 'none',
+                                    }}>
+                                        {tr('em_temp_blocked') || 'Temp-Sperre aktiv'}
+                                    </span>
+                                )}
+                            </div>
                             <span style={{ fontSize: 11, color: '#333' }}>{tr('em_temp_max_top') || 'Max oben'}</span>
                             {numInput(tempMaxTop, 'temp-max-top', '°C', 40)}
                             <span style={{ fontSize: 11, color: '#333' }}>{tr('em_temp_restart') || 'Wiedereinsch.'}</span>
                             {numInput(tempRestart, 'temp-restart', '°C', 40)}
-                            {tempBlocked && (
-                                <span style={{
-                                    fontSize: 10, padding: '2px 8px', borderRadius: 8,
-                                    background: 'rgba(232,98,42,0.15)', color: '#e8622a',
-                                    fontWeight: 600, marginLeft: 8,
-                                }}>
-                                    {tr('em_temp_blocked') || 'Temp-Sperre aktiv'}
-                                </span>
-                            )}
                         </div>
                     );
                 })()}
