@@ -143,6 +143,7 @@
     "em_pool_temp": "Pool",
     "em_outside_temp": "Außen",
     "em_humidity": "Feuchte",
+    "em_temp_max_top": "Max oben",
     "em_temp_restart": "Wiedereinsch.",
     "em_temp_blocked": "Temp-Sperre aktiv",
     "em_temp_section": "Temperatur",

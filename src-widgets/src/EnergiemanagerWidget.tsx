@@ -31,6 +31,7 @@ interface EmRxData {
     'oid-outside-temp': string;
     'oid-humidity': string;
     // Temp-Abschaltung Heizstab
+    'oid-dev1-temp-max-top': string;
     'oid-dev1-temp-restart': string;
     'oid-dev1-temp-blocked': string;
     // Holiday RW (kept for backwards compat)
@@ -247,6 +248,7 @@ for (let d = 1; d <= 3; d++) {
 }
 // Dev1-specific: Temperatur-Abschaltung
 OID_MAP.push(
+    ['oid-dev1-temp-max-top', 'heizstab_warmwasser.temp_max_top'],
     ['oid-dev1-temp-restart', 'heizstab_warmwasser.temp_restart'],
     ['oid-dev1-temp-blocked', 'heizstab_warmwasser.temp_blocked'],
 );
@@ -729,6 +731,7 @@ function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: str
     ];
     if (devNum === 1) {
         fields.push(
+            { name: `${p}-temp-max-top`, type: 'id', label: 'em_temp_max_top' },
             { name: `${p}-temp-restart`, type: 'id', label: 'em_temp_restart' },
             { name: `${p}-temp-blocked`, type: 'id', label: 'em_temp_blocked' },
         );
@@ -1326,11 +1329,14 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
 
                 {/* Temperatur-Abschaltung (nur dev1 / Heizstab) */}
                 {devNum === 1 && (() => {
+                    const tempMaxTop = Number(this.val(k('temp-max-top'))) || 75;
                     const tempRestart = Number(this.val(k('temp-restart'))) || 0;
                     const tempBlocked = this.toBool(this.val(k('temp-blocked')));
                     return (
                         <div style={sectionStyle}>
                             <div style={sectionLabel}>{tr('em_temp_section') || 'Temperatur'}</div>
+                            <span style={{ fontSize: 11, color: '#333' }}>{tr('em_temp_max_top') || 'Max oben'}</span>
+                            {numInput(tempMaxTop, 'temp-max-top', '°C', 40)}
                             <span style={{ fontSize: 11, color: '#333' }}>{tr('em_temp_restart') || 'Wiedereinsch.'}</span>
                             {numInput(tempRestart, 'temp-restart', '°C', 40)}
                             {tempBlocked && (
