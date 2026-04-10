@@ -115,7 +115,7 @@ let __tla = (async () => {
     },
     "./FensterTuerenWidget": async () => {
       await o("./FensterTuerenWidget");
-      const t = await r(() => import("./FensterTuerenWidget-CYPLnY4g.js").then(async (m) => {
+      const t = await r(() => import("./FensterTuerenWidget-CXxdwTIt.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};

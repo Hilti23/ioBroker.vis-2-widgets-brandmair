@@ -51,7 +51,7 @@ function battColor(b: number | null): string {
     if (b === null) return '#999';
     if (b < 20) return '#e8622a';
     if (b < 50) return '#f5a623';
-    return '#2ec27e';
+    return '#1a8a5a';
 }
 
 // ---------------------------------------------------------------------------
@@ -125,14 +125,11 @@ export default class FensterTuerenWidget extends Generic<FtRxData> {
             }}>
                 {/* Header */}
                 <div style={{
-                    padding: '10px 14px', display: 'flex',
-                    alignItems: 'center', justifyContent: 'space-between',
+                    padding: '8px 14px', display: 'flex',
+                    alignItems: 'center', justifyContent: 'flex-end',
                     borderBottom: '1px solid rgba(0,0,0,0.1)',
                     flexShrink: 0,
                 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#111' }}>
-                        {title}
-                    </div>
                     <div style={{ display: 'flex', gap: 10, fontSize: 12 }}>
                         {openCount > 0 && (
                             <span style={{
@@ -145,7 +142,7 @@ export default class FensterTuerenWidget extends Generic<FtRxData> {
                         )}
                         <span style={{
                             padding: '2px 10px', borderRadius: 10,
-                            background: 'rgba(46,194,126,0.12)', color: '#2ec27e',
+                            background: 'rgba(26,138,90,0.15)', color: '#1a8a5a',
                             fontWeight: 600,
                         }}>
                             {closedCount} {tr('ft_closed') || 'zu'}
@@ -172,7 +169,7 @@ export default class FensterTuerenWidget extends Generic<FtRxData> {
                                 <div style={{
                                     width: 10, height: 10, borderRadius: '50%', flexShrink: 0,
                                     background: s.open === null ? '#999'
-                                        : isOpen ? '#e8622a' : '#2ec27e',
+                                        : isOpen ? '#e8622a' : '#1a8a5a',
                                     boxShadow: isOpen ? '0 0 6px rgba(232,98,42,0.4)' : 'none',
                                 }} />
 
@@ -190,7 +187,7 @@ export default class FensterTuerenWidget extends Generic<FtRxData> {
                                 {/* Status text */}
                                 <div style={{
                                     fontSize: 11, fontWeight: 600, flexShrink: 0,
-                                    color: isOpen ? '#e8622a' : '#2ec27e',
+                                    color: isOpen ? '#e8622a' : '#1a8a5a',
                                 }}>
                                     {s.open === null ? '-' : isOpen
                                         ? (tr('ft_open') || 'offen')
