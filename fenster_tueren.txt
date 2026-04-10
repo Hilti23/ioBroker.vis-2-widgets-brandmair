@@ -1,0 +1,102 @@
+// =============================================================================
+// Fenster & Türen Status-Sammler v2
+// Ersetzt das alte Skript - sammelt alle Zigbee-Kontaktsensoren als JSON
+// =============================================================================
+
+const DP_JSON = '0_userdata.0.Überwachung.Sensoren';
+const DP_STATUS = '0_userdata.0.Sensoren.0AlleFensterUndTuergenGeschlossen';
+const DP_NAMEN = '0_userdata.0.Sensoren.0AlleFensterUndTuergenGeschlossenNamen';
+
+const SENSORS = [
+    { id: 'zigbee.0.187a3efffe3215c2', name: 'Haustür', type: 'door' },
+    { id: 'zigbee.0.f4b3b1fffe615724', name: 'Wohnzimmer Terrasse Links', type: 'window' },
+    { id: 'zigbee.0.385cfbfffec89bf0', name: 'Wohnzimmer Terrasse Rechts', type: 'window' },
+    { id: 'zigbee.0.f4b3b1fffe60bbf0', name: 'Wohnzimmer', type: 'window' },
+    { id: 'zigbee.0.b43522fffec92dec', name: 'Küche', type: 'window' },
+    { id: 'zigbee.0.b43522fffec7b891', name: 'Gäste-Badezimmer', type: 'window' },
+    { id: 'zigbee.0.b43522fffec92da6', name: 'Schlafzimmer Medla', type: 'window' },
+    { id: 'zigbee.0.f4b3b1fffe6104b9', name: 'Schlafzimmer Gabi', type: 'window' },
+    { id: 'zigbee.0.f4b3b1fffe60e40a', name: 'Badezimmer', type: 'window' },
+    { id: 'zigbee.0.f4b3b1fffe60de61', name: 'Büro', type: 'window' },
+    { id: 'zigbee.0.b43522fffebf68d7', name: 'Kinderzimmer Gabi', type: 'window' },
+    { id: 'zigbee.0.b43522fffec72557', name: 'Kinderzimmer Terrasse', type: 'window' },
+    { id: 'zigbee.0.f4b3b1fffe60f9a4', name: 'Ankleidezimmer', type: 'window' },
+    { id: 'zigbee.0.b43522fffec91a2d', name: 'Speis', type: 'window' },
+    { id: 'zigbee.0.f4b3b1fffe60dc9b', name: 'Sportzimmer Garten', type: 'window' },
+    { id: 'zigbee.0.b43522fffec93289', name: 'Sportzimmer Gabi', type: 'window' },
+    { id: 'zigbee.0.b43522fffebf2702', name: 'Carport', type: 'door' },
+    { id: 'zigbee.0.f4b3b1fffe6163d4', name: 'Sensor 18', type: 'window' }, // Aus dem alten Skript
+];
+
+function collectStatus() {
+    const result = [];
+    const offene = [];
+
+    for (const s of SENSORS) {
+        try {
+            // "opened" verwenden (wie dein altes Skript)
+            const openedState = getState(`${s.id}.opened`);
+            const battState = getState(`${s.id}.battery`);
+            const availState = getState(`${s.id}.available`);
+
+            const isOpen = openedState ? openedState.val === true : null;
+            const battery = battState ? battState.val : null;
+            const available = availState ? availState.val === true : false;
+            const lastChanged = openedState && openedState.lc
+                ? new Date(openedState.lc).toISOString()
+                : null;
+
+            result.push({
+                name: s.name,
+                type: s.type,
+                open: isOpen,
+                battery: battery,
+                available: available,
+                lastChanged: lastChanged,
+            });
+
+            if (isOpen) offene.push(s.name);
+        } catch (e) {
+            result.push({
+                name: s.name,
+                type: s.type,
+                open: null,
+                battery: null,
+                available: false,
+                lastChanged: null,
+            });
+        }
+    }
+
+    // JSON für Widget
+    setState(DP_JSON, JSON.stringify(result), true);
+
+    // Kompatibilität mit altem Skript: Status-Boolean + Alexa-Text
+    const allesZu = offene.length === 0;
+    setState(DP_STATUS, allesZu, true);
+
+    if (allesZu) {
+        setState(DP_NAMEN, 'Alle Fenster und Türen sind geschlossen.', true);
+    } else {
+        const pause = ', <break time="500ms"/> ';
+        setState(DP_NAMEN, 'Folgende Fenster oder Türen sind geöffnet: ' + offene.join(pause) + '.', true);
+    }
+}
+
+// Datenpunkte erstellen falls nicht vorhanden
+createState(DP_JSON, '[]', { name: 'Fenster & Türen Status JSON', type: 'string', role: 'json' });
+createState(DP_STATUS, true, { name: 'Fenster/Türen geschlossen', type: 'boolean', role: 'indicator' });
+createState(DP_NAMEN, '', { name: 'Offene Fenster/Türen (Alexa)', type: 'string', role: 'text' });
+
+// Sofort sammeln
+collectStatus();
+
+// Alle 30 Sekunden
+schedule('*/30 * * * * *', collectStatus);
+
+// Bei jeder Kontakt-Änderung sofort
+for (const s of SENSORS) {
+    on({ id: `${s.id}.opened`, change: 'ne' }, collectStatus);
+}
+
+log('[FensterTüren] Status-Sammler v2 gestartet mit ' + SENSORS.length + ' Sensoren', 'info');

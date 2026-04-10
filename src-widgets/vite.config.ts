@@ -25,6 +25,7 @@ const config = {
                 './VerbrauchWidget': './src/VerbrauchWidget',
                 './EnergiemanagerWidget': './src/EnergiemanagerWidget',
                 './UrlaubWidget': './src/UrlaubWidget',
+                './FensterTuerenWidget': './src/FensterTuerenWidget',
                 './translations': './src/translations',
             },
             remotes: {},
