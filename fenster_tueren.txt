@@ -25,7 +25,7 @@ const SENSORS = [
     { id: 'zigbee.0.f4b3b1fffe60dc9b', name: 'Sportzimmer Garten', type: 'window' },
     { id: 'zigbee.0.b43522fffec93289', name: 'Sportzimmer Gabi', type: 'window' },
     { id: 'zigbee.0.b43522fffebf2702', name: 'Carport', type: 'door' },
-    { id: 'zigbee.0.f4b3b1fffe6163d4', name: 'Sensor 18', type: 'window' }, // Aus dem alten Skript
+    { id: 'zigbee.0.f4b3b1fffe6163d4', name: 'Technikraum', type: 'window' },
 ];
 
 function collectStatus() {
@@ -33,39 +33,38 @@ function collectStatus() {
     const offene = [];
 
     for (const s of SENSORS) {
+        const openedId = `${s.id}.opened`;
+        const battId = `${s.id}.battery`;
+        const availId = `${s.id}.available`;
+
+        let isOpen = null, battery = null, available = false, lastChanged = null;
+
         try {
-            // "opened" verwenden (wie dein altes Skript)
-            const openedState = getState(`${s.id}.opened`);
-            const battState = getState(`${s.id}.battery`);
-            const availState = getState(`${s.id}.available`);
+            if (existsState(openedId)) {
+                const st = getState(openedId);
+                isOpen = st ? st.val === true : null;
+                if (st && st.lc) lastChanged = new Date(st.lc).toISOString();
+            }
+            if (existsState(battId)) {
+                const st = getState(battId);
+                battery = st ? st.val : null;
+            }
+            if (existsState(availId)) {
+                const st = getState(availId);
+                available = st ? st.val === true : false;
+            }
+        } catch (e) { /* Sensor nicht erreichbar */ }
 
-            const isOpen = openedState ? openedState.val === true : null;
-            const battery = battState ? battState.val : null;
-            const available = availState ? availState.val === true : false;
-            const lastChanged = openedState && openedState.lc
-                ? new Date(openedState.lc).toISOString()
-                : null;
+        result.push({
+            name: s.name,
+            type: s.type,
+            open: isOpen,
+            battery: battery,
+            available: available,
+            lastChanged: lastChanged,
+        });
 
-            result.push({
-                name: s.name,
-                type: s.type,
-                open: isOpen,
-                battery: battery,
-                available: available,
-                lastChanged: lastChanged,
-            });
-
-            if (isOpen) offene.push(s.name);
-        } catch (e) {
-            result.push({
-                name: s.name,
-                type: s.type,
-                open: null,
-                battery: null,
-                available: false,
-                lastChanged: null,
-            });
-        }
+        if (isOpen) offene.push(s.name);
     }
 
     // JSON für Widget

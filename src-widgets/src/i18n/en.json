@@ -79,7 +79,7 @@
     "em_surplus_avg": "Surplus 30min avg",
     "em_pv_power": "PV power",
     "em_battery_soc": "Battery",
-    "em_forecast_today": "Forecast",
+    "em_forecast_today": "Remaining today",
     "em_managed_power": "Managed",
     "em_active_devices": "Active devices",
     "em_is_holiday": "Holiday mode",

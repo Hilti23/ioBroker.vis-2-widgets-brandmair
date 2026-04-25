@@ -36,6 +36,8 @@ const DEVICES = [
         days: [1, 2, 3, 4, 5, 6, 7],
         exclude_holidays: false,
         notify: true,
+        notify_on: true,
+        notify_off: true,
         max_notifications_per_day: 100,
         forecast_enabled: true,
         forecast_preheat_start: '07:00',
@@ -80,6 +82,8 @@ const DEVICES = [
         days: [1, 2, 3, 4, 5, 6, 7],
         exclude_holidays: false,
         notify: true,
+        notify_on: true,
+        notify_off: true,
         max_notifications_per_day: 100,
         forecast_enabled: false,
         forecast_preheat_start: '',
@@ -115,6 +119,8 @@ const DEVICES = [
         days: [1, 2, 3, 4, 5, 6],
         exclude_holidays: true,
         notify: true,
+        notify_on: true,
+        notify_off: true,
         max_notifications_per_day: 100,
         forecast_enabled: false,
         forecast_preheat_start: '',
@@ -141,8 +147,8 @@ const CONFIG = {
     pv_dc_string1_dp: 'rct.0.dc_conv.dc_conv_struct_0_p_dc_lp',
     pv_dc_string2_dp: 'rct.0.dc_conv.dc_conv_struct_1_p_dc_lp',
     house_load_dp: 'rct.0.g_sync.p_ac_load_sum_lp',
-    forecast_solar_today_dp: 'pvforecast.0.summary.energy.today',
-    forecast_solcast_today_dp: 'pvforecast.1.summary.energy.today',
+    forecast_solar_today_dp: 'pvforecast.0.summary.energy.nowUntilEndOfDay',
+    forecast_solcast_today_dp: 'pvforecast.1.summary.energy.nowUntilEndOfDay',
     holiday_dp: 'feiertage.0.heute.boolean',
     holiday_from_dp: '0_userdata.0.Zeitstempel.Urlaub.holiday_from',
     holiday_to_dp: '0_userdata.0.Zeitstempel.Urlaub.holiday_to',
@@ -207,6 +213,8 @@ function dTimeEnd(d) { return g(d.id, 'time_end', d.time_end); }
 function dDays(d) { return gJson(d.id, 'days', d.days); }
 function dExclHolidays(d) { return g(d.id, 'exclude_holidays', d.exclude_holidays); }
 function dNotify(d) { return g(d.id, 'notify', d.notify); }
+function dNotifyOn(d) { return g(d.id, 'notify_on', d.notify_on !== undefined ? d.notify_on : dNotify(d)); }
+function dNotifyOff(d) { return g(d.id, 'notify_off', d.notify_off !== undefined ? d.notify_off : dNotify(d)); }
 function dFcEnabled(d) { return g(d.id, 'forecast_enabled', d.forecast_enabled); }
 function dFcStart(d) { return g(d.id, 'forecast_preheat_start', d.forecast_preheat_start); }
 function dFcEnd(d) { return g(d.id, 'forecast_preheat_end', d.forecast_preheat_end); }
@@ -540,6 +548,8 @@ function createDatapoints() {
 
         // Benachrichtigungen (RW)
         createState(`${b}.notify`, d.notify, { name: 'Benachrichtigungen', type: 'boolean', role: 'switch', def: d.notify });
+        createState(`${b}.notify_on`, d.notify_on !== undefined ? d.notify_on : true, { name: 'Benachrichtigung Einschalten', type: 'boolean', role: 'switch', def: d.notify_on !== undefined ? d.notify_on : true });
+        createState(`${b}.notify_off`, d.notify_off !== undefined ? d.notify_off : true, { name: 'Benachrichtigung Ausschalten', type: 'boolean', role: 'switch', def: d.notify_off !== undefined ? d.notify_off : true });
         createState(`${b}.max_notifications_per_day`, d.max_notifications_per_day, { name: 'Max. Benachrichtigungen/Tag', type: 'number', def: d.max_notifications_per_day });
 
         // Forecast (RW)
@@ -599,7 +609,8 @@ function runEnergyManager() {
 
     for (const d of sorted) {
         const mode = dMode(d), on = isDeviceOn(d), avg = getAvgSurplus(dAvgMin(d));
-        const nm = dName(d), minW = dPowerMin(d), maxW = dPowerMax(d), nfy = dNotify(d);
+        const nm = dName(d), minW = dPowerMin(d), maxW = dPowerMax(d);
+        const nfyOn = dNotifyOn(d), nfyOff = dNotifyOff(d);
         // Tatsächlichen Gerätestatus synchronisieren (nicht bei disabled/offline)
         if (mode !== 'disabled') {
             const isOnline = !d.online_dp || (function() { try { return getState(d.online_dp).val; } catch(e) { return false; } })();
@@ -612,7 +623,7 @@ function runEnergyManager() {
         if (hb && mode === 'auto') {
             if (on) {
                 const ds = state.device_states[d.id];
-                if (!ds || ds.is_on !== false) { switchOffForce(d); if (nfy) notify(d.id, `🏖️ ${nm} AUS (Urlaub)`); }
+                if (!ds || ds.is_on !== false) { switchOffForce(d); if (nfyOff) notify(d.id, `🏖️ ${nm} AUS (Urlaub)`); }
                 else { const offV = d.switch_dp.startsWith('modbus.') ? 0 : false; setState(d.switch_dp, offV); }
             }
             continue;
@@ -634,7 +645,7 @@ function runEnergyManager() {
                 const reason = tempTop >= tMaxTop
                     ? `Sicherheit oben ${tempTop.toFixed(1)}°C >= ${tMaxTop}°C`
                     : `unten ${tempBottom.toFixed(1)}°C >= ${tMax}°C`;
-                if (on) { switchOffForce(d); if (nfy) notify(d.id, `🌡️ ${nm} AUS (${reason})`); }
+                if (on) { switchOffForce(d); if (nfyOff) notify(d.id, `🌡️ ${nm} AUS (${reason})`); }
                 if (state.device_states[d.id]) state.device_states[d.id].temp_blocked = true;
                 setState(`${DP_BASE}.${d.id}.temp_blocked`, true, true);
                 logInfo(`${nm}: Temp-Sperre aktiv (${reason}) [oben=${tempTop.toFixed(1)} unten=${tempBottom.toFixed(1)}]`);
@@ -676,15 +687,15 @@ function runEnergyManager() {
         }
 
         // Auto-Checks
-        if (!isInSchedule(d)) { if (on) { switchOffForce(d); if (nfy) notify(d.id, `${nm} AUS (Zeitfenster)`); } continue; }
+        if (!isInSchedule(d)) { if (on) { switchOffForce(d); if (nfyOff) notify(d.id, `${nm} AUS (Zeitfenster)`); } continue; }
         if (dExclHolidays(d) && ph) { if (on) switchOffForce(d); continue; }
         if (d.online_dp) { try { if (!getState(d.online_dp).val) continue; } catch (e) { continue; } }
-        if (d.requires_dp) { try { if (getState(d.requires_dp).val !== d.requires_value) { if (on) { switchOffForce(d); if (nfy) notify(d.id, `${nm} AUS (Abhängigkeit)`); } continue; } } catch (e) { if (on) switchOffForce(d); continue; } }
+        if (d.requires_dp) { try { if (getState(d.requires_dp).val !== d.requires_value) { if (on) { switchOffForce(d); if (nfyOff) notify(d.id, `${nm} AUS (Abhängigkeit)`); } continue; } } catch (e) { if (on) switchOffForce(d); continue; } }
 
         // Forecast
         const php = getPreheatingPower(d);
         if (php > 0) {
-            if (!on) { switchOn(d, php); if (nfy) notify(d.id, `☀️ ${nm} VORHEIZEN ${php}W\nForecast: ${Math.round(getForecastTodayKwh())} kWh | SOC: ${Math.round(soc)}%`); totalP += php; active.push(`${nm} (Vorheizen ${php}W)`); }
+            if (!on) { switchOn(d, php); if (nfyOn) notify(d.id, `☀️ ${nm} VORHEIZEN ${php}W\nForecast: ${Math.round(getForecastTodayKwh())} kWh | SOC: ${Math.round(soc)}%`); totalP += php; active.push(`${nm} (Vorheizen ${php}W)`); }
             else if (d.is_dimmable) { const cp = (state.device_states[d.id] || {}).power_set || php; if (Math.abs(php - cp) > 50) adjustPower(d, php); totalP += php; active.push(`${nm} (Vorheizen ${php}W)`); }
             else { totalP += php; active.push(`${nm} (Vorheizen)`); }
             handleSilentMode(d); continue;
@@ -699,22 +710,22 @@ function runEnergyManager() {
                 // UND SOC-Schwelle prüfen — vorher wurde nur np < minW geprüft
                 if ((avg < dSurplusOff(d) || np < minW || soc < dSocOff(d)) && isMinRuntimeMet(d)) {
                     switchOff(d);
-                    if (nfy) notify(d.id, `${nm} AUS\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`);
+                    if (nfyOff) notify(d.id, `${nm} AUS\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`);
                     avail += cp;
                 }
                 else if (np >= minW) { const cl = Math.max(minW, Math.min(maxW, np)); if (Math.abs(cl - cp) > 50) adjustPower(d, cl); avail -= (cl - cp); totalP += cl; active.push(`${nm} (${Math.round(cl)}W)`); }
                 else { totalP += minW; active.push(`${nm} (${minW}W min.lauf)`); }
             } else {
-                if ((avg < dSurplusOff(d) || soc < dSocOff(d)) && isMinRuntimeMet(d)) { switchOff(d); if (nfy) notify(d.id, `${nm} AUS\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`); avail += maxW; }
+                if ((avg < dSurplusOff(d) || soc < dSocOff(d)) && isMinRuntimeMet(d)) { switchOff(d); if (nfyOff) notify(d.id, `${nm} AUS\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`); avail += maxW; }
                 else { totalP += maxW; active.push(nm); avail -= maxW; }
             }
         } else {
             if (soc < dMinSoc(d)) continue;
             if (!isMinPauseMet(d)) continue;
             if (d.is_dimmable) {
-                if (avg >= dSurplusOn(d)) { const sp = Math.min(maxW, Math.max(minW, avg)); switchOn(d, sp); if (nfy) notify(d.id, `${nm} EIN (${Math.round(sp)}W)\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`); avail -= sp; totalP += sp; active.push(`${nm} (${Math.round(sp)}W)`); }
+                if (avg >= dSurplusOn(d)) { const sp = Math.min(maxW, Math.max(minW, avg)); switchOn(d, sp); if (nfyOn) notify(d.id, `${nm} EIN (${Math.round(sp)}W)\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`); avail -= sp; totalP += sp; active.push(`${nm} (${Math.round(sp)}W)`); }
             } else {
-                if (avg >= dSurplusOn(d)) { switchOn(d, maxW); if (nfy) notify(d.id, `${nm} EIN\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`); avail -= maxW; totalP += maxW; active.push(nm); }
+                if (avg >= dSurplusOn(d)) { switchOn(d, maxW); if (nfyOn) notify(d.id, `${nm} EIN\nØ ${Math.round(avg)}W | SOC: ${Math.round(soc)}%`); avail -= maxW; totalP += maxW; active.push(nm); }
             }
         }
         handleSilentMode(d);

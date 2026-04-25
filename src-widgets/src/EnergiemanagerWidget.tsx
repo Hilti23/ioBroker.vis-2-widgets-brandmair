@@ -61,6 +61,8 @@ interface EmRxData {
     'oid-dev1-min-runtime': string;
     'oid-dev1-min-pause': string;
     'oid-dev1-notify': string;
+    'oid-dev1-notify-on': string;
+    'oid-dev1-notify-off': string;
     'oid-dev1-max-notif': string;
     'oid-dev1-fc-enabled': string;
     'oid-dev1-fc-start': string;
@@ -96,6 +98,8 @@ interface EmRxData {
     'oid-dev2-min-runtime': string;
     'oid-dev2-min-pause': string;
     'oid-dev2-notify': string;
+    'oid-dev2-notify-on': string;
+    'oid-dev2-notify-off': string;
     'oid-dev2-max-notif': string;
     'oid-dev2-fc-enabled': string;
     'oid-dev2-fc-start': string;
@@ -131,6 +135,8 @@ interface EmRxData {
     'oid-dev3-min-runtime': string;
     'oid-dev3-min-pause': string;
     'oid-dev3-notify': string;
+    'oid-dev3-notify-on': string;
+    'oid-dev3-notify-off': string;
     'oid-dev3-max-notif': string;
     'oid-dev3-fc-enabled': string;
     'oid-dev3-fc-start': string;
@@ -193,6 +199,8 @@ const DEVICE_NEW_FIELDS: Array<[string, string]> = [
     ['min-runtime', 'min_runtime_min'],
     ['min-pause', 'min_pause_min'],
     ['notify', 'notify'],
+    ['notify-on', 'notify_on'],
+    ['notify-off', 'notify_off'],
     ['max-notif', 'max_notifications_per_day'],
     ['fc-enabled', 'forecast_enabled'],
     ['fc-start', 'forecast_preheat_start'],
@@ -1194,7 +1202,8 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
         const exclHolidays = this.toBool(this.val(k('excl-holidays')));
         const minRuntime = Number(this.val(k('min-runtime'))) || 0;
         const minPause = Number(this.val(k('min-pause'))) || 0;
-        const notifyEnabled = this.toBool(this.val(k('notify')));
+        const notifyOn = this.toBool(this.val(k('notify-on')));
+        const notifyOff = this.toBool(this.val(k('notify-off')));
         const fcEnabled = this.toBool(this.val(k('fc-enabled')));
         const fcStart: string = this.val(k('fc-start')) || '';
         const fcEnd: string = this.val(k('fc-end')) || '';
@@ -1267,9 +1276,14 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                 <div style={sectionStyle}>
                     <div style={sectionLabel}>{tr('em_notifications') || 'Benachrichtigungen'}</div>
                     <Checkbox
-                        checked={notifyEnabled}
-                        label={tr('em_notify_active') || 'Aktiv'}
-                        onChange={(v) => this.setVal(k('notify'), v)}
+                        checked={notifyOn}
+                        label={tr('em_notify_on') || 'Bei Einschalten'}
+                        onChange={(v) => this.setVal(k('notify-on'), v)}
+                    />
+                    <Checkbox
+                        checked={notifyOff}
+                        label={tr('em_notify_off') || 'Bei Ausschalten'}
+                        onChange={(v) => this.setVal(k('notify-off'), v)}
                     />
                 </div>
 
@@ -1393,7 +1407,7 @@ export default class EnergiemanagerWidget extends Generic<EmRxData, EmState> {
                         color={socColor(batterySoc)}
                     />
                     <StatCard
-                        label={tr('em_forecast_today') || 'Prognose'}
+                        label={tr('em_forecast_today') || 'Rest heute'}
                         value={`${forecastToday.toFixed(1)}`}
                         unit="kWh"
                         color="#4a9edd"
