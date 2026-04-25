@@ -16,7 +16,7 @@ let __tla = (async () => {
   c = {
     "./TrvzbThermostat": async () => {
       await o("./TrvzbThermostat");
-      const t = await r(() => import("./TrvzbThermostat-n1YMtZPC.js").then(async (m) => {
+      const t = await r(() => import("./TrvzbThermostat-Drtf8cOQ.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -27,7 +27,7 @@ let __tla = (async () => {
     },
     "./HeizstabWidget": async () => {
       await o("./HeizstabWidget");
-      const t = await r(() => import("./HeizstabWidget-DbpnjRJa.js").then(async (m) => {
+      const t = await r(() => import("./HeizstabWidget-BXIUoQvZ.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -38,7 +38,7 @@ let __tla = (async () => {
     },
     "./PvSpeicherWidget": async () => {
       await o("./PvSpeicherWidget");
-      const t = await r(() => import("./PvSpeicherWidget-DfuKl5Ki.js").then(async (m) => {
+      const t = await r(() => import("./PvSpeicherWidget-CTv7bPvp.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -71,7 +71,7 @@ let __tla = (async () => {
     },
     "./MuelltonnenWidget": async () => {
       await o("./MuelltonnenWidget");
-      const t = await r(() => import("./MuelltonnenWidget-DUmrhg2X.js").then(async (m) => {
+      const t = await r(() => import("./MuelltonnenWidget-C4ze33s8.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -93,7 +93,7 @@ let __tla = (async () => {
     },
     "./EnergiemanagerWidget": async () => {
       await o("./EnergiemanagerWidget");
-      const t = await r(() => import("./EnergiemanagerWidget-CWlLHTIF.js").then(async (m) => {
+      const t = await r(() => import("./EnergiemanagerWidget-CeL-Ba0l.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -104,7 +104,7 @@ let __tla = (async () => {
     },
     "./UrlaubWidget": async () => {
       await o("./UrlaubWidget");
-      const t = await r(() => import("./UrlaubWidget-ByhuDY0w.js").then(async (m) => {
+      const t = await r(() => import("./UrlaubWidget-BLQPf05_.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -115,7 +115,7 @@ let __tla = (async () => {
     },
     "./FensterTuerenWidget": async () => {
       await o("./FensterTuerenWidget");
-      const t = await r(() => import("./FensterTuerenWidget-CXxdwTIt.js").then(async (m) => {
+      const t = await r(() => import("./FensterTuerenWidget-Dh-nGZUX.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};
@@ -126,7 +126,7 @@ let __tla = (async () => {
     },
     "./translations": async () => {
       await o("./translations");
-      const t = await r(() => import("./translations-BjaNRLVw.js"), [], import.meta.url), e = {};
+      const t = await r(() => import("./translations-B1jvp9fB.js"), [], import.meta.url), e = {};
       return Object.assign(e, t), Object.defineProperty(e, "__esModule", {
         value: true,
         enumerable: false
