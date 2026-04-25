@@ -93,7 +93,7 @@ let __tla = (async () => {
     },
     "./EnergiemanagerWidget": async () => {
       await o("./EnergiemanagerWidget");
-      const t = await r(() => import("./EnergiemanagerWidget-CEyRKzDV.js").then(async (m) => {
+      const t = await r(() => import("./EnergiemanagerWidget-DS6TpJGR.js").then(async (m) => {
         await m.__tla;
         return m;
       }), [], import.meta.url), e = {};

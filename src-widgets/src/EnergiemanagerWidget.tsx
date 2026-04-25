@@ -725,6 +725,8 @@ function deviceOidFields(devNum: number, labelPrefix: string): Array<{ name: str
         { name: `${p}-min-runtime`, type: 'id', label: 'em_min_runtime' },
         { name: `${p}-min-pause`, type: 'id', label: 'em_min_pause' },
         { name: `${p}-notify`, type: 'id', label: 'em_notify_active' },
+        { name: `${p}-notify-on`, type: 'id', label: 'em_notify_on' },
+        { name: `${p}-notify-off`, type: 'id', label: 'em_notify_off' },
         { name: `${p}-max-notif`, type: 'id', label: 'em_max_notif' },
         { name: `${p}-fc-enabled`, type: 'id', label: 'em_forecast' },
         { name: `${p}-fc-start`, type: 'id', label: 'em_fc_preheat' },

@@ -930,6 +930,16 @@ let __tla = Promise.all([
         label: "em_notify_active"
       },
       {
+        name: `${e}-notify-on`,
+        type: "id",
+        label: "em_notify_on"
+      },
+      {
+        name: `${e}-notify-off`,
+        type: "id",
+        label: "em_notify_off"
+      },
+      {
         name: `${e}-max-notif`,
         type: "id",
         label: "em_max_notif"
