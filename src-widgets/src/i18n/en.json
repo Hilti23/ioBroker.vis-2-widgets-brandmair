@@ -127,6 +127,8 @@
     "em_min_pause": "Min. pause",
     "em_notifications": "Notifications",
     "em_notify_active": "Active",
+    "em_notify_on": "On switch-on",
+    "em_notify_off": "On switch-off",
     "em_max_notif": "Max/day",
     "em_forecast": "Forecast",
     "em_fc_preheat": "Preheat",

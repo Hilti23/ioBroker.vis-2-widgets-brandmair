@@ -127,6 +127,8 @@
     "em_min_pause": "Min. Pause",
     "em_notifications": "Benachrichtigungen",
     "em_notify_active": "Aktiv",
+    "em_notify_on": "Einschalten",
+    "em_notify_off": "Ausschalten",
     "em_max_notif": "Max/Tag",
     "em_forecast": "Forecast",
     "em_fc_preheat": "Vorheizen",
